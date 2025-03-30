@@ -15,16 +15,25 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="false">
-        </activity>
-
-        <activity
-            android:name=".SignUpActivity"
+            android:theme="@style/Theme.Memoriespp.NoActionBar"
             android:exported="false">
         </activity>
 
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.Memoriespp.NoActionBar"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:theme="@style/Theme.Memoriespp.NoActionBar"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".StartActivity"
+            android:theme="@style/Theme.Memoriespp.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
