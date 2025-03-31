@@ -37,11 +37,13 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:text="Witamy \nw Memories++"
             android:textColor="#000"
             android:textSize="28sp"
             android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -50,22 +52,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dziennik elektroniczny dla uczniów i nauczycieli!"
-            android:textSize="20sp"
             android:textColor="#8b8b8b"
-            app:layout_constraintStart_toStartOf="@+id/textView"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="@+id/imageView2"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <TextView
             android:id="@+id/button"
             android:layout_width="175dp"
             android:layout_height="65dp"
+            android:background="@drawable/button_background"
             android:gravity="center"
+            android:text="Zaczynajmy!"
             android:textColor="#ffffff"
             android:textSize="21sp"
-            android:text="Zaczynajmy!"
-            android:background="@drawable/button_background"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
