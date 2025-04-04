@@ -5,30 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-public class AdminHomeFragment extends Fragment {
+public class UsersFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_admin_home, container, false);
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_users, container, false);
 
-        ImageButton manageUsersButton = rootView.findViewById(R.id.manageUsersButton);
-        manageUsersButton.setOnClickListener(view -> {
-            UsersFragment usersFragment = new UsersFragment();
+        ImageButton lookThroughUsersButton = rootView.findViewById(R.id.lookThroughUsersButton);
+
+        lookThroughUsersButton.setOnClickListener(view -> {
+            LookThroughUsersFragment lookThroughUsersFragment = new LookThroughUsersFragment();
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, usersFragment)
+                    .replace(R.id.container, lookThroughUsersFragment)
                     .addToBackStack(null)
                     .commit();
         });
-
         return rootView;
     }
+
 }

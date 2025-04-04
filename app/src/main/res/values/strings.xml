@@ -26,4 +26,16 @@
         <item>6-</item>
         <item>6</item>
     </string-array>
+
+    <string-array name="roles">
+        <item>Nauczyciele</item>
+        <item>Uczniowie</item>
+    </string-array>
+
+    <string-array name="groups">
+        <item>2A</item>
+        <item>2B</item>
+        <item>3A</item>
+        <item>3B</item>
+    </string-array>
 </resources>

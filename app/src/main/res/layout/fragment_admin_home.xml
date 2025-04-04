@@ -50,7 +50,7 @@
                     android:layout_marginBottom="10dp">
 
                     <ImageButton
-                        android:id="@+id/classesButton"
+                        android:id="@+id/manageClassesButton"
                         android:layout_width="match_parent"
                         android:layout_height="130dp"
                         android:layout_weight="1"
@@ -89,7 +89,7 @@
 
 
                     <ImageButton
-                        android:id="@+id/teachersButton"
+                        android:id="@+id/manageUsersButton"
                         android:layout_width="match_parent"
                         android:layout_height="130dp"
                         android:layout_weight="1"
@@ -128,7 +128,7 @@
 
 
                     <ImageButton
-                        android:id="@+id/gradesButton"
+                        android:id="@+id/manageGradesButton"
                         android:layout_width="match_parent"
                         android:layout_height="130dp"
                         android:layout_weight="1"
@@ -166,7 +166,7 @@
                     android:layout_marginBottom="10dp">
 
                     <ImageButton
-                        android:id="@+id/groupsButton"
+                        android:id="@+id/manageGroupsButton"
                         android:layout_width="match_parent"
                         android:layout_height="130dp"
                         android:layout_weight="1"

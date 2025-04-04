@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -12,7 +13,7 @@ public class AdminMainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     AdminHomeFragment adminHomeFragment = new AdminHomeFragment();
-    GradesFragment gradesFragment = new GradesFragment();
+    UsersFragment usersFragment = new UsersFragment();
     SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
@@ -42,9 +43,9 @@ public class AdminMainActivity extends AppCompatActivity {
                             .replace(R.id.container, settingsFragment)
                             .commit();
                     return true;
-                } else if (itemId == R.id.grades) {
+                } else if (itemId == R.id.users) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, gradesFragment)
+                            .replace(R.id.container, usersFragment)
                             .commit();
                     return true;
                 }
