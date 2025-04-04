@@ -17,6 +17,7 @@ public class LoginActivity extends AppCompatActivity {
 
         AppCompatButton loginButton = findViewById(R.id.button3);
         AppCompatButton resetPasswordButton = findViewById(R.id.button4);
+        AppCompatButton loginAsAdminButton = findViewById(R.id.loginAsAdminButton);
 
         loginButton.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -25,6 +26,11 @@ public class LoginActivity extends AppCompatActivity {
 
         resetPasswordButton.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+            startActivity(intent);
+        });
+
+        loginAsAdminButton.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
             startActivity(intent);
         });
     }
