@@ -2,4 +2,28 @@
     <string name="app_name">Memoriespp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="students">
+        <item>Olo Zarembolo</item>
+        <item>Jakubek Bonczyczek</item>
+        <item>Andak Bandran</item>
+    </string-array>
+
+    <string-array name="grades">
+        <item>1</item>
+        <item>1+</item>
+        <item>2-</item>
+        <item>2</item>
+        <item>2+</item>
+        <item>3-</item>
+        <item>3</item>
+        <item>3+</item>
+        <item>4-</item>
+        <item>4</item>
+        <item>4+</item>
+        <item>5-</item>
+        <item>5</item>
+        <item>5+</item>
+        <item>6-</item>
+        <item>6</item>
+    </string-array>
 </resources>

@@ -20,10 +20,30 @@ public class GradesFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
         ImageButton seeGradeInfoButton = rootView.findViewById(R.id.classGradeButton);
+        ImageButton addGradeButton = rootView.findViewById(R.id.addGradeButton);
+        ImageButton lookThroughGradesButton = rootView.findViewById(R.id.lookThroughGradesButton);
+
         seeGradeInfoButton.setOnClickListener(view -> {
             GradeViewFragment gradeViewFragment = new GradeViewFragment();
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, gradeViewFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+        addGradeButton.setOnClickListener(view -> {
+            SelectGroupGradesFragment selectGroupGradesFragment = new SelectGroupGradesFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, selectGroupGradesFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        lookThroughGradesButton.setOnClickListener(view -> {
+            LookThroughGradesFragment lookThroughGradesFragment = new LookThroughGradesFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, lookThroughGradesFragment)
                     .addToBackStack(null)
                     .commit();
         });
