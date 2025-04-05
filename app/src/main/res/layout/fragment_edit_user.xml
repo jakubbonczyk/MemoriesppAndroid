@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DefineNewUserFragment"
+    tools:context=".EditUserFragment"
     android:id="@+id/constraintLayout"
     android:background="#000000">
 
@@ -19,7 +19,7 @@
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dodaj nowego użytkownika"
+            android:text="Edytuj użytkownika"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -136,12 +136,23 @@
                     android:textColorHint="#2e2e2e" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/addNewUserButton"
+                    android:id="@+id/resetPasswordButton"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/background_button_light"
-                    android:text="Dodaj użytkownika"
+                    android:text="Resetuj hasło"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/saveUserButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/background_button_light"
+                    android:text="Zapisz"
                     android:textColor="#fff"
                     android:textStyle="bold" />
             </LinearLayout>

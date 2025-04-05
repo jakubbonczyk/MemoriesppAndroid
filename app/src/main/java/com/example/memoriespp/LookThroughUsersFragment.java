@@ -18,6 +18,7 @@ public class LookThroughUsersFragment extends Fragment {
 
         ImageButton userButton = rootView.findViewById(R.id.userButton);
 
+
         userButton.setOnLongClickListener(view -> {
             PopupMenu popupMenu = new PopupMenu(getContext(), view);
             popupMenu.getMenu().add("Usuń");
@@ -29,7 +30,11 @@ public class LookThroughUsersFragment extends Fragment {
 //                        Implementacja usunięcia użytkownika
                         break;
                     case "Edycja":
-//                        Implementacja edycji użytkownika
+                            EditUserFragment editUserFragment = new EditUserFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.container, editUserFragment)
+                                .addToBackStack(null)
+                                .commit();
                         break;
                 }
                 return true;
