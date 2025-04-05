@@ -17,6 +17,7 @@ public class UsersFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_users, container, false);
 
         ImageButton lookThroughUsersButton = rootView.findViewById(R.id.lookThroughUsersButton);
+        ImageButton defineNewUserButton = rootView.findViewById(R.id.defineNewUserButton);
 
         lookThroughUsersButton.setOnClickListener(view -> {
             LookThroughUsersFragment lookThroughUsersFragment = new LookThroughUsersFragment();
@@ -25,6 +26,15 @@ public class UsersFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        defineNewUserButton.setOnClickListener(view -> {
+            DefineNewUserFragment defineNewUserFragment = new DefineNewUserFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, defineNewUserFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         return rootView;
     }
 
