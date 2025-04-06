@@ -21,6 +21,16 @@ public class AdminHomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
         ImageButton manageUsersButton = rootView.findViewById(R.id.manageUsersButton);
+        ImageButton manageGroupsButton = rootView.findViewById(R.id.manageGroupsButton);
+
+        manageGroupsButton.setOnClickListener(view -> {
+            AdminGroupsFragment adminGroupsFragment = new AdminGroupsFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, adminGroupsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         manageUsersButton.setOnClickListener(view -> {
             UsersFragment usersFragment = new UsersFragment();
             getActivity().getSupportFragmentManager().beginTransaction()
