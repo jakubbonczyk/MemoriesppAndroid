@@ -8,6 +8,12 @@
         <item>Andak Bandran</item>
     </string-array>
 
+    <string-array name="teachers">
+        <item>Naucyzciel 1</item>
+        <item>Naucyzciel 2</item>
+        <item>Naucyzciel 3</item>
+    </string-array>
+
     <string-array name="grades">
         <item>1</item>
         <item>1+</item>

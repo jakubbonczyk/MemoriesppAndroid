@@ -1,5 +1,6 @@
 package com.example.memoriespp;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ public class AdminHomeFragment extends Fragment {
 
         ImageButton manageUsersButton = rootView.findViewById(R.id.manageUsersButton);
         ImageButton manageGroupsButton = rootView.findViewById(R.id.manageGroupsButton);
+        ImageButton manageClassesButton = rootView.findViewById(R.id.manageClassesButton);
 
         manageGroupsButton.setOnClickListener(view -> {
             AdminGroupsFragment adminGroupsFragment = new AdminGroupsFragment();
@@ -35,6 +37,14 @@ public class AdminHomeFragment extends Fragment {
             UsersFragment usersFragment = new UsersFragment();
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, usersFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        manageClassesButton.setOnClickListener(view -> {
+            AdminClassesFragment adminClassesFragment = new AdminClassesFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, adminClassesFragment)
                     .addToBackStack(null)
                     .commit();
         });
