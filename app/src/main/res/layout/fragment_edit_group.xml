@@ -19,7 +19,7 @@
             android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edytuj grupę"
+            android:text="@string/editGroupText"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Nazwa grupy"
+                    android:text="@string/groupsName"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:ems="10"
-                    android:hint="Wpisz nazwę grupy..."
+                    android:hint="@string/enterGroupsName"
                     android:inputType="text"
                     android:textColorHint="#2e2e2e" />
 
@@ -67,7 +67,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="24dp"
                     android:background="@drawable/background_button_light"
-                    android:text="Zapisz"
+                    android:text="@string/saveUserButton"
                     android:textColor="#fff"
                     android:textStyle="bold" />
             </LinearLayout>

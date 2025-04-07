@@ -19,7 +19,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cześć!\nZaloguj się!"
+        android:text="@string/hiLogin"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:textSize="30sp"
@@ -42,7 +42,7 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="E-mail"
+            android:text="@string/email"
             android:textColor="#000"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -54,7 +54,7 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/background_edittext"
             android:ems="10"
-            android:hint="Wpisz e-mail..."
+            android:hint="@string/enterEmail"
             android:inputType="textPersonName"
             android:padding="12dp"
             android:textColor="#707070"
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Hasło"
+            android:text="@string/password"
             android:textColor="#000"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -78,7 +78,7 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/background_edittext"
             android:ems="10"
-            android:hint="Wpisz hasło..."
+            android:hint="@string/enterPassword"
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="#707070"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="Przejdź dalej!" />
+                android:text="@string/nextstep" />
 
             <View
                 android:id="@+id/view2"
@@ -123,7 +123,7 @@
             android:layout_marginTop="32dp"
             android:background="@drawable/background_button_light"
             android:textColor="#fff"
-            android:text="ZALOGUJ SIĘ!"
+            android:text="@string/login"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -142,7 +142,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/background_button"
-            android:text="ODZYSKAJ HASŁO!"
+            android:text="@string/recoverPassword"
             android:textColor="#fff"
             android:textStyle="bold" />
 

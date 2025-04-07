@@ -90,9 +90,106 @@
     <string name="groupsFound">Znalezione grupy</string>
     <string name="groupNameText">Klasa 1</string>
 
-<!--fragment_look_through_groups.xml-->
+<!--fragment_look_through_grades.xml-->
     <string name="chooseGroupText">Wybierz klasę</string>
-    <string name="groupNameText">Klasa 1</string>
+    <string name="groupNameText2">Klasa 1</string>
+
+<!--fragment_look_through_classes.xml-->
+    <string name="searchClass">Wyszukaj przedmiot</string>
+    <string name="foundClasses">Znalezione przedmioty</string>
+    <string name="classButtonText">Przedmiot 1</string>
+
+<!--fragment_home-->
+    <string name="yourGradebook">Twój dziennik</string>
+    <string name="classesHomeButton">Przedmioty</string>
+    <string name="teachersText">Nauczyciele</string>
+    <string name="gradesText">Oceny</string>
+    <string name="scheduleText">Harmonogram zajęć</string>
+    <string name="dateNow">Dziś jest dzień, data</string>
+
+<!--fragment_group_grades-->
+    <string name="groupGrades">Oceny grupy</string>
+    <string name="studentsName">Imię nazwisko</string>
+
+<!--fragment_grades-->
+    <string name="yourGrades">Twoje oceny</string>
+    <string name="addNewGrade">Dodaj ocenę</string>
+    <string name="homeBrowseGrades">Przeglądaj oceny</string>
+
+<!--fragment_edit_user-->
+    <string name="editUser">Edytuj użytkownika</string>
+    <string name="name">Imię</string>
+    <string name="surname">Nazwisko</string>
+    <string name="email">E-mail</string>
+    <string name="enterEmail">Wpisz adres e-mail</string>
+    <string name="enterSurname">Wpisz nazwisko</string>
+    <string name="enterName">Wpisz imię</string>
+    <string name="resetPasswordButton">Resetuj hasło!</string>
+    <string name="saveUserButton">Zapisz</string>
+
+<!--fragment_edit_group.xml-->
+    <string name="editGroupText">Edytuj grupę</string>
+    <string name="groupsName">Nazwa grupy</string>
+    <string name="enterGroupsName">Wpisz nazwę grupy</string>
+
+<!--fragment_edit_class.xml-->
+    <string name="editClassText">Edytuj przedmiot</string>
+    <string name="className">Nazwa przedmiotu</string>
+    <string name="enterClassName">Wpisz nazwę przedmiotu</string>
+    <string name="leadingTeacher">Nauczyciel prowadzący</string>
+
+<!--fragment_define_new_user.xml-->
+    <string name="addUserButton">Dodaj użytkownika</string>
+
+<!--fragment_define_new_group-->
+    <string name="defineNewGroup">Dodaj grupę</string>
+
+<!--fragment_define_new_class.xml-->
+    <string name="defineNewClass">Dodaj przedmiot</string>
+
+<!--fragment_classes.xml-->
+    <string name="yourClasses">Twoje przedmioty</string>
+
+<!--fragment_classes.xml-->
+    <string name="gradesOnThisClass">Oceny na tym przedmiocie</string>
+
+<!--fragment_classes.xml-->
+    <string name="adminPanel">Panel administratora</string>
+    <string name="manageGroups">Zarządzaj\ngrupami</string>
+    <string name="manageUsers">Zarządzaj\nużytkownikami</string>
+    <string name="manageClasses">Zarządzaj\nprzedmiotami</string>
+
+<!--fragment_admin_groups.xml-->
+    <string name="groupManagement">Zarządzanie grupami</string>
+    <string name="browseGroups">Przeglądaj grupy</string>
+
+<!--fragment_admin_groups.xml-->
+    <string name="classesManagement">Zarządzanie przedmiotami</string>
+    <string name="browseClasses">Przeglądaj przedmioty</string>
+
+<!--fragment_add_grades.xml-->
+    <string name="chooseStudent">Wybierz ucznia</string>
+    <string name="chooseGrade">Wybierz ocenę</string>
+    <string name="addDescription">Dodaj komentarz</string>
+
+<!--fragment_add_grades.xml-->
+    <string name="welcome">Witamy\nw Memories++</string>
+    <string name="appDesc">Dziennik elektroniczny dla uczniów i nauczycieli!</string>
+    <string name="start">Zaczynajmy!</string>
+
+<!--activity_reset_password.xml-->
+    <string name="firstLogin">Pierwsze\nlogowanie!</string>
+    <string name="sendNewPassword">Wyślij nowe hasło</string>
+    <string name="info">Wiadomość z nowym hasłem przyjdzie w ciągu 5 minut, o ile istnieje konto z podanym adresem e-mail.</string>
+
+<!--activity_login.xml-->
+    <string name="hiLogin">Cześć!\nZaloguj się!</string>
+    <string name="password">Hasło</string>
+    <string name="enterPassword">Wpisz hasło</string>
+    <string name="login">Zaloguj się!</string>
+    <string name="recoverPassword">Odzyskaj hasło!</string>
+    <string name="nextstep">Przejdź dalej!</string>
+
 
 
 </resources>

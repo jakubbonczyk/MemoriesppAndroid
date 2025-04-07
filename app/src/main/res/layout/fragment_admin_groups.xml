@@ -19,7 +19,7 @@
             android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zarządzanie grupami"
+            android:text="@string/groupManagement"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -66,7 +66,7 @@
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
-                        android:text="Zdefiniuj grupę"
+                        android:text="@string/defineNewGroup"
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -106,7 +106,7 @@
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
-                        android:text="Przeglądaj grupy"
+                        android:text="@string/browseGroups"
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />

@@ -23,7 +23,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        TextView textView12 = rootView.findViewById(R.id.textView12);
+        TextView textView12 = rootView.findViewById(R.id.dateNow);
 
         Calendar calendar = Calendar.getInstance();
 

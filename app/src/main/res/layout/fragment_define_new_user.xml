@@ -19,7 +19,7 @@
             android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dodaj nowego użytkownika"
+            android:text="@string/defineNewUser"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
-                    android:text="Rola"
+                    android:text="@string/role"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Grupa"
+                    android:text="@string/group"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Imię"
+                    android:text="@string/name"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:ems="10"
-                    android:hint="Wpisz imię..."
+                    android:hint="@string/enterName"
                     android:inputType="text"
                     android:textColorHint="#2e2e2e" />
 
@@ -100,7 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Nazwisko"
+                    android:text="@string/surname"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -111,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:ems="10"
-                    android:hint="Wpisz nazwisko..."
+                    android:hint="@string/enterSurname"
                     android:inputType="text"
                     android:textColorHint="#2e2e2e" />
 
@@ -120,7 +120,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Adres e-mail"
+                    android:text="@string/email"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -131,7 +131,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:ems="10"
-                    android:hint="Wpisz adres e-mail..."
+                    android:hint="@string/enterEmail"
                     android:inputType="textEmailAddress"
                     android:textColorHint="#2e2e2e" />
 
@@ -141,7 +141,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="24dp"
                     android:background="@drawable/background_button_light"
-                    android:text="Dodaj użytkownika"
+                    android:text="@string/addUserButton"
                     android:textColor="#fff"
                     android:textStyle="bold" />
             </LinearLayout>

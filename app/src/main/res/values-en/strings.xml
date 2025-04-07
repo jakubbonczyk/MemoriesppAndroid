@@ -91,5 +91,102 @@
 
 <!--fragment_look_through_groups.xml-->
     <string name="chooseGroupText">Choose group</string>
-    <string name="groupNameText">Group 1</string>
+    <string name="groupNameText2">Group 1</string>
+
+<!--fragment_look_through_classes.xml-->
+    <string name="searchClass">Browse classes</string>
+    <string name="foundClasses">Found classes</string>
+    <string name="classButtonText">Class 1</string>
+
+<!--fragment_home-->
+    <string name="yourGradebook">Your gradebook</string>
+    <string name="classesHomeButton">Classes</string>
+    <string name="teachersText">Teachers</string>
+    <string name="gradesText">Grades</string>
+    <string name="scheduleText">Your schedule</string>
+    <string name="dateNow">Today is, date</string>
+
+<!--fragment_group_grades-->
+    <string name="groupGrades">Group\'s grades</string>
+    <string name="studentsName">Name surname</string>
+
+<!--fragment_grades-->
+    <string name="yourGrades">Your grades</string>
+    <string name="addNewGrade">Add new grade</string>
+    <string name="homeBrowseGrades">Browse grades</string>
+
+<!--fragment_edit_user-->
+    <string name="editUser">Edit user</string>
+    <string name="name">First name</string>
+    <string name="surname">Surname</string>
+    <string name="email">E-mail</string>
+    <string name="enterEmail">Enter your e-mail</string>
+    <string name="enterSurname">Enter your surname</string>
+    <string name="enterName">Enter your name</string>
+    <string name="resetPasswordButton">reset password!</string>
+    <string name="saveUserButton">save</string>
+
+<!--fragment_edit_group.xml-->
+    <string name="editGroupText">Edit group</string>
+    <string name="groupsName">Group\'s name</string>
+    <string name="enterGroupsName">Enter group\'s name</string>
+
+<!--fragment_edit_classs.xml-->
+    <string name="editClassText">Edit class</string>
+    <string name="className">Class</string>
+    <string name="enterClassName">Enter class</string>
+    <string name="leadingTeacher">Main teacher</string>
+
+<!--fragment_define_new_user.xml-->
+    <string name="addUserButton">Add user</string>
+
+<!--fragment_define_new_group.xml-->
+    <string name="defineNewGroup">Define group</string>
+
+<!--fragment_define_new_class.xml-->
+    <string name="defineNewClass">Define new class</string>
+
+<!--fragment_classes.xml-->
+    <string name="yourClasses">Twoje przedmioty</string>
+
+<!--fragment_classes.xml-->
+    <string name="gradesOnThisClass">Grades</string>
+
+<!--fragment_classes.xml-->
+    <string name="adminPanel">Admin\'s panel</string>
+    <string name="manageGroups">Manage\ngroups</string>
+    <string name="manageUsers">Manage\nusers</string>
+    <string name="manageClasses">Manage\nclasses</string>
+
+<!--fragment_admin_groups.xml-->
+    <string name="groupManagement">Groups management</string>
+    <string name="browseGroups">Browse groups</string>
+
+<!--frag!ment_admin_groups.xml-->
+    <string name="classesManagement">Classes management</string>
+    <string name="browseClasses">Browse classes</string>
+
+<!--fragment_add_grades.xml-->
+    <string name="chooseStudent">Choose student</string>
+    <string name="chooseGrade">Choose grade</string>
+    <string name="addDescription">Add description</string>
+
+<!--fragment_add_grades.xml-->
+    <string name="welcome">Welcome\nto Memories++</string>
+    <string name="appDesc">Electronic gradebook for students and teachers!</string>
+    <string name="start">Let\'s start!</string>
+
+<!--activity_reset_password.xml-->
+    <string name="firstLogin">First\nlogin!</string>
+    <string name="sendNewPassword">Send new password</string>
+    <string name="info">An email with a new password will arrive within 5 minutes if there is an account with the provided email address.</string>
+
+<!--activity_login.xml-->
+    <string name="hiLogin">Hi!\nLog in!</string>
+    <string name="password">Password</string>
+    <string name="enterPassword">Enter your password!</string>
+    <string name="login">Log in!</string>
+    <string name="recoverPassword">recover your password!</string>
+    <string name="nextstep">Continue!</string>
+
 </resources>

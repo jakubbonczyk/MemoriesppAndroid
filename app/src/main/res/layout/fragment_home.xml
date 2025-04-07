@@ -16,10 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/userManagement"
+            android:id="@+id/yourGradebook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Twój dziennik"
+            android:text="@string/yourGradebook"
             android:textSize="24sp"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -31,7 +31,7 @@
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userManagement">
+            app:layout_constraintTop_toBottomOf="@+id/yourGradebook">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -58,13 +58,13 @@
                         android:src="@drawable/classes_button" />
 
                     <TextView
-                        android:id="@+id/classesText"
+                        android:id="@+id/classesHomeButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|top"
                         android:layout_marginTop="18dp"
                         android:layout_marginRight="5dp"
-                        android:text="Przedmioty"
+                        android:text="@string/classesHomeButton"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -103,7 +103,7 @@
                         android:layout_gravity="center|top"
                         android:layout_marginTop="18dp"
                         android:layout_marginRight="5dp"
-                        android:text="Nauczyciele"
+                        android:text="@string/teachersText"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -142,7 +142,7 @@
                         android:layout_gravity="left|top"
                         android:layout_marginLeft="12dp"
                         android:layout_marginTop="18dp"
-                        android:text="Oceny"
+                        android:text="@string/gradesText"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -163,11 +163,11 @@
         </HorizontalScrollView>
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/scheduleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Harmonogram zajęć"
+            android:text="@string/scheduleText"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -176,15 +176,15 @@
             tools:layout_editor_absoluteX="32dp" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/dateNow"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Dziś jest dzień, data"
+            android:text="@string/dateNow"
             android:textColor="@color/black"
 
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView11"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintStart_toStartOf="@+id/scheduleText"
+            app:layout_constraintTop_toBottomOf="@+id/scheduleText" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -192,7 +192,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/dateNow"
             android:layout_marginTop="12dp">
 
             <LinearLayout

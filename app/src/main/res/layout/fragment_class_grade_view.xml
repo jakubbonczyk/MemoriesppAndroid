@@ -19,7 +19,7 @@
             android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Oceny na tym przedmiocie"
+            android:text="@string/gradesOnThisClass"
             android:textSize="24sp"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -68,7 +68,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|start"
                                     android:layout_weight="1"
-                                    android:text="Sprawdzian"
+                                    android:text="@string/gradeCategory"
                                     android:textColor="@color/light_blue"
                                     android:textSize="24sp"
                                     android:textStyle="bold" />
@@ -147,7 +147,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|start"
                                     android:layout_weight="1"
-                                    android:text="Kartkówka"
+                                    android:text="@string/gradeCategory"
                                     android:textColor="@color/light_blue"
                                     android:textSize="24sp"
                                     android:textStyle="bold" />
@@ -226,7 +226,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|start"
                                     android:layout_weight="1"
-                                    android:text="Odpowiedź ustna"
+                                    android:text="@string/gradeCategory"
                                     android:textColor="@color/light_blue"
                                     android:textSize="24sp"
                                     android:textStyle="bold" />
