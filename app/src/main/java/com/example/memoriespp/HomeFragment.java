@@ -48,6 +48,24 @@ public class HomeFragment extends Fragment {
                     .commit();
         });
 
+        ImageButton classesButton = rootView.findViewById(R.id.classesButton);
+        classesButton.setOnClickListener(view -> {
+            ClassesFragment classesFragment = new ClassesFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, classesFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        ImageButton teachersButton = rootView.findViewById(R.id.teachersButton);
+        teachersButton.setOnClickListener(view -> {
+            TeachersFragment teachersFragment = new TeachersFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, teachersFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         return rootView;
     }
 }
