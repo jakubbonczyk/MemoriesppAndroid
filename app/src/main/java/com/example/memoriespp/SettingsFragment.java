@@ -31,13 +31,15 @@ public class SettingsFragment extends Fragment {
         // Obsługa zmiany języka
         Button changeLanguageButton = rootView.findViewById(R.id.changeLanguageButton);
         changeLanguageButton.setOnClickListener(view -> {
-            // Zmień język aplikacji na angielski (przykładowo)
-            setLocale("en");
-            Toast.makeText(getContext(), "Zmieniono język na angielski", Toast.LENGTH_SHORT).show();
+            String currentLanguage = Locale.getDefault().getLanguage();
+            String newLanguage = currentLanguage.equals("pl") ? "en" : "pl";
 
-            // Odśwież widok
-            getActivity().recreate();
+            LocaleHelper.changeLanguage(requireContext(), newLanguage);
+            requireActivity().recreate();
         });
+
+
+
 
         return rootView;
     }

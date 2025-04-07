@@ -45,15 +45,15 @@
         <item>3B</item>
     </string-array>
 
-<!--    Teksty w języku polskim-->
-<!--    fragment_settings.xml-->
+    <!--    Teksty w języku angielskim-->
+    <!--    fragment_settings.xml-->
 
-    <string name="settings_name">Ustawienia</string>
-    <string name="greetings">Witaj</string>
-    <string name="changeProfilePictureButton">Zmień zdjęcie profilowe</string>
-    <string name="changeNotificationsSettingsButton">Ustawienia powiadomień</string>
-    <string name="yourResultsButton">Twoje wyniki</string>
-    <string name="changeThemeButton">Motywy</string>
-    <string name="changeLanguageButton">Język</string>
-    <string name="logoutButton">Wyloguj</string>
+    <string name="settings_name">Settings</string>
+    <string name="greetings">Hello</string>
+    <string name="changeProfilePictureButton">Change profile picture</string>
+    <string name="changeNotificationsSettingsButton">Notification settings</string>
+    <string name="yourResultsButton">Your results</string>
+    <string name="changeThemeButton">Themes</string>
+    <string name="changeLanguageButton">Language</string>
+    <string name="logoutButton">Logout</string>
 </resources>
