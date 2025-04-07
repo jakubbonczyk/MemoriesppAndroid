@@ -16,10 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/lookForUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Wyszukaj użytkownika"
+            android:text="@string/lookForUser"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -34,15 +34,15 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/lookForUser"
             tools:layout_editor_absoluteX="32dp"/>
 
         <TextView
-            android:id="@+id/textView19"
+            android:id="@+id/role"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Rola"
+            android:text="@string/role"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -56,16 +56,16 @@
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView19"
+            app:layout_constraintTop_toBottomOf="@+id/role"
             tools:layout_editor_absoluteX="32dp"
             android:entries="@array/roles"/>
 
         <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Grupa"
+            android:text="@string/group"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -77,7 +77,7 @@
             android:id="@+id/spinner2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView20"
+            app:layout_constraintTop_toBottomOf="@+id/group"
             tools:layout_editor_absoluteX="32dp"
             android:entries="@array/groups"/>
 
@@ -102,10 +102,11 @@
                         android:layout_height="50dp"
                         android:background="@null"/>
                     <TextView
+                        android:id="@+id/userName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center|start"
-                        android:text="Jakub Bonczyk"
+                        android:text="@string/userName"
                         android:textColor="@color/black"
                         android:layout_marginLeft="10dp"/>
 

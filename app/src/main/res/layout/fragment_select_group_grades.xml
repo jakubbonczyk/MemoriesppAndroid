@@ -16,10 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/chooseGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Wybierz klasę"
+            android:text="@string/chooseGroup"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
+            app:layout_constraintTop_toBottomOf="@+id/chooseGroup">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                             android:layout_width="270dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
-                            android:text="Klasa 2A"
+                            android:text="@string/groupName"
                             android:textColor="@color/white"
                             android:textSize="24sp"
                             android:textStyle="bold" />

@@ -56,4 +56,40 @@
     <string name="changeThemeButton">Themes</string>
     <string name="changeLanguageButton">Language</string>
     <string name="logoutButton">Logout</string>
+
+    <!-- fragment-users.xml-->
+    <string name="userManagement">User management</string>
+    <string name="defineNewUser">Define new user</string>
+    <string name="browseUsers">Browse users</string>
+
+<!--     fragment-teachers.xml-->
+    <string name="yourTeachers">Twoi nauczyciele</string>
+    <string name="teacherName">Name Surname</string>
+
+<!--fragment_specific_grade_view.xml-->
+    <string name="gradeText">Grade</string>
+    <string name="gradeCategory">Test</string>
+    <string name="gradeTeacher">Name Surname</string>
+    <string name="gradeDate">Date</string>
+    <string name="gradeDescriptionText">Description</string>
+    <string name="gradeDescription">Description field</string>
+
+<!--fragment_select_group_grades.xml-->
+    <string name="chooseGroup">Choose group</string>
+    <string name="groupName">Group 1</string>
+
+<!--fragment_look_through_users.xml-->
+    <string name="lookForUser">Browse users</string>
+    <string name="role">Role</string>
+    <string name="group">Group</string>
+    <string name="userName">Name Surname</string>
+
+<!--fragment_look_through_groups.xml-->
+    <string name="lookForGroup">Browse groups</string>
+    <string name="groupsFound">Found groups</string>
+    <string name="groupNameText">Group 1</string>
+
+<!--fragment_look_through_groups.xml-->
+    <string name="chooseGroupText">Choose group</string>
+    <string name="groupNameText">Group 1</string>
 </resources>

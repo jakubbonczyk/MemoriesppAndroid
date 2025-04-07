@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Twoje oceny"
@@ -36,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
+            app:layout_constraintTop_toBottomOf="@+id/userManagement">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="240dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
@@ -102,7 +102,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="240dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
@@ -142,7 +142,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
@@ -193,7 +193,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
@@ -244,7 +244,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
@@ -295,7 +295,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"
@@ -346,7 +346,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|start"

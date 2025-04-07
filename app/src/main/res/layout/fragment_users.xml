@@ -16,10 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zarządzanie użytkownikami"
+            android:text="@string/userManagement"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9">
+        app:layout_constraintTop_toBottomOf="@+id/userManagement">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,11 +62,11 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/className"
+                        android:id="@+id/defineNewUser"
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
-                        android:text="Zdefiniuj użytkownika"
+                        android:text="@string/defineNewUser"
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -102,11 +102,11 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/className"
+                        android:id="@+id/browseUsers"
                         android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
-                        android:text="Przeglądaj użytkowników"
+                        android:text="@string/browseUsers"
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />

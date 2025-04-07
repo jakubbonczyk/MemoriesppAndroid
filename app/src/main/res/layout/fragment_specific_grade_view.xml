@@ -16,10 +16,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/gradeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ocena"
+            android:text="@string/gradeText"
             android:textSize="24sp"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/textView9"
+            app:layout_constraintTop_toBottomOf="@+id/gradeText"
             tools:layout_editor_absoluteX="32dp">
 
             <FrameLayout
@@ -64,11 +64,11 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/gradeCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Sprawdzian"
+            android:text="@string/gradeCategory"
             android:textSize="32sp"
             android:textColor="@color/light_blue"
             android:textStyle="bold"
@@ -76,52 +76,52 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/gradeTeacher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="mgr. Jan Kowalski"
+            android:text="@string/gradeTeacher"
             android:textSize="16sp"
             android:textColor="@color/light_blue"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView14"
-            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            app:layout_constraintStart_toStartOf="@+id/gradeCategory"
+            app:layout_constraintTop_toBottomOf="@+id/gradeCategory" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/gradeDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="11.03.2025"
+            android:text="@string/gradeDate"
             android:textSize="14sp"
             android:textColor="@color/light_blue"
             android:textStyle="normal"
-            app:layout_constraintStart_toStartOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            app:layout_constraintStart_toStartOf="@+id/gradeTeacher"
+            app:layout_constraintTop_toBottomOf="@+id/gradeTeacher" />
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/gradeDescriptionText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Opis:"
+            android:text="@string/gradeDescriptionText"
             android:textSize="16sp"
             android:textColor="@color/light_blue"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView16"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintStart_toStartOf="@+id/gradeDate"
+            app:layout_constraintTop_toBottomOf="@+id/gradeDate" />
 
         <TextView
-            android:id="@+id/textView18"
+            android:id="@+id/gradeDescription"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="Sprawdzian - Lalka"
+            android:text="@string/gradeDescription"
             android:textColor="@color/light_blue"
             android:textSize="14sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView17"
-            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+            app:layout_constraintStart_toStartOf="@+id/gradeDescriptionText"
+            app:layout_constraintTop_toBottomOf="@+id/gradeDescriptionText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

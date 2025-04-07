@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Oceny na tym przedmiocie"
@@ -32,7 +32,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9">
+                app:layout_constraintTop_toBottomOf="@+id/userManagement">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/className"
+                                    android:id="@+id/defineNewUser"
                                     android:layout_width="150dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|start"
@@ -142,7 +142,7 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/className"
+                                    android:id="@+id/defineNewUser"
                                     android:layout_width="150dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|start"
@@ -221,7 +221,7 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/className"
+                                    android:id="@+id/defineNewUser"
                                     android:layout_width="150dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center|start"

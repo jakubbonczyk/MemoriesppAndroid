@@ -45,8 +45,8 @@
         <item>3B</item>
     </string-array>
 
-<!--    Teksty w języku polskim-->
-<!--    fragment_settings.xml-->
+<!-- Teksty w języku polskim-->
+<!-- fragment_settings.xml-->
 
     <string name="settings_name">Ustawienia</string>
     <string name="greetings">Witaj</string>
@@ -56,4 +56,43 @@
     <string name="changeThemeButton">Motywy</string>
     <string name="changeLanguageButton">Język</string>
     <string name="logoutButton">Wyloguj</string>
+
+<!-- fragment-users.xml-->
+    <string name="userManagement">Zarządzanie użytkownikami</string>
+    <string name="defineNewUser">Zdefiniuj użytkownika</string>
+    <string name="browseUsers">Przeglądaj użytkowników</string>
+
+
+<!--     fragment-teachers.xml-->
+    <string name="yourTeachers">Twoi nauczyciele</string>
+    <string name="teacherName">Imię nazwisko</string>
+
+<!--fragment_specific_grade_view.xml-->
+    <string name="gradeText">Ocena</string>
+    <string name="gradeCategory">Sprawdzian</string>
+    <string name="gradeTeacher">Imię nazwisko</string>
+    <string name="gradeDate">Data</string>
+    <string name="gradeDescriptionText">Opis</string>
+    <string name="gradeDescription">Pole opisowe</string>
+
+<!--fragment_select_group_grades.xml-->
+    <string name="chooseGroup">Wybierz klasę</string>
+    <string name="groupName">Klasa 1</string>
+
+<!--fragment_look_through_users.xml-->
+    <string name="lookForUser">Wyszukaj użytkownika</string>
+    <string name="role">Rola</string>
+    <string name="group">Grupa</string>
+    <string name="userName">Imię nazwisko</string>
+
+<!--fragment_look_through_groups.xml-->
+    <string name="lookForGroup">Wyszukaj grupę</string>
+    <string name="groupsFound">Znalezione grupy</string>
+    <string name="groupNameText">Klasa 1</string>
+
+<!--fragment_look_through_groups.xml-->
+    <string name="chooseGroupText">Wybierz klasę</string>
+    <string name="groupNameText">Klasa 1</string>
+
+
 </resources>

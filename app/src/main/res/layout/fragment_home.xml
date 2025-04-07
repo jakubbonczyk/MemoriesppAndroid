@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/userManagement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Twój dziennik"
@@ -31,7 +31,7 @@
             android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
+            app:layout_constraintTop_toBottomOf="@+id/userManagement">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -219,7 +219,7 @@
                         android:layout_marginLeft="12dp">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Język polski"
@@ -265,7 +265,7 @@
                         android:layout_marginLeft="12dp">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Matematyka"
@@ -311,7 +311,7 @@
                         android:layout_marginLeft="12dp">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Biologia"
@@ -357,7 +357,7 @@
                         android:layout_marginLeft="12dp">
 
                         <TextView
-                            android:id="@+id/className"
+                            android:id="@+id/defineNewUser"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Geografia"
