@@ -17,6 +17,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody Map<String, String> credentials) {
-        return authService.loginOrThrow(credentials.get("login"), credentials.get("password"));
+        return authService.login(credentials.get("login"), credentials.get("password"));
     }
+
 }
