@@ -19,6 +19,6 @@ public class GlobalExceptionCatcher {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAny(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Wewnętrzny błąd serwera");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
     }
 }
