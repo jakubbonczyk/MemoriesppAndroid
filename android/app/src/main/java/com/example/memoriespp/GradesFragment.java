@@ -9,10 +9,17 @@ import android.renderscript.Short4;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class GradesFragment extends Fragment {
+
+    FrameLayout browseGradesLayout;
+    FrameLayout addGradeLayout;
+    LinearLayout gradesLayout;
+    String role;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +55,25 @@ public class GradesFragment extends Fragment {
                     .commit();
         });
 
-        return rootView; // Poprawione - Zwracamy `rootView`, a nie ponowne `inflater.inflate`
+        addGradeLayout = rootView.findViewById(R.id.addGradeLayout);
+        browseGradesLayout = rootView.findViewById(R.id.browseGradesLayout);
+        gradesLayout = rootView.findViewById(R.id.gradesLayout);
+
+        if(getArguments() != null) {
+            role = getArguments().getString("role");
+        }
+
+        if("S".equals(role)) {
+            addGradeLayout.setVisibility(View.GONE);
+            browseGradesLayout.setVisibility(View.GONE);
+            gradesLayout.setVisibility(View.VISIBLE);
+        } else {
+            addGradeLayout.setVisibility(View.VISIBLE);
+            browseGradesLayout.setVisibility(View.VISIBLE);
+            gradesLayout.setVisibility(View.GONE);
+        }
+
+        return rootView;
     }
 
 }

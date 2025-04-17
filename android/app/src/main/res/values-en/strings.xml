@@ -111,7 +111,7 @@
     <string name="studentsName">Name surname</string>
 
 <!--fragment_grades-->
-    <string name="yourGrades">Your grades</string>
+    <string name="yourGrades">Grades</string>
     <string name="addNewGrade">Add new grade</string>
     <string name="homeBrowseGrades">Browse grades</string>
 

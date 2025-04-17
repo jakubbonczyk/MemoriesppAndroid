@@ -70,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
         String surname = getIntent().getStringExtra("surname");
         String role = getIntent().getStringExtra("role");
 
+        Bundle bundle = new Bundle();
+        bundle.putString("role", getIntent().getStringExtra("role"));
+
+        homeFragment.setArguments(bundle);
+        gradesFragment.setArguments(bundle);
+
         if (name != null && surname != null) {
             textViewName.setText(name + " " + surname);
         }

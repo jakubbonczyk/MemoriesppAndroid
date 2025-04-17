@@ -81,6 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("surname", loginResponse.getSurname());
                         intent.putExtra("role", loginResponse.getRole());
 
+
+
                         startActivity(intent);
                         finish();
                     } else {

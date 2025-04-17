@@ -112,7 +112,7 @@
     <string name="studentsName">Imię nazwisko</string>
 
 <!--fragment_grades-->
-    <string name="yourGrades">Twoje oceny</string>
+    <string name="yourGrades">Oceny</string>
     <string name="addNewGrade">Dodaj ocenę</string>
     <string name="homeBrowseGrades">Przeglądaj oceny</string>
 

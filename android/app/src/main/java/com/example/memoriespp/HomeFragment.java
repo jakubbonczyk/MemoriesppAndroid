@@ -18,6 +18,9 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
+    FrameLayout teachersFrameLayout;
+    String role;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,6 +68,18 @@ public class HomeFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        teachersFrameLayout = rootView.findViewById(R.id.teacherLayout);
+
+        if(getArguments() != null) {
+            role = getArguments().getString("role");
+        }
+
+        if("T".equals(role)) {
+            teachersFrameLayout.setVisibility(View.GONE);
+        } else {
+            teachersFrameLayout.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }
