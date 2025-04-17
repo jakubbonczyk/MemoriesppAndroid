@@ -2,6 +2,7 @@ package com.example.memoriespp;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,9 @@ public class AdminMainActivity extends AppCompatActivity {
     AdminHomeFragment adminHomeFragment = new AdminHomeFragment();
     UsersFragment usersFragment = new UsersFragment();
     SettingsFragment settingsFragment = new SettingsFragment();
+    TextView textViewName;
+    TextView textViewRole;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,5 +56,27 @@ public class AdminMainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        textViewName = findViewById(R.id.textView7);
+        textViewRole = findViewById(R.id.textView8);
+
+        String name = getIntent().getStringExtra("name");
+        String surname = getIntent().getStringExtra("surname");
+        String role = getIntent().getStringExtra("role");
+
+        if (name != null && surname != null) {
+            textViewName.setText(name + " " + surname);
+        }
+
+        if (role != null) {
+            switch (role) {
+                case "A":
+                    textViewRole.setText("Administrator");
+                    break;
+                default:
+                    textViewRole.setText("Nieznana rola");
+                    break;
+            }
+        }
     }
 }

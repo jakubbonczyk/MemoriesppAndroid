@@ -3,6 +3,8 @@ package com.example.memoriespp;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -13,6 +15,9 @@ public class MainActivity extends AppCompatActivity {
     HomeFragment homeFragment = new HomeFragment();
     GradesFragment gradesFragment = new GradesFragment();
     SettingsFragment settingsFragment = new SettingsFragment();
+
+    TextView textViewName;
+    TextView textViewRole;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -57,5 +62,30 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        textViewName = findViewById(R.id.textView7);
+        textViewRole = findViewById(R.id.textView8);
+
+        String name = getIntent().getStringExtra("name");
+        String surname = getIntent().getStringExtra("surname");
+        String role = getIntent().getStringExtra("role");
+
+        if (name != null && surname != null) {
+            textViewName.setText(name + " " + surname);
+        }
+
+        if (role != null) {
+            switch (role) {
+                case "S":
+                    textViewRole.setText("Uczeń");
+                    break;
+                case "T":
+                    textViewRole.setText("Nauczyciel");
+                    break;
+                default:
+                    textViewRole.setText("Nieznana rola");
+                    break;
+            }
+        }
     }
 }

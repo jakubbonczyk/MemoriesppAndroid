@@ -31,7 +31,6 @@ public class LoginActivity extends AppCompatActivity {
 
         AppCompatButton loginButton = findViewById(R.id.button3);
         AppCompatButton resetPasswordButton = findViewById(R.id.button4);
-        AppCompatButton loginAsAdminButton = findViewById(R.id.loginAsAdminButton);
 
         EditText emailEditText = findViewById(R.id.editTextText);
         EditText passwordEditText = findViewById(R.id.editTextTextPassword);
@@ -57,8 +56,33 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     if (response.isSuccessful()) {
                         LoginResponse loginResponse = response.body();
-                        Toast.makeText(LoginActivity.this, "Zalogowano pomyślnie!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        String role = loginResponse.getRole();
+
+                        Toast.makeText(LoginActivity.this, "Zalogowano jako " + role, Toast.LENGTH_SHORT).show();
+
+                        Intent intent;
+
+                        switch (role) {
+                            case "A":
+                                intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+                                break;
+                            case "T":
+                                intent = new Intent(LoginActivity.this, MainActivity.class);
+                                break;
+                            case "S":
+                                intent = new Intent(LoginActivity.this, MainActivity.class);
+                                break;
+                            default:
+                                Toast.makeText(LoginActivity.this, "Nieznana rola użytkownika", Toast.LENGTH_SHORT).show();
+                                return;
+                        }
+
+                        intent.putExtra("name", loginResponse.getName());
+                        intent.putExtra("surname", loginResponse.getSurname());
+                        intent.putExtra("role", loginResponse.getRole());
+
+                        startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "Błąd logowania", Toast.LENGTH_SHORT).show();
                     }
@@ -74,11 +98,6 @@ public class LoginActivity extends AppCompatActivity {
 
         resetPasswordButton.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
-            startActivity(intent);
-        });
-
-        loginAsAdminButton.setOnClickListener(view -> {
-            Intent intent = new Intent(LoginActivity.this, AdminMainActivity.class);
             startActivity(intent);
         });
     }

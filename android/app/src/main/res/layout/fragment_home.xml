@@ -83,6 +83,7 @@
                 <!--BUTTON 2-->
 
                 <FrameLayout
+                    android:id="@+id/teacherLayout"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     android:layout_marginRight="10dp">
