@@ -76,11 +76,11 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Nieznana rola użytkownika", Toast.LENGTH_SHORT).show();
                                 return;
                         }
-
+                        intent.putExtra("userId", loginResponse.getId());
                         intent.putExtra("name", loginResponse.getName());
                         intent.putExtra("surname", loginResponse.getSurname());
                         intent.putExtra("role", loginResponse.getRole());
-
+//                        intent.putExtra("image", loginResponse.getImage());
 
 
                         startActivity(intent);

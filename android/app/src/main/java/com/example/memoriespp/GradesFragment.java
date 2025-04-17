@@ -75,5 +75,4 @@ public class GradesFragment extends Fragment {
 
         return rootView;
     }
-
 }
