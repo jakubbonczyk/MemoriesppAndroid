@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
@@ -127,6 +128,11 @@ public class SettingsFragment extends Fragment {
                     public void onResponse(Call<Void> c, Response<Void> r) {
 
                         if (!r.isSuccessful()){
+                            try {
+                                Log.e("IMG_UPLOAD", "HTTP " + r.code() + " – " + (r.errorBody()!=null? r.errorBody().string():"<no body>"));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                             Toast.makeText(getContext(),
                                     "Błąd aktualizacji zdjęcia", Toast.LENGTH_SHORT).show();
                             return;

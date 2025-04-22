@@ -12,6 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -43,12 +45,10 @@ public class HomeFragment extends Fragment {
         textView12.setText(message);
 
         ImageButton gradesButton = rootView.findViewById(R.id.gradesButton);
-        gradesButton.setOnClickListener(view -> {
-            GradesFragment gradesFragment = new GradesFragment();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, gradesFragment)
-                    .addToBackStack(null) // Dodaje transakcję do stosu, by umożliwić powrót
-                    .commit();
+
+        gradesButton.setOnClickListener(v -> {
+            BottomNavigationView nav = requireActivity().findViewById(R.id.bottom_navigation);
+            nav.setSelectedItemId(R.id.grades);
         });
 
         ImageButton classesButton = rootView.findViewById(R.id.classesButton);
