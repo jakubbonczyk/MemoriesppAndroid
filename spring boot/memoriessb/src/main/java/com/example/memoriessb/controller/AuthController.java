@@ -1,7 +1,6 @@
 package com.example.memoriessb.controller;
 
 import com.example.memoriessb.DTO.LoginResponse;
-import com.example.memoriessb.etities.User;
 import com.example.memoriessb.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

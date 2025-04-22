@@ -1,5 +1,6 @@
 package network;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -14,5 +15,9 @@ public interface UserApi {
 
     @GET("/api/users/{id}")
     Call<Map<String, String>> getUserById(@Path("id") int id);
+
+    @GET("/api/users/group/{groupId}/students")
+    Call<List<User>> getStudentsByGroup(@Path("groupId") int groupId);
+
 
 }
