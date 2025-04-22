@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -24,6 +26,7 @@ public class AuthService {
         }
 
         User user = data.getUser();
-        return new LoginResponse(user.getId(), user.getName(), user.getSurname(), user.getRole());
+        String b64 = user.getImage() == null ? null : Base64.getEncoder().encodeToString(user.getImage());
+        return new LoginResponse(user.getId(), user.getName(), user.getSurname(), user.getRole(), b64);
     }
 }

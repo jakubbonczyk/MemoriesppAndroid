@@ -31,6 +31,10 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] image;
+
     @OneToMany(mappedBy = "student")
     private List<Grade> receivedGrades;
 
@@ -45,5 +49,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<GroupMember> groupMemberships;
+
+
 }
 

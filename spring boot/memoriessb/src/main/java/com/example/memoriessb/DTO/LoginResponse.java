@@ -7,5 +7,6 @@ public record LoginResponse(
         Integer id,
         String name,
         String surname,
-        User.Role role
+        User.Role role,
+        String image
 ) {}
