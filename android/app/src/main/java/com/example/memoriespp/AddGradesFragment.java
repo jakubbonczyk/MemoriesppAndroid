@@ -125,31 +125,33 @@ public class AddGradesFragment extends Fragment {
                 .build();
 
         UserApi userApi = retrofit.create(UserApi.class);
-
-        userApi.getStudentsByGroup(groupId).enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    studentList = response.body();
-
-                    List<String> studentNames = new ArrayList<>();
-                    for (User u : studentList) {
-                        studentNames.add(u.getName() + " " + u.getSurname());
+        userApi.getStudentsByGroup(groupId)
+                .enqueue(new Callback<List<User>>() {
+                    @Override
+                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            studentList = response.body();
+                            List<String> studentNames = new ArrayList<>();
+                            for (User u : studentList) {
+                                studentNames.add(u.getName() + " " + u.getSurname());
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                    requireContext(),
+                                    android.R.layout.simple_spinner_item,
+                                    studentNames
+                            );
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            studentSpinner.setAdapter(adapter);
+                        } else {
+                            Toast.makeText(getContext(), "Nie udało się pobrać uczniów: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                            android.R.layout.simple_spinner_item, studentNames);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    studentSpinner.setAdapter(adapter);
-                } else {
-                    Toast.makeText(getContext(), "Nie udało się pobrać uczniów", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(getContext(), "Błąd sieci: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<List<User>> call, Throwable t) {
+                        Toast.makeText(getContext(), "Błąd sieci: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

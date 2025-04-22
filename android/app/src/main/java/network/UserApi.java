@@ -16,7 +16,7 @@ public interface UserApi {
     @GET("/api/users/{id}")
     Call<Map<String, String>> getUserById(@Path("id") int id);
 
-    @GET("/api/users/group/{groupId}/students")
+    @GET("/api/groups/{groupId}/students")
     Call<List<User>> getStudentsByGroup(@Path("groupId") int groupId);
 
 
