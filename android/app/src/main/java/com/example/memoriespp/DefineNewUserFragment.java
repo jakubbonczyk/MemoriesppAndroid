@@ -177,6 +177,10 @@ public class DefineNewUserFragment extends Fragment {
 
                 Toast.makeText(getContext(),
                         "Użytkownik utworzony", Toast.LENGTH_SHORT).show();
+                UsersFragment usersFragment = new UsersFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, usersFragment)
+                        .commit();
             }
             @Override
             public void onFailure(Call<String> c, Throwable t) {
