@@ -7,90 +7,139 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import network.UserApi;
 import network.GroupApi;
-import network.UserResponse;
 import network.GroupResponse;
+import network.UserApi;
+import network.UserResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class AssignTeacherToGroupFragment extends Fragment {
 
     private Spinner chooseTeacherSpinner;
     private LinearLayout groupsContainer;
-    private UserApi userApi;
-    private GroupApi groupApi;
+    private AppCompatButton addAnotherGroupBtn, saveBtn;
 
+    private GroupApi groupApi;
+    private UserApi userApi;
     private List<UserResponse> teacherList = new ArrayList<>();
+    private List<GroupResponse> currentGroups = new ArrayList<>();
+    private List<GroupResponse> allGroups     = new ArrayList<>();
+
+    private int selectedTeacherId;  // <— tu przechowujemy ID wybranego nauczyciela
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-
         View root = inflater.inflate(
                 R.layout.fragment_assign_teacher_to_groups,
                 container,
                 false);
 
-        chooseTeacherSpinner = root.findViewById(R.id.chooseTeacherSpinner);
-        groupsContainer      = root.findViewById(R.id.groupsContainer);
+        chooseTeacherSpinner   = root.findViewById(R.id.chooseTeacherSpinner);
+        groupsContainer        = root.findViewById(R.id.groupsContainer);
+        addAnotherGroupBtn     = root.findViewById(R.id.addAnotherGroupButton);
+        saveBtn                = root.findViewById(R.id.addNewClassButton);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
+                // najpierw scalars, żeby obsłużyć plain-text odpowiedzi typu "OK"
+                .addConverterFactory(ScalarsConverterFactory.create())
+                // potem JSON dla innych endpointów
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         userApi  = retrofit.create(UserApi.class);
         groupApi = retrofit.create(GroupApi.class);
 
+        // 1) Załaduj WSZYSTKIE grupy do allGroups (do popupa)
+        groupApi.getAllGroups().enqueue(new Callback<List<GroupResponse>>() {
+            @Override
+            public void onResponse(Call<List<GroupResponse>> call,
+                                   Response<List<GroupResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allGroups = response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GroupResponse>> call, Throwable t) {
+                // opcjonalnie loguj błąd
+            }
+        });
+
+        // 2) Załaduj listę nauczycieli
         loadTeachers();
 
+        // 3) Po wybraniu nauczyciela pobierz jego grupy
         chooseTeacherSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                int userId = teacherList.get(pos).getId();
-                loadGroupsForUser(userId);
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view,
+                                       int pos,
+                                       long id) {
+                selectedTeacherId = teacherList.get(pos).getId();
+                loadGroupsForUser(selectedTeacherId);
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
+
+        // 4) Popup „Dodaj kolejną grupę”
+        addAnotherGroupBtn.setOnClickListener(v -> showAddGroupPopup(v));
+
+        // 5) (opcjonalnie) przycisk Zapisz – tutaj możesz zrobić dodatkowe potwierdzenie
+        saveBtn.setOnClickListener(v ->
+                Toast.makeText(getContext(), "Zapisałem wszystkie zmiany", Toast.LENGTH_SHORT).show()
+        );
 
         return root;
     }
 
     private void loadTeachers() {
         userApi.getAllTeachers().enqueue(new Callback<List<UserResponse>>() {
-            @Override public void onResponse(Call<List<UserResponse>> call,
-                                             Response<List<UserResponse>> res) {
-                if (res.isSuccessful() && res.body() != null) {
-                    teacherList = res.body();
+            @Override
+            public void onResponse(Call<List<UserResponse>> call,
+                                   Response<List<UserResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    teacherList = response.body();
                     List<String> names = new ArrayList<>();
                     for (UserResponse u : teacherList) {
                         names.add(u.getName() + " " + u.getSurname());
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    ArrayAdapter<String> ad = new ArrayAdapter<>(
                             requireContext(),
                             android.R.layout.simple_spinner_item,
                             names
                     );
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    chooseTeacherSpinner.setAdapter(adapter);
+                    ad.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    chooseTeacherSpinner.setAdapter(ad);
                 } else {
                     Toast.makeText(getContext(),
-                            "Błąd pobierania nauczycieli: " + res.code(),
+                            "Błąd pobierania nauczycieli: " + response.code(),
                             Toast.LENGTH_LONG).show();
                 }
             }
-            @Override public void onFailure(Call<List<UserResponse>> call, Throwable t) {
+
+            @Override
+            public void onFailure(Call<List<UserResponse>> call, Throwable t) {
                 Toast.makeText(getContext(),
                         "Błąd sieci: " + t.getMessage(),
                         Toast.LENGTH_LONG).show();
@@ -100,17 +149,21 @@ public class AssignTeacherToGroupFragment extends Fragment {
 
     private void loadGroupsForUser(int userId) {
         groupApi.getGroupsForUser(userId).enqueue(new Callback<List<GroupResponse>>() {
-            @Override public void onResponse(Call<List<GroupResponse>> call,
-                                             Response<List<GroupResponse>> res) {
-                if (res.isSuccessful() && res.body() != null) {
-                    populateGroupRows(res.body());
+            @Override
+            public void onResponse(Call<List<GroupResponse>> call,
+                                   Response<List<GroupResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    currentGroups = response.body();
+                    populateGroupRows(currentGroups);
                 } else {
                     Toast.makeText(getContext(),
-                            "Błąd pobierania grup: " + res.code(),
+                            "Błąd pobierania grup: " + response.code(),
                             Toast.LENGTH_LONG).show();
                 }
             }
-            @Override public void onFailure(Call<List<GroupResponse>> call, Throwable t) {
+
+            @Override
+            public void onFailure(Call<List<GroupResponse>> call, Throwable t) {
                 Toast.makeText(getContext(),
                         "Błąd sieci: " + t.getMessage(),
                         Toast.LENGTH_LONG).show();
@@ -130,5 +183,68 @@ public class AssignTeacherToGroupFragment extends Fragment {
             txt.setText(g.getGroupName());
             groupsContainer.addView(row);
         }
+    }
+
+    private void showAddGroupPopup(View anchor) {
+        // Oblicz, które grupy nie są jeszcze przypisane
+        List<GroupResponse> toAdd = new ArrayList<>();
+        for (GroupResponse g : allGroups) {
+            boolean already = false;
+            for (GroupResponse cg: currentGroups) {
+                if (cg.getId().equals(g.getId())) {
+                    already = true;
+                    break;
+                }
+            }
+            if (!already) toAdd.add(g);
+        }
+
+        PopupMenu popup = new PopupMenu(requireContext(), anchor);
+        for (int i = 0; i < toAdd.size(); i++) {
+            popup.getMenu().add(0, i, 0, toAdd.get(i).getGroupName());
+        }
+
+        popup.setOnMenuItemClickListener(item -> {
+            int idx = item.getItemId();
+            GroupResponse chosen = toAdd.get(idx);
+
+            // Wywołaj endpoint przypisania
+            groupApi.assignUserToGroup(selectedTeacherId, chosen.getId())
+                    .enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call,
+                                               Response<String> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(getContext(),
+                                        "Dodano do grupy „" + chosen.getGroupName() + "”",
+                                        Toast.LENGTH_SHORT).show();
+                                // Odśwież widok
+                                loadGroupsForUser(selectedTeacherId);
+
+                                AssignTeacherToGroupFragment assignTeacherToGroupFragment = new AssignTeacherToGroupFragment();
+//                                UsersFragment usersFragment = new UsersFragment();
+                                getActivity().getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.container, assignTeacherToGroupFragment)
+                                        .addToBackStack(null)
+                                        .commit();
+
+                            } else {
+                                Toast.makeText(getContext(),
+                                        "Błąd serwera: " + response.code(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Toast.makeText(getContext(),
+                                    "Błąd sieci: " + t.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            return true;
+        });
+
+        popup.show();
     }
 }

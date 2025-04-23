@@ -21,4 +21,10 @@ public interface GroupApi {
 
     @GET("/api/users/{id}/groups")
     Call<List<GroupResponse>> getGroupsForUser(@Path("id") int userId);
+
+    @POST("/api/assign/user/{userId}/group/{groupId}")
+    Call<String> assignUserToGroup(
+            @Path("userId") int userId,
+            @Path("groupId") int groupId
+    );
 }
