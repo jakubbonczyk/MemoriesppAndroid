@@ -17,6 +17,7 @@ public class UsersFragment extends Fragment {
 
         ImageButton lookThroughUsersButton = rootView.findViewById(R.id.lookThroughUsersButton);
         ImageButton defineNewUserButton = rootView.findViewById(R.id.defineNewUserButton);
+        ImageButton assignTeachersToGroupsButton = rootView.findViewById(R.id.assignTeachersToGroupsButton);
 
         lookThroughUsersButton.setOnClickListener(view -> {
             LookThroughUsersFragment lookThroughUsersFragment = new LookThroughUsersFragment();
@@ -30,6 +31,14 @@ public class UsersFragment extends Fragment {
             DefineNewUserFragment defineNewUserFragment = new DefineNewUserFragment();
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, defineNewUserFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        assignTeachersToGroupsButton.setOnClickListener(view -> {
+            AssignTeacherToGroupFragment assignTeacherToGroupFragment = new AssignTeacherToGroupFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, assignTeacherToGroupFragment)
                     .addToBackStack(null)
                     .commit();
         });

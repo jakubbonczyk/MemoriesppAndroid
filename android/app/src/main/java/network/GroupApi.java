@@ -18,4 +18,7 @@ public interface GroupApi {
 
     @GET("/api/groups/{id}/teachers")
     Call<List<UserResponse>> getTeachersByGroup(@Path("id") int groupId);
+
+    @GET("/api/users/{id}/groups")
+    Call<List<GroupResponse>> getGroupsForUser(@Path("id") int userId);
 }

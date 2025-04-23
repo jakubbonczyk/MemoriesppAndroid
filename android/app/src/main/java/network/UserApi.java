@@ -19,5 +19,7 @@ public interface UserApi {
     @GET("/api/groups/{groupId}/students")
     Call<List<User>> getStudentsByGroup(@Path("groupId") int groupId);
 
+    @GET("/api/users/teachers")
+    Call<List<UserResponse>> getAllTeachers();
 
 }
