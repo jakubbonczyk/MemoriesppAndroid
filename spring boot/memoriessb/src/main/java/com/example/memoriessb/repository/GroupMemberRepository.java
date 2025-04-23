@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Integer> {
-    /**
-     * Zwraca wszystkich członków grupy o danym id (kolumna groups_idgroups).
-     */
-    List<GroupMember> findAllByGroup_Id(Integer groupId);
+    // zamiast findAllByGroup_Id użyj nazwy pola userGroup
+    List<GroupMember> findAllByUserGroup_Id(Integer userGroupId);
 }

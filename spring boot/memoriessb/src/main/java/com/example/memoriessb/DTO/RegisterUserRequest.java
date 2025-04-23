@@ -10,4 +10,5 @@ public class RegisterUserRequest {
     private String login;
     private String password;
     private User.Role role;
+    private Integer groupId;
 }
