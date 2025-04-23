@@ -7,6 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface GroupApi {
     @POST("/api/groups")
@@ -14,4 +15,7 @@ public interface GroupApi {
 
     @GET("/api/groups")
     Call<List<GroupResponse>> getAllGroups();
+
+    @GET("/api/groups/{id}/teachers")
+    Call<List<UserResponse>> getTeachersByGroup(@Path("id") int groupId);
 }

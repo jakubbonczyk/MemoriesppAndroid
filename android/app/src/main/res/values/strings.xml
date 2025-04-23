@@ -76,7 +76,7 @@
     <string name="gradeDescription">Pole opisowe</string>
 
 <!--fragment_select_group_grades.xml-->
-    <string name="chooseGroup">Wybierz klasę</string>
+    <string name="chooseGroup">Wybierz grupę</string>
     <string name="groupName">Klasa 1</string>
 
 <!--fragment_look_through_users.xml-->
@@ -166,6 +166,7 @@
 <!--fragment_admin_groups.xml-->
     <string name="classesManagement">Zarządzanie przedmiotami</string>
     <string name="browseClasses">Przeglądaj przedmioty</string>
+    <string name="assignTeacherToClass">Przypisz nauczyciela do przedmiotu</string>
 
 <!--fragment_add_grades.xml-->
     <string name="chooseStudent">Wybierz ucznia</string>
@@ -190,6 +191,7 @@
     <string name="recoverPassword">Odzyskaj hasło!</string>
     <string name="nextstep">Przejdź dalej!</string>
 
-
-
+<!--fragment_assign_teacher_to_class.xml-->
+    <string name="teacher">Nauczyciele</string>
+    <string name="classes">Przedmiot</string>
 </resources>

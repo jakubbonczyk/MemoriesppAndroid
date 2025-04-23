@@ -33,6 +33,15 @@ public class AdminClassesFragment extends Fragment {
                     .commit();
         });
 
+        ImageButton assignTeacherToClassButton = rootView.findViewById(R.id.assignTeacherToClassButton);
+        assignTeacherToClassButton.setOnClickListener(view -> {
+            AssignTeacherToClassFragment assignTeacherToClassFragment = new AssignTeacherToClassFragment();
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, assignTeacherToClassFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         return rootView;
     }
 

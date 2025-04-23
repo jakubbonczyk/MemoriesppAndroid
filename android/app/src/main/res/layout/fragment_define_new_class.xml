@@ -57,27 +57,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:ems="10"
-                    android:hint="@string/enterGroupsName"
+                    android:hint="@string/enterClassName"
                     android:inputType="text"
                     android:textColorHint="#2e2e2e" />
 
-                <TextView
-                    android:id="@+id/textView24"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/leadingTeacher"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:ignore="MissingConstraints" />
-
-
-                <Spinner
-                    android:id="@+id/spinner3"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:entries="@array/teachers"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/addNewClassButton"
