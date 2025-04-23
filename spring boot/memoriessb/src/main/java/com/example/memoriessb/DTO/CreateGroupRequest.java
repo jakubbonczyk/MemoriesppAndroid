@@ -1,4 +1,3 @@
-// src/main/java/com/example/memoriessb/DTO/CreateGroupRequest.java
 package com.example.memoriessb.DTO;
 
 import lombok.Getter;

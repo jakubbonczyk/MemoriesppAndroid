@@ -1,6 +1,5 @@
 package com.example.memoriessb.controller;
 
-import com.example.memoriessb.DTO.LoginResponse;
 import com.example.memoriessb.DTO.RegisterUserRequest;
 import com.example.memoriessb.service.AuthService;
 import lombok.RequiredArgsConstructor;
