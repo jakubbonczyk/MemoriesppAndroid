@@ -24,14 +24,12 @@ public class GroupController {
 
     @GetMapping("/{groupId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsInGroup(@PathVariable int groupId) {
-        // 1. Wyciągnij z więzi GroupMember wszystkich userów tej grupy
         List<Integer> userIds = groupMemberRepo
-                .findAllByGroup_Id(groupId)        // GROUP_MEMBERS → users_idusers
+                .findAllByGroup_Id(groupId)
                 .stream()
                 .map(gm -> gm.getUser().getId())
                 .toList();
 
-        // 2. Filtruj tylko tych z rolą S (student) i mapuj na DTO
         List<UserDTO> students = userRepo.findAllById(userIds)
                 .stream()
                 .filter(u -> u.getRole() == User.Role.S)

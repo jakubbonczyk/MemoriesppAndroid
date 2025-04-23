@@ -15,9 +15,7 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
 
-    /**
-     * Aktualizuje avatar (Base64 → byte[] → LOB)
-     */
+
     public void updateUserImage(Integer userId, String base64Image) {
         log.info("updateUserImage() dla id={} ({} znaków)", userId,
                 base64Image == null ? 0 : base64Image.length());
@@ -40,9 +38,7 @@ public class UserService {
         }
     }
 
-    /**
-     * Zwraca użytkownika jako mapę (dla GET /api/users/{id})
-     */
+
     public java.util.Map<String, Object> getUserDto(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

@@ -1,8 +1,10 @@
 package com.example.memoriessb.controller;
 
 import com.example.memoriessb.DTO.LoginResponse;
+import com.example.memoriessb.DTO.RegisterUserRequest;
 import com.example.memoriessb.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -19,4 +21,9 @@ public class AuthController {
         return authService.login(credentials.get("login"), credentials.get("password"));
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody RegisterUserRequest request) {
+        authService.registerUser(request);
+        return ResponseEntity.ok("Użytkownik został utworzony");
+    }
 }
