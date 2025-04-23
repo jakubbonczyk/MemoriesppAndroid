@@ -61,6 +61,9 @@
     <string name="userManagement">User management</string>
     <string name="defineNewUser">Define new user</string>
     <string name="browseUsers">Browse users</string>
+    <string name="addTeachersToGroups">Assign teachers to groups</string>
+    <string name="chooseTeacher">Choose teacher</string>
+    <string name="addAnotherGroup">Add another group</string>
 
 <!--     fragment-teachers.xml-->
     <string name="yourTeachers">Twoi nauczyciele</string>

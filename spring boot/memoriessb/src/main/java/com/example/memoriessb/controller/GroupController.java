@@ -56,4 +56,21 @@ public class GroupController {
                 .toList();
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/{groupId}/teachers")
+    public ResponseEntity<List<UserDTO>> getTeachersInGroup(@PathVariable Integer groupId) {
+        List<Integer> userIds = groupMemberRepo
+                .findAllByUserGroup_Id(groupId)
+                .stream()
+                .map(gm -> gm.getUser().getId())
+                .toList();
+
+        List<UserDTO> teachers = userRepo.findAllById(userIds)
+                .stream()
+                .filter(u -> u.getRole() == User.Role.T)
+                .map(u -> new UserDTO(u.getId(), u.getName(), u.getSurname(), u.getRole()))
+                .toList();
+
+        return ResponseEntity.ok(teachers);
+    }
 }
