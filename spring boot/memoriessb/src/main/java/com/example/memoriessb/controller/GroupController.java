@@ -1,15 +1,16 @@
 package com.example.memoriessb.controller;
 
+import com.example.memoriessb.DTO.CreateGroupRequest;
+import com.example.memoriessb.DTO.GroupDTO;
 import com.example.memoriessb.DTO.UserDTO;
+import com.example.memoriessb.etities.UserGroup;
 import com.example.memoriessb.etities.User;
 import com.example.memoriessb.repository.GroupMemberRepository;
+import com.example.memoriessb.repository.UserGroupRepository;
 import com.example.memoriessb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,11 +22,13 @@ public class GroupController {
 
     private final GroupMemberRepository groupMemberRepo;
     private final UserRepository userRepo;
+    private final UserGroupRepository groupRepo;
 
     @GetMapping("/{groupId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsInGroup(@PathVariable int groupId) {
+        // nowa metoda
         List<Integer> userIds = groupMemberRepo
-                .findAllByGroup_Id(groupId)
+                .findAllByUserGroup_Id(groupId)    // <–– tu
                 .stream()
                 .map(gm -> gm.getUser().getId())
                 .toList();
@@ -33,9 +36,27 @@ public class GroupController {
         List<UserDTO> students = userRepo.findAllById(userIds)
                 .stream()
                 .filter(u -> u.getRole() == User.Role.S)
-                .map(u -> new UserDTO(u.getId(), u.getName(), u.getSurname(),u.getRole()))
+                .map(u -> new UserDTO(u.getId(), u.getName(), u.getSurname(), u.getRole()))
                 .toList();
 
         return ResponseEntity.ok(students);
+    }
+
+    @PostMapping
+    public ResponseEntity<GroupDTO> createGroup(@RequestBody CreateGroupRequest req) {
+        UserGroup g = new UserGroup();
+        g.setGroupName(req.getGroupName());
+        UserGroup saved = groupRepo.save(g);
+        return ResponseEntity.ok(new GroupDTO(saved.getId(), saved.getGroupName()));
+    }
+
+    // (opcjonalnie) GET /api/groups – żebyś mógł pobrać wszystkie grupy
+    @GetMapping
+    public ResponseEntity<List<GroupDTO>> getAllGroups() {
+        List<GroupDTO> list = groupRepo.findAll()
+                .stream()
+                .map(g -> new GroupDTO(g.getId(), g.getGroupName()))
+                .toList();
+        return ResponseEntity.ok(list);
     }
 }

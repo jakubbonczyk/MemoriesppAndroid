@@ -9,4 +9,7 @@ import java.util.Map;
 public interface AuthApi {
     @POST("/api/auth/login")
     Call<LoginResponse> login(@Body Map<String, String> credentials);
+
+    @POST("/api/auth/register")
+    Call<String> registerUser(@Body RegisterUserRequest request);
 }

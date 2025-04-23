@@ -16,8 +16,8 @@ public class GroupMember {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "groups_idgroups", nullable = false)
-    private Group group;
+    @JoinColumn(name = "user_group_id", nullable = false)
+    private UserGroup userGroup;
 
     @ManyToOne
     @JoinColumn(name = "users_idusers", nullable = false)

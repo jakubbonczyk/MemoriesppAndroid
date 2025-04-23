@@ -2,11 +2,16 @@ package com.example.memoriessb.service;
 
 import com.example.memoriessb.DTO.LoginResponse;
 import com.example.memoriessb.DTO.RegisterUserRequest;
+import com.example.memoriessb.etities.GroupMember;
 import com.example.memoriessb.etities.SensitiveData;
 import com.example.memoriessb.etities.User;
+import com.example.memoriessb.etities.UserGroup;
+import com.example.memoriessb.repository.GroupMemberRepository;
 import com.example.memoriessb.repository.SensitiveDataRepository;
+import com.example.memoriessb.repository.UserGroupRepository;
 import com.example.memoriessb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +19,15 @@ import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AuthService {
 
     private final SensitiveDataRepository sensitiveDataRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserGroupRepository userGroupRepository;
+    private final GroupMemberRepository groupMemberRepository;
+
 
     public LoginResponse login(String login, String password) {
         SensitiveData data = sensitiveDataRepository.findByLogin(login)
@@ -34,20 +43,46 @@ public class AuthService {
     }
 
     public void registerUser(RegisterUserRequest request) {
-        if (sensitiveDataRepository.findByLogin(request.getLogin()).isPresent()) {
-            throw new IllegalArgumentException("Podany login jest już zajęty");
+        log.debug("registerUser() request = {}", request);
+        try {
+            if (sensitiveDataRepository.findByLogin(request.getLogin()).isPresent()) {
+                log.warn("Register failed: login '{}' already exists", request.getLogin());
+                throw new IllegalArgumentException("Podany login jest już zajęty");
+            }
+
+            // 1) zapis usera
+            User user = new User();
+            user.setName(request.getName());
+            user.setSurname(request.getSurname());
+            user.setRole(request.getRole());
+            user = userRepository.save(user);
+            log.info("Created User id={}, name={} {}", user.getId(), user.getName(), user.getSurname());
+
+            // 2) zapis SensitiveData
+            SensitiveData data = new SensitiveData();
+            data.setLogin(request.getLogin());
+            data.setPassword(passwordEncoder.encode(request.getPassword()));
+            data.setUser(user);
+            sensitiveDataRepository.save(data);
+            log.info("Created SensitiveData for userId={}", user.getId());
+
+            // 3) przypisanie do grupy (jeśli podano)
+            Integer gid = request.getGroupId();
+            if (gid != null) {
+                log.debug("Assigning userId={} to groupId={}", user.getId(), gid);
+                UserGroup group = userGroupRepository.findById(gid)
+                        .orElseThrow(() -> new IllegalArgumentException("Nie ma takiej grupy: " + gid));
+                GroupMember gm = new GroupMember();
+                gm.setUserGroup(group);
+                gm.setUser(user);
+                groupMemberRepository.save(gm);
+                log.info("User id={} added to Group id={}", user.getId(), group.getId());
+            }
+
+        } catch (Exception ex) {
+            log.error("Error in registerUser(): {}", ex.getMessage(), ex);
+            // przepakuj wyjątek, żeby Spring go złapał w kontrolerze i zwrócił 500
+            throw ex;
         }
-
-        User user = new User();
-        user.setName(request.getName());
-        user.setSurname(request.getSurname());
-        user.setRole(request.getRole());
-        userRepository.save(user);
-
-        SensitiveData data = new SensitiveData();
-        data.setLogin(request.getLogin());
-        data.setPassword(passwordEncoder.encode(request.getPassword()));
-        data.setUser(user);
-        sensitiveDataRepository.save(data);
     }
 }
