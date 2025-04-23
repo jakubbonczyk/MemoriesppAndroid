@@ -50,7 +50,6 @@ public class AuthService {
                 throw new IllegalArgumentException("Podany login jest już zajęty");
             }
 
-            // 1) zapis usera
             User user = new User();
             user.setName(request.getName());
             user.setSurname(request.getSurname());
@@ -58,7 +57,6 @@ public class AuthService {
             user = userRepository.save(user);
             log.info("Created User id={}, name={} {}", user.getId(), user.getName(), user.getSurname());
 
-            // 2) zapis SensitiveData
             SensitiveData data = new SensitiveData();
             data.setLogin(request.getLogin());
             data.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -66,7 +64,6 @@ public class AuthService {
             sensitiveDataRepository.save(data);
             log.info("Created SensitiveData for userId={}", user.getId());
 
-            // 3) przypisanie do grupy (jeśli podano)
             Integer gid = request.getGroupId();
             if (gid != null) {
                 log.debug("Assigning userId={} to groupId={}", user.getId(), gid);
@@ -81,7 +78,6 @@ public class AuthService {
 
         } catch (Exception ex) {
             log.error("Error in registerUser(): {}", ex.getMessage(), ex);
-            // przepakuj wyjątek, żeby Spring go złapał w kontrolerze i zwrócił 500
             throw ex;
         }
     }

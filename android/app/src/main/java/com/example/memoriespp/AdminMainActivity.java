@@ -29,7 +29,6 @@ public class AdminMainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
 
-    /* fragmenty */
     private final AdminHomeFragment adminHomeFragment = new AdminHomeFragment();
     private final UsersFragment      usersFragment     = new UsersFragment();
     private final SettingsFragment   settingsFragment  = new SettingsFragment();
@@ -46,12 +45,10 @@ public class AdminMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_main);
 
-        /* ---------- widoki górnego paska ---------- */
         profileImageView = findViewById(R.id.imageView4);
         textViewName     = findViewById(R.id.textView7);
         textViewRole     = findViewById(R.id.textView8);
 
-        /* ---------- dane przekazane z LoginActivity ---------- */
         int    userId  = getIntent().getIntExtra("userId", -1);
         String name    = getIntent().getStringExtra("name");
         String surname = getIntent().getStringExtra("surname");
@@ -69,30 +66,25 @@ public class AdminMainActivity extends AppCompatActivity {
             profileImageView.setImageResource(R.drawable.profpic);
         }
 
-        /* odświeżenie zdjęcia z backendu (na wypadek, gdyby się zmieniło) */
         if (userId != -1) refreshProfileImageFromServer(userId);
 
-        /* ---------- bundlowanie danych do SettingsFragment ---------- */
         Bundle b = new Bundle();
         b.putString("image", getIntent().getStringExtra("image"));
-        settingsFragment.setArguments(b);     //  + jeśli potrzebne:
+        settingsFragment.setArguments(b);
         adminHomeFragment.setArguments(b);
         usersFragment.setArguments(b);
 
 
-        /* ---------- startowy fragment ---------- */
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, adminHomeFragment)
                     .commit();
         }
 
-        /* ---------- dolna nawigacja ---------- */
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(navListener);
     }
 
-    /* --------------------- NAV LISTENER --------------------- */
     private final NavigationBarView.OnItemSelectedListener navListener =
             new NavigationBarView.OnItemSelectedListener() {
                 @Override public boolean onNavigationItemSelected(MenuItem item) {
@@ -115,9 +107,7 @@ public class AdminMainActivity extends AppCompatActivity {
                 }
             };
 
-    /* --------------------- pomocnicze --------------------- */
 
-    /** jednorazowe pobranie aktualnego zdjęcia z backendu */
     private void refreshProfileImageFromServer(int userId){
         new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
@@ -144,7 +134,6 @@ public class AdminMainActivity extends AppCompatActivity {
         return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
     }
 
-    // AdminMainActivity  ─────────────────────────────────────────
     public void updateProfileImageFromSettings(String base64){
         refreshProfileImage(base64);
     }
@@ -157,16 +146,13 @@ public class AdminMainActivity extends AppCompatActivity {
             Bitmap bmp   = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
             iv.setImageBitmap(bmp);
         } else {
-            iv.setImageResource(R.drawable.profpic);   // domyślne
+            iv.setImageResource(R.drawable.profpic);
         }
     }
 
     public void onAvatarChanged(String b64){
-        // 1. nagłówek
         refreshProfileImage(b64);
 
-        // 2. jeśli HOME‑fragment już istnieje i implementuje interfejs
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
-//        if (f instanceof AvatarListener) ((AvatarListener) f).avatarUpdated(b64);
     }
 }

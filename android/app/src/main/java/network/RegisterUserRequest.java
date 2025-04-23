@@ -35,7 +35,6 @@ public class RegisterUserRequest {
         this.groupId  = groupId;
     }
 
-    // getters (Gson potrzebuje ich do serializacji)
     public String   getLogin()    { return login; }
     public String   getPassword() { return password; }
     public String   getName()     { return name; }

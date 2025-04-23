@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/memoriespp/network/CreateGroupRequest.java
 package network;
 
 public class CreateGroupRequest {

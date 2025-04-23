@@ -6,12 +6,10 @@ public class User {
     private String surname;
     private String role;
 
-    // Getter do imienia i nazwiska razem (przydatny do Spinnera)
     public String getFullName() {
         return name + " " + surname;
     }
 
-    // Gettery i settery
     public int getId() {
         return id;
     }

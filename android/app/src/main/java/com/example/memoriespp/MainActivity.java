@@ -185,10 +185,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAvatarChanged(String b64){
-        // 1. nagłówek
         refreshProfileImage(b64);
 
-        // 2. jeśli HOME‑fragment już istnieje i implementuje interfejs
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
     }
 

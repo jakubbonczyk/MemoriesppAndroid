@@ -59,7 +59,6 @@ public class DefineNewGroupFragment extends Fragment {
                     Toast.makeText(getContext(),
                             "Grupa „" + res.body().getGroupName() + "” została utworzona",
                             Toast.LENGTH_SHORT).show();
-                    // wróć do listy grup i odśwież
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, new AdminGroupsFragment())
                             .addToBackStack(null)

@@ -27,7 +27,6 @@ public class LookThroughUsersFragment extends Fragment {
             popupMenu.setOnMenuItemClickListener(menuItem -> {
                 switch (menuItem.getTitle().toString()) {
                     case "Usuń":
-//                        Implementacja usunięcia użytkownika
                         break;
                     case "Edycja":
                             EditUserFragment editUserFragment = new EditUserFragment();

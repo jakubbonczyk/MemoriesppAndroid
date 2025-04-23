@@ -13,12 +13,10 @@ public class AdminClassesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_admin_classes, container, false);
 
         ImageButton lookThroughClassesButton = rootView.findViewById(R.id.lookThroughClassesButton);
         ImageButton defineNewClassButton = rootView.findViewById(R.id.defineNewClassButton);
-//
         defineNewClassButton.setOnClickListener(view -> {
             DefineNewClassFragment defineNewClassFragment = new DefineNewClassFragment();
             getActivity().getSupportFragmentManager().beginTransaction()

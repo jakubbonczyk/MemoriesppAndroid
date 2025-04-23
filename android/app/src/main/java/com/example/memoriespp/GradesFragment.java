@@ -24,7 +24,6 @@ public class GradesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
         ImageButton seeGradeInfoButton = rootView.findViewById(R.id.classGradeButton);
         ImageButton addGradeButton = rootView.findViewById(R.id.addGradeButton);

@@ -28,7 +28,6 @@ public class AuthController {
             return ResponseEntity.ok("Użytkownik został utworzony");
         } catch (Exception ex) {
             log.error("!!! Błąd w registerUser: ", ex);
-            // odsyłamy kod 500 *i* message wyjątku w ciele
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ex.getClass().getSimpleName() + ": " + ex.getMessage());

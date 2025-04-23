@@ -13,7 +13,6 @@ public class AdminGroupsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_admin_groups, container, false);
 
         ImageButton defineNewGroupButton = rootView.findViewById(R.id.defineNewGroupButton);

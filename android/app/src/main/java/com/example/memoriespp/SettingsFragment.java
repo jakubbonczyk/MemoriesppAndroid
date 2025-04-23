@@ -36,24 +36,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SettingsFragment extends Fragment {
 
-    // ───────────────────────────────  stałe / pola  ──────────────────────────────
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private ImageView profileImageView;
-    private int       userId = -1;           // pamiętamy ID zalogowanego
+    private int userId = -1;
 
-    // ───────────────────────────────  LIFE‑CYCLE  ───────────────────────────────
     @Override public View onCreateView(LayoutInflater inf, ViewGroup c, Bundle s) {
 
         View root = inf.inflate(R.layout.fragment_settings, c, false);
 
-        /* ---------- widoki ---------- */
         profileImageView      = root.findViewById(R.id.profileImage);
         Button changePicBtn   = root.findViewById(R.id.changeProfilePictureButton);
         Button logoutBtn      = root.findViewById(R.id.logoutButton);
         Button changeLangBtn  = root.findViewById(R.id.changeLanguageButton);
 
-        /* ---------- akcje ---------- */
         logoutBtn.setOnClickListener(v ->
                 Toast.makeText(getContext(), "Poprawnie wylogowano", Toast.LENGTH_SHORT).show());
 
@@ -68,17 +64,14 @@ public class SettingsFragment extends Fragment {
             startActivityForResult(i, PICK_IMAGE_REQUEST);
         });
 
-        /* ---------- dane startowe ---------- */
         if (getActivity() != null)
             userId = getActivity().getIntent().getIntExtra("userId", -1);
 
-        // obraz przekazany z LoginActivity
         Bundle args = getArguments();
         if (args != null) {
             showBase64Image(args.getString("image"));
         }
 
-        // dociągamy na świeżo z backendu
         if (userId != -1) fetchLatestProfileImage(userId);
 
         return root;
@@ -86,11 +79,10 @@ public class SettingsFragment extends Fragment {
 
     @Override public void onResume() {
         super.onResume();
-        // w razie powrotu do fragmentu
+
         if (userId != -1) fetchLatestProfileImage(userId);
     }
 
-    // ───────────────────────────────  WYBÓR ZDJĘCIA  ─────────────────────────────
     @Override public void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
 
@@ -103,14 +95,13 @@ public class SettingsFragment extends Fragment {
 
                 String b64 = bitmapToBase64(bmp);
 
-                propagateImageToHost(b64);          // Main + Admin
-                sendImageToBackend(b64);            // upload
+                propagateImageToHost(b64);
+                sendImageToBackend(b64);
 
             } catch (Exception e) { e.printStackTrace(); }
         }
     }
 
-    // ───────────────────────────────  BACKEND  ───────────────────────────────────
     private Retrofit retrofit() {
         return new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
@@ -166,8 +157,6 @@ public class SettingsFragment extends Fragment {
                 });
     }
 
-    // ───────────────────────────────  POMOCNICZE  ───────────────────────────────
-    /** Ustawia grafikę w ImageView z ciągu Base‑64 lub domyślne. */
     private void showBase64Image(String b64){
         if (b64!=null && !b64.isEmpty())
             profileImageView.setImageBitmap(base64ToBitmap(b64));
@@ -175,7 +164,6 @@ public class SettingsFragment extends Fragment {
             profileImageView.setImageResource(R.drawable.profpic);
     }
 
-    /** Zamienia Bitmap → Base64 (NO_WRAP). */
     private static String bitmapToBase64(Bitmap b){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         b.compress(Bitmap.CompressFormat.PNG,100,baos);
@@ -187,7 +175,6 @@ public class SettingsFragment extends Fragment {
         return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
     }
 
-    /** Informuje aktywność (Main lub AdminMain), by podmieniła swój avatar. */
     private void propagateImageToHost(String b64){
         if (getActivity() instanceof MainActivity)
             ((MainActivity)getActivity()).refreshProfileImage(b64);
@@ -195,8 +182,7 @@ public class SettingsFragment extends Fragment {
             ((AdminMainActivity)getActivity()).refreshProfileImage(b64);
     }
 
-    /* ───────────────────────────────  LOCALE helper  ───────────────────────────
-       (zostawiam – może się jeszcze przydać)                                   */
+
     private void setLocale(String lang){
         Locale locale = new Locale(lang);  Locale.setDefault(locale);
         Configuration cfg = new Configuration(); cfg.setLocale(locale);

@@ -44,14 +44,12 @@ public class AddGradesFragment extends Fragment {
         gradeSpinner = rootView.findViewById(R.id.gradesSpinner);
         descriptionEditText = rootView.findViewById(R.id.editTextTextMultiLine);
 
-        // Wypełnij oceny (1 - 6)
         ArrayAdapter<String> gradeAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item,
                 new String[]{"1", "2", "3", "4", "5", "6"});
         gradeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         gradeSpinner.setAdapter(gradeAdapter);
 
-        // Pobierz uczniów z grupy (przykładowo: Klasa 1 = groupId = 1)
         fetchStudentsFromGroup(1);
 
         AppCompatButton addGradeButton = rootView.findViewById(R.id.addGradeButton);
@@ -85,7 +83,7 @@ public class AddGradesFragment extends Fragment {
             gradeData.put("description", description);
             gradeData.put("studentId", selectedStudent.getId());
             gradeData.put("teacherId", teacherId);
-            gradeData.put("classId", 1); // zakładamy, że Klasa 1 ma ID 1
+            gradeData.put("classId", 1);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://10.0.2.2:8080")

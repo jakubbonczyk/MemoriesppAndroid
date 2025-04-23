@@ -15,7 +15,6 @@ public class LookThroughGradesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_look_through_grades, container, false);
 
         ImageButton groupNameButton = rootView.findViewById(R.id.groupNameButton);

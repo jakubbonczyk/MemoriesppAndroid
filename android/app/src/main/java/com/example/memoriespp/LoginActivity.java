@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         EditText passwordEditText = findViewById(R.id.editTextTextPassword);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080") // emulator Androida -> localhost
+                .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

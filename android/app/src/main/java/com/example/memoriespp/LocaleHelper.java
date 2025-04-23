@@ -17,7 +17,7 @@ public class LocaleHelper {
 
     public static Context setLocale(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        String language = prefs.getString(KEY_LANGUAGE, "pl"); // domyślnie polski
+        String language = prefs.getString(KEY_LANGUAGE, "pl");
         return updateResources(context, language);
     }
 

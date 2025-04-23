@@ -76,18 +76,17 @@ public class GroupGradesFragment extends Fragment {
         for (Grade grade : gradeList) {
             Button gradeButton = new Button(getContext());
 
-            // Ustawienie takich samych parametrów jak w XML: 60dp szerokość/wysokość + 10dp margines
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     (int) (60 * getResources().getDisplayMetrics().density),
                     (int) (60 * getResources().getDisplayMetrics().density)
             );
-            params.setMargins(0, 0, (int) (10 * getResources().getDisplayMetrics().density), 0); // prawy margines
+            params.setMargins(0, 0, (int) (10 * getResources().getDisplayMetrics().density), 0);
 
             gradeButton.setLayoutParams(params);
             gradeButton.setText(String.valueOf(grade.getGrade()));
             gradeButton.setTextColor(ContextCompat.getColor(getContext(), R.color.light_blue));
             gradeButton.setTextSize(24f);
-            gradeButton.setBackgroundResource(R.drawable.background_specific_grade); // używasz już go w appce
+            gradeButton.setBackgroundResource(R.drawable.background_specific_grade);
 
             gradeButton.setOnClickListener(view -> {
                 Bundle bundle = new Bundle();

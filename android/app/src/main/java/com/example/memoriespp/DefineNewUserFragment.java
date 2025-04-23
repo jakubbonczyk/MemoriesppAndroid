@@ -44,7 +44,6 @@ public class DefineNewUserFragment extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_define_new_user, container, false);
 
-        // znajdź widoki
         roleSpinner  = rootView.findViewById(R.id.spinner);
         groupSpinner = rootView.findViewById(R.id.spinner2);
         nameInput    = rootView.findViewById(R.id.nameInput);
@@ -52,7 +51,6 @@ public class DefineNewUserFragment extends Fragment {
         emailInput   = rootView.findViewById(R.id.emailInput);
         AppCompatButton addNewUserButton = rootView.findViewById(R.id.addNewUserButton);
 
-        // przygotuj spinner ról (kod + nazwa)
         List<RoleItem> roles = List.of(
                 new RoleItem("S", "Uczniowie"),
                 new RoleItem("T", "Nauczyciele"),
@@ -67,7 +65,6 @@ public class DefineNewUserFragment extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         roleSpinner.setAdapter(roleAdapter);
 
-        // HTTP logging interceptor
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor(msg ->
                 Log.d("HTTP", msg)
         );
@@ -76,23 +73,18 @@ public class DefineNewUserFragment extends Fragment {
                 .addInterceptor(logging)
                 .build();
 
-        // Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .client(client)  // Twój OkHttpClient z interceptorami
-                // najpierw scalars!
+                .client(client)
                 .addConverterFactory(ScalarsConverterFactory.create())
-                // potem Gson
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         authApi  = retrofit.create(AuthApi.class);
         groupApi = retrofit.create(GroupApi.class);
 
-        // załaduj grupy do spinnera
         loadGroups();
 
-        // obsługa przycisku
         addNewUserButton.setOnClickListener(v -> defineNewUser());
 
         return rootView;
@@ -133,7 +125,6 @@ public class DefineNewUserFragment extends Fragment {
     }
 
     private void defineNewUser() {
-        // odczyt pól
         String name    = nameInput.getText().toString().trim();
         String surname = surnameInput.getText().toString().trim();
         String email   = emailInput.getText().toString().trim();
@@ -144,7 +135,6 @@ public class DefineNewUserFragment extends Fragment {
                 ? groupList.get(pos).getId()
                 : null;
 
-        // walidacja
         if (name.isEmpty() || surname.isEmpty()
                 || email.isEmpty() || groupId == null) {
             Toast.makeText(getContext(),
@@ -152,11 +142,9 @@ public class DefineNewUserFragment extends Fragment {
             return;
         }
 
-        // stałe hasło
         String login    = email;
         String password = "test123";
 
-        // budowa requestu
         RegisterUserRequest req = new RegisterUserRequest(
                 login,
                 password,
@@ -166,7 +154,6 @@ public class DefineNewUserFragment extends Fragment {
                 groupId
         );
 
-        // wysyłka
         authApi.registerUser(req).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> c, Response<String> r) {
@@ -190,7 +177,6 @@ public class DefineNewUserFragment extends Fragment {
 
                 Toast.makeText(getContext(),
                         "Użytkownik utworzony", Toast.LENGTH_SHORT).show();
-                // TODO: wróć do UsersFragment
             }
             @Override
             public void onFailure(Call<String> c, Throwable t) {
@@ -202,7 +188,6 @@ public class DefineNewUserFragment extends Fragment {
         });
     }
 
-    // pomocnicza klasa do spinnera ról
     private static class RoleItem {
         final String code, name;
         RoleItem(String code, String name) {

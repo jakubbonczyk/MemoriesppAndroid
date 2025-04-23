@@ -18,11 +18,9 @@ public class UserGroup {
     @Column(name = "group_name", nullable = false)
     private String groupName;
 
-    // powiązanie z GroupMember (poprzednio group_members)
     @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
     private List<GroupMember> members;
 
-    // powiązanie z Schedule
     @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
     private List<Schedule> schedules;
 }

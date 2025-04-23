@@ -34,9 +34,9 @@ public class SpecificGradeViewFragment extends Fragment {
             String teacher = args.getString("teacher", "Brak nauczyciela");
 
             gradeText.setText(String.valueOf(gradeValue));
-            categoryText.setText("Ocena"); // Możesz tu dodać kategorię jeśli masz ją w przyszłości
+            categoryText.setText("Ocena");
             teacherText.setText("Nauczyciel: " + teacher);
-            dateText.setText("Brak daty"); // jeśli w przyszłości dodasz datę, można ją tu wstawić
+            dateText.setText("Brak daty");
             descriptionText.setText(description);
         }
 

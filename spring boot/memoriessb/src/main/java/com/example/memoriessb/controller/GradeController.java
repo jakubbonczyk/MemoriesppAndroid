@@ -51,7 +51,6 @@ public class GradeController {
         }
     }
 
-    // 👇 NOWA METODA - Pobieranie ocen ucznia
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<GradeResponse>> getGradesForStudent(@PathVariable Integer studentId) {
         List<Grade> grades = gradeRepository.findByStudentId(studentId);

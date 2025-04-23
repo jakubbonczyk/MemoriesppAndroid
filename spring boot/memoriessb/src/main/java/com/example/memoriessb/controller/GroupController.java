@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// GroupController.java
 @RestController
 @RequestMapping("/api/groups")
 @RequiredArgsConstructor
@@ -26,7 +25,6 @@ public class GroupController {
 
     @GetMapping("/{groupId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsInGroup(@PathVariable int groupId) {
-        // nowa metoda
         List<Integer> userIds = groupMemberRepo
                 .findAllByUserGroup_Id(groupId)    // <–– tu
                 .stream()
@@ -50,7 +48,6 @@ public class GroupController {
         return ResponseEntity.ok(new GroupDTO(saved.getId(), saved.getGroupName()));
     }
 
-    // (opcjonalnie) GET /api/groups – żebyś mógł pobrać wszystkie grupy
     @GetMapping
     public ResponseEntity<List<GroupDTO>> getAllGroups() {
         List<GroupDTO> list = groupRepo.findAll()
