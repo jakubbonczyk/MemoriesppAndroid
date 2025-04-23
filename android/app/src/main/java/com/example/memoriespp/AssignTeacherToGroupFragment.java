@@ -103,7 +103,8 @@ public class AssignTeacherToGroupFragment extends Fragment {
         });
 
         // 4) Popup „Dodaj kolejną grupę”
-        addAnotherGroupBtn.setOnClickListener(v -> showAddGroupPopup(v));
+        addAnotherGroupBtn.setOnClickListener(v -> showAddGroupPopup());
+
 
         // 5) (opcjonalnie) przycisk Zapisz – tutaj możesz zrobić dodatkowe potwierdzenie
         saveBtn.setOnClickListener(v ->
@@ -185,66 +186,64 @@ public class AssignTeacherToGroupFragment extends Fragment {
         }
     }
 
-    private void showAddGroupPopup(View anchor) {
-        // Oblicz, które grupy nie są jeszcze przypisane
+    private void showAddGroupPopup() {
+        // 1) Oblicz grupy do dodania
         List<GroupResponse> toAdd = new ArrayList<>();
         for (GroupResponse g : allGroups) {
             boolean already = false;
-            for (GroupResponse cg: currentGroups) {
-                if (cg.getId().equals(g.getId())) {
-                    already = true;
-                    break;
-                }
+            for (GroupResponse cg : currentGroups) {
+                if (cg.getId().equals(g.getId())) { already = true; break; }
             }
             if (!already) toAdd.add(g);
         }
 
-        PopupMenu popup = new PopupMenu(requireContext(), anchor);
-        for (int i = 0; i < toAdd.size(); i++) {
-            popup.getMenu().add(0, i, 0, toAdd.get(i).getGroupName());
+        // 2) Jeśli pusto – pokaż komunikat
+        if (toAdd.isEmpty()) {
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Dodaj grupę")
+                    .setMessage("Ten użytkownik ma już przypisane wszystkie grupy.")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
         }
 
-        popup.setOnMenuItemClickListener(item -> {
-            int idx = item.getItemId();
-            GroupResponse chosen = toAdd.get(idx);
+        // 3) Przygotuj tablicę nazw
+        String[] names = new String[toAdd.size()];
+        for (int i = 0; i < toAdd.size(); i++) {
+            names[i] = toAdd.get(i).getGroupName();
+        }
 
-            // Wywołaj endpoint przypisania
-            groupApi.assignUserToGroup(selectedTeacherId, chosen.getId())
-                    .enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call,
-                                               Response<String> response) {
-                            if (response.isSuccessful()) {
-                                Toast.makeText(getContext(),
-                                        "Dodano do grupy „" + chosen.getGroupName() + "”",
-                                        Toast.LENGTH_SHORT).show();
-                                // Odśwież widok
-                                loadGroupsForUser(selectedTeacherId);
-
-                                AssignTeacherToGroupFragment assignTeacherToGroupFragment = new AssignTeacherToGroupFragment();
-//                                UsersFragment usersFragment = new UsersFragment();
-                                getActivity().getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.container, assignTeacherToGroupFragment)
-                                        .addToBackStack(null)
-                                        .commit();
-
-                            } else {
-                                Toast.makeText(getContext(),
-                                        "Błąd serwera: " + response.code(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Toast.makeText(getContext(),
-                                    "Błąd sieci: " + t.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            return true;
-        });
-
-        popup.show();
+        // 4) AlertDialog z listą do wyboru
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Dodaj grupę")
+                .setItems(names, (dialog, which) -> {
+                    GroupResponse chosen = toAdd.get(which);
+                    // wywołaj endpoint przypisania
+                    groupApi.assignUserToGroup(selectedTeacherId, chosen.getId())
+                            .enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> res) {
+                                    if (res.isSuccessful()) {
+                                        Toast.makeText(requireContext(),
+                                                "Dodano do grupy „" + chosen.getGroupName() + "”",
+                                                Toast.LENGTH_SHORT).show();
+                                        loadGroupsForUser(selectedTeacherId);
+                                    } else {
+                                        Toast.makeText(requireContext(),
+                                                "Błąd serwera: " + res.code(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    Toast.makeText(requireContext(),
+                                            "Błąd sieci: " + t.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                })
+                .setNegativeButton("Anuluj", null)
+                .show();
     }
+
 }
