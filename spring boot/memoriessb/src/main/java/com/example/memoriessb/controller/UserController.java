@@ -1,9 +1,13 @@
 package com.example.memoriessb.controller;
 
+import com.example.memoriessb.DTO.EditUserRequest;
+import com.example.memoriessb.DTO.EditUserResponse;
 import com.example.memoriessb.DTO.GroupDTO;
 import com.example.memoriessb.DTO.UserDTO;
+import com.example.memoriessb.etities.SensitiveData;
 import com.example.memoriessb.etities.User;
 import com.example.memoriessb.repository.GroupMemberRepository;
+import com.example.memoriessb.repository.SensitiveDataRepository;
 import com.example.memoriessb.repository.UserGroupRepository;
 import com.example.memoriessb.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ public class UserController {
     private final UserRepository userRepo;
     private final GroupMemberRepository groupMemberRepo;
     private final UserGroupRepository userGroupRepo;
+    private final SensitiveDataRepository sensitiveRepo;
 
     @GetMapping("/teachers")
     public ResponseEntity<List<UserDTO>> getAllTeachers() {
@@ -56,5 +61,36 @@ public class UserController {
                 .map(u -> new UserDTO(u.getId(), u.getName(), u.getSurname(), u.getRole()))
                 .toList();
         return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EditUserResponse> getUser(@PathVariable int id) {
+        User u = userRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika"));
+        SensitiveData sd = sensitiveRepo.findByUser(u)
+                .orElseThrow(() -> new IllegalArgumentException("Brak danych wrażliwych"));
+        return ResponseEntity.ok(new EditUserResponse(
+                u.getId(), sd.getLogin(), u.getName(), u.getSurname(), u.getRole()
+        ));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser(
+            @PathVariable int id,
+            @RequestBody EditUserRequest req
+    ) {
+        User u = userRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika"));
+        u.setName(req.getName());
+        u.setSurname(req.getSurname());
+        u.setRole(req.getRole());
+        userRepo.save(u);
+
+        SensitiveData sd = sensitiveRepo.findByUser(u)
+                .orElseThrow(() -> new IllegalArgumentException("Brak danych wrażliwych"));
+        sd.setLogin(req.getLogin());
+        sensitiveRepo.save(sd);
+
+        return ResponseEntity.ok("Użytkownik zaktualizowany");
     }
 }

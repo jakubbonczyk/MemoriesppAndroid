@@ -24,4 +24,10 @@ public interface UserApi {
 
     @GET("/api/users")
     Call<List<UserResponse>> getAllUsers();
+
+    @GET("/api/users/{id}")
+    Call<EditUserResponse> getUser(@Path("id") int id);
+
+    @PUT("/api/users/{id}")
+    Call<String> updateUser(@Path("id") int id, @Body EditUserRequest req);
 }

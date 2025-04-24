@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -98,6 +99,29 @@ public class LookThroughUsersFragment extends Fragment {
             View item = inflater.inflate(R.layout.item_user, usersContainer, false);
             TextView tv = item.findViewById(R.id.userNameTv);
             tv.setText(user.getName() + " " + user.getSurname());
+
+            // Dodaj długie przytrzymanie do edycji
+            item.setOnLongClickListener(v -> {
+                PopupMenu popup = new PopupMenu(getContext(), v);
+                popup.getMenu().add("Edycja");
+                popup.setOnMenuItemClickListener(mi -> {
+                    if ("Edycja".equals(mi.getTitle().toString())) {
+                        EditUserFragment frag = new EditUserFragment();
+                        Bundle args = new Bundle();
+                        args.putInt("userId", user.getId());
+                        frag.setArguments(args);
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.container, frag)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                    return true;
+                });
+                popup.show();
+                return true;
+            });
+
             usersContainer.addView(item);
         }
     }
