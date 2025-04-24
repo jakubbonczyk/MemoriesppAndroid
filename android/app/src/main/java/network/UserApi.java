@@ -22,4 +22,6 @@ public interface UserApi {
     @GET("/api/users/teachers")
     Call<List<UserResponse>> getAllTeachers();
 
+    @GET("/api/users")
+    Call<List<UserResponse>> getAllUsers();
 }

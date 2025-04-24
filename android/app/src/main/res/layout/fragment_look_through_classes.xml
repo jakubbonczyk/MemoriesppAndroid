@@ -60,28 +60,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/foundClasses">
 
-            <FrameLayout
+            <LinearLayout
+                android:id="@+id/classesContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_specific_user">
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
-
-                <ImageButton
-                    android:id="@+id/classButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@null" />
-
-                <TextView
-                    android:id="@+id/classButtonText"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center|start"
-                    android:text="@string/classButtonText"
-                    android:textColor="@color/black" />
-
-            </FrameLayout>
         </ScrollView>
 
 
