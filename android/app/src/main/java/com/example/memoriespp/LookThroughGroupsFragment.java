@@ -4,46 +4,114 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import network.GroupApi;
+import network.GroupResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class LookThroughGroupsFragment extends Fragment {
 
+    private SearchView searchView;
+    private LinearLayout groupsContainer;
+    private GroupApi groupApi;
+    private List<GroupResponse> allGroups = new ArrayList<>();
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_look_through_groups, container, false);
 
-        ImageButton groupButton = rootView.findViewById(R.id.groupButton);
+        View root = inflater.inflate(
+                R.layout.fragment_look_through_groups,
+                container,
+                false);
 
+        // tutaj importowałem poprawnie z androidx.appcompat.widget.SearchView
+        searchView      = root.findViewById(R.id.searchView);
+        groupsContainer = root.findViewById(R.id.groupsContainer);
 
-        groupButton.setOnLongClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(getContext(), view);
-            popupMenu.getMenu().add("Usuń");
-            popupMenu.getMenu().add("Edycja");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-            popupMenu.setOnMenuItemClickListener(menuItem -> {
-                switch (menuItem.getTitle().toString()) {
-                    case "Usuń":
-//                        Implementacja usunięcia użytkownika
-                        break;
-                    case "Edycja":
-                            EditGroupFragment editGroupFragment = new EditGroupFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.container, editGroupFragment)
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                }
+        groupApi = retrofit.create(GroupApi.class);
+
+        loadGroups();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterGroups(query);
                 return true;
-            });
-
-            popupMenu.show();
-            return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterGroups(newText);
+                return true;
+            }
         });
 
-        return rootView;
+        return root;
+    }
+
+    private void loadGroups() {
+        groupApi.getAllGroups().enqueue(new Callback<List<GroupResponse>>() {
+            @Override
+            public void onResponse(Call<List<GroupResponse>> call,
+                                   Response<List<GroupResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allGroups = response.body();
+                    displayGroups(allGroups);
+                } else {
+                    Toast.makeText(getContext(),
+                            "Błąd pobierania grup: " + response.code(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<GroupResponse>> call, Throwable t) {
+                Toast.makeText(getContext(),
+                        "Błąd sieci: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void displayGroups(List<GroupResponse> list) {
+        groupsContainer.removeAllViews();
+        LayoutInflater inf = LayoutInflater.from(getContext());
+        for (GroupResponse g : list) {
+            View item = inf.inflate(R.layout.item_group, groupsContainer, false);
+            TextView tv = item.findViewById(R.id.groupNameTv);
+            tv.setText(g.getGroupName());
+            groupsContainer.addView(item);
+        }
+    }
+
+    private void filterGroups(String query) {
+        String lower = query.toLowerCase().trim();
+        List<GroupResponse> filtered = new ArrayList<>();
+        for (GroupResponse g : allGroups) {
+            if (g.getGroupName().toLowerCase().contains(lower)) {
+                filtered.add(g);
+            }
+        }
+        displayGroups(filtered);
     }
 }
