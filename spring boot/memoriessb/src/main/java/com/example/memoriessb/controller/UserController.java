@@ -49,4 +49,12 @@ public class UserController {
                 .toList();
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> dtos = userRepo.findAll().stream()
+                .map(u -> new UserDTO(u.getId(), u.getName(), u.getSurname(), u.getRole()))
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
 }
