@@ -40,9 +40,9 @@ dependencies {
     implementation(libs.retrofit)
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("com.google.android.gms:play-services-ads:22.6.0")
     implementation(libs.retrofit.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
 }
