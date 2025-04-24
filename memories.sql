@@ -20,7 +20,7 @@ CREATE TABLE `class` (
 
 -- (przykładowe dane)
 INSERT INTO `class` (`class_name`) VALUES
-  ('Klasa 1');
+  ('Geografia 1');
 
 -- --------------------------------------------------------
 -- Tabela `users`
@@ -75,7 +75,7 @@ CREATE TABLE `user_group` (
 
 -- (przykładowe dane)
 INSERT INTO `user_group` (`group_name`) VALUES
-  ('Geografia 1');
+  ('Klasa 1');
 
 -- --------------------------------------------------------
 -- Tabela `group_members`
