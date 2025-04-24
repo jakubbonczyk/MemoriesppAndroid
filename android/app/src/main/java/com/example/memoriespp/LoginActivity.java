@@ -6,8 +6,11 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+
+import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                         LoginResponse loginResponse = response.body();
                         String role = loginResponse.getRole();
 
-                        Toast.makeText(LoginActivity.this, "Zalogowano jako " + role, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Zalogowano jako " + role, Snackbar.LENGTH_SHORT).show();
 
                         Intent intent;
 
@@ -67,36 +69,32 @@ public class LoginActivity extends AppCompatActivity {
                                 intent = new Intent(LoginActivity.this, AdminMainActivity.class);
                                 break;
                             case "T":
-                                intent = new Intent(LoginActivity.this, MainActivity.class);
-                                break;
                             case "S":
                                 intent = new Intent(LoginActivity.this, MainActivity.class);
                                 break;
                             default:
-                                Toast.makeText(LoginActivity.this, "Nieznana rola użytkownika", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(view, "Nieznana rola użytkownika", Snackbar.LENGTH_LONG).show();
                                 return;
                         }
+
                         intent.putExtra("userId", loginResponse.getId());
                         intent.putExtra("name", loginResponse.getName());
                         intent.putExtra("surname", loginResponse.getSurname());
                         intent.putExtra("role", loginResponse.getRole());
-//                        intent.putExtra("image", loginResponse.getImage());
-
 
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Błąd logowania", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Błąd logowania", Snackbar.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Błąd połączenia: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                    Snackbar.make(view, "Błąd połączenia: " + t.getMessage(), Snackbar.LENGTH_LONG).show();
                 }
             });
         });
-
 
         resetPasswordButton.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);

@@ -3,6 +3,7 @@ package com.example.memoriespp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +22,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class StartActivity extends AppCompatActivity {
 
-    private static final boolean ENABLE_ADS = true; // Zmieniaj na false podczas testów
+    public static boolean ENABLE_ADS = true; // Zmieniaj na false podczas testów
     private InterstitialAd mInterstitialAd;
     private TextView button;
 
@@ -72,7 +73,11 @@ public class StartActivity extends AppCompatActivity {
                 });
 
                 mInterstitialAd.show(StartActivity.this);
+
             }
+            else {
+            goToLogin();
+        }
         });
     }
 
@@ -103,6 +108,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void goToLogin() {
+        Log.d("DEBUG", "Przechodzę do LoginActivity");
         Intent intent = new Intent(StartActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
