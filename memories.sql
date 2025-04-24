@@ -20,7 +20,7 @@ CREATE TABLE `class` (
 
 -- (przykładowe dane)
 INSERT INTO `class` (`class_name`) VALUES
-  ('Klasa 1');
+  ('Geografia 1');
 
 -- --------------------------------------------------------
 -- Tabela `users`
@@ -151,6 +151,28 @@ CREATE TABLE `grades` (
   CONSTRAINT `fk_grades_class`
     FOREIGN KEY (`class_idclass`) REFERENCES `class`(`idclass`)
     ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `group_members_has_class`;
+
+CREATE TABLE `group_members_has_class` (
+  `id`                         INT(11)        NOT NULL AUTO_INCREMENT,
+  `group_members_idgroup_members` INT(11)     NOT NULL,
+  `class_idclass`              INT(11)        NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_gmc_group_member_class`
+    (`group_members_idgroup_members`,`class_idclass`),
+  KEY `fk_gmc_group_member_idx`    (`group_members_idgroup_members`),
+  KEY `fk_gmc_class_idx`           (`class_idclass`),
+  CONSTRAINT `fk_gmc_group_member`
+    FOREIGN KEY (`group_members_idgroup_members`)
+    REFERENCES `group_members` (`idgroup_members`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_gmc_class`
+    FOREIGN KEY (`class_idclass`)
+    REFERENCES `class` (`idclass`)
+    ON DELETE NO ACTION  ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- (przykładowe dane)
