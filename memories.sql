@@ -100,32 +100,50 @@ CREATE TABLE `group_members` (
 INSERT INTO `group_members` (`user_group_id`,`users_idusers`) VALUES
   (1,1);
 
+
+DROP TABLE IF EXISTS `group_members_has_class`;
+
+CREATE TABLE `group_members_has_class` (
+                                           `id`                         INT(11)        NOT NULL AUTO_INCREMENT,
+                                           `group_members_idgroup_members` INT(11)     NOT NULL,
+                                           `class_idclass`              INT(11)        NOT NULL,
+                                           PRIMARY KEY (`id`),
+                                           UNIQUE KEY `ux_gmc_group_member_class`
+                                               (`group_members_idgroup_members`,`class_idclass`),
+                                           KEY `fk_gmc_group_member_idx`    (`group_members_idgroup_members`),
+                                           KEY `fk_gmc_class_idx`           (`class_idclass`),
+                                           CONSTRAINT `fk_gmc_group_member`
+                                               FOREIGN KEY (`group_members_idgroup_members`)
+                                                   REFERENCES `group_members` (`idgroup_members`)
+                                                   ON DELETE CASCADE ON UPDATE CASCADE,
+                                           CONSTRAINT `fk_gmc_class`
+                                               FOREIGN KEY (`class_idclass`)
+                                                   REFERENCES `class` (`idclass`)
+                                                   ON DELETE NO ACTION  ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 -- Tabela `schedule`
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `schedule`;
+
 CREATE TABLE `schedule` (
-  `idschedule`      INT(11)    NOT NULL AUTO_INCREMENT,
-  `lesson_date`     DATE       NOT NULL,
-  `start_time`      TIME       NOT NULL,
-  `end_time`        TIME       NOT NULL,
-  `class_idclass`   INT(11)    NOT NULL,
-  `user_group_id`   INT(11)    NOT NULL,
-  `users_idusers`   INT(11)    NOT NULL,
-  PRIMARY KEY (`idschedule`),
-  KEY `fk_schedule_class_idx`      (`class_idclass`),
-  KEY `fk_schedule_user_group_idx` (`user_group_id`),
-  KEY `fk_schedule_users_idx`      (`users_idusers`),
-  CONSTRAINT `fk_schedule_class`
-    FOREIGN KEY (`class_idclass`) REFERENCES `class`(`idclass`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_schedule_user_group`
-    FOREIGN KEY (`user_group_id`) REFERENCES `user_group`(`id`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_schedule_users`
-    FOREIGN KEY (`users_idusers`) REFERENCES `users`(`idusers`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+                            `idschedule`                    INT(11)      NOT NULL AUTO_INCREMENT,
+                            `lesson_date`                   DATE         NOT NULL,
+                            `start_time`                    TIME         NOT NULL,
+                            `end_time`                      TIME         NOT NULL,
+                            `group_members_has_class_id`    INT(11)      NOT NULL,
+                            PRIMARY KEY (`idschedule`),
+                            INDEX `idx_schedule_gmhc` (`group_members_has_class_id`),
+                            CONSTRAINT `fk_schedule_gmhc`
+                                FOREIGN KEY (`group_members_has_class_id`)
+                                    REFERENCES `group_members_has_class` (`id`)
+                                    ON DELETE NO ACTION
+                                    ON UPDATE NO ACTION
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_general_ci;
+
 
 -- --------------------------------------------------------
 -- Tabela `grades`
@@ -154,26 +172,7 @@ CREATE TABLE `grades` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
-DROP TABLE IF EXISTS `group_members_has_class`;
 
-CREATE TABLE `group_members_has_class` (
-  `id`                         INT(11)        NOT NULL AUTO_INCREMENT,
-  `group_members_idgroup_members` INT(11)     NOT NULL,
-  `class_idclass`              INT(11)        NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ux_gmc_group_member_class`
-    (`group_members_idgroup_members`,`class_idclass`),
-  KEY `fk_gmc_group_member_idx`    (`group_members_idgroup_members`),
-  KEY `fk_gmc_class_idx`           (`class_idclass`),
-  CONSTRAINT `fk_gmc_group_member`
-    FOREIGN KEY (`group_members_idgroup_members`)
-    REFERENCES `group_members` (`idgroup_members`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_gmc_class`
-    FOREIGN KEY (`class_idclass`)
-    REFERENCES `class` (`idclass`)
-    ON DELETE NO ACTION  ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- (przykładowe dane)
 INSERT INTO `grades` (`grade`,`description`,`users_idstudent`,`users_idteacher`,`class_idclass`) VALUES

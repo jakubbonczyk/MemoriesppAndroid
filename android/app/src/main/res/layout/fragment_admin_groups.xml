@@ -122,6 +122,41 @@
                         android:src="@drawable/baseline_groups_24" />
                 </LinearLayout>
             </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="15dp">
+
+                <ImageButton
+                    android:id="@+id/manageScheduleButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@drawable/background_lesson" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start"
+                    android:layout_marginLeft="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|start"
+                        android:text="Zarządzaj planem"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="8dp" />
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 

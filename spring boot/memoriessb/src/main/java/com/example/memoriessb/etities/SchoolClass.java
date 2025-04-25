@@ -20,9 +20,5 @@ public class SchoolClass {
     @Column(name = "class_name", nullable = false)
     private String className;
 
-    @OneToMany(mappedBy = "schoolClass")
-    private List<Grade> grades;
 
-    @OneToMany(mappedBy = "schoolClass")
-    private List<Schedule> schedules;
 }

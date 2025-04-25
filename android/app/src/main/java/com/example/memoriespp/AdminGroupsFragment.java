@@ -17,6 +17,7 @@ public class AdminGroupsFragment extends Fragment {
 
         ImageButton defineNewGroupButton = rootView.findViewById(R.id.defineNewGroupButton);
         ImageButton lookThroughGroupsButton = rootView.findViewById(R.id.lookThroughGroupsButton);
+        ImageButton manageScheduleButton   = rootView.findViewById(R.id.manageScheduleButton);
 
         lookThroughGroupsButton.setOnClickListener(view -> {
             LookThroughGroupsFragment lookThroughGroupsFragment = new LookThroughGroupsFragment();
@@ -30,6 +31,15 @@ public class AdminGroupsFragment extends Fragment {
             DefineNewGroupFragment defineNewGroupFragment = new DefineNewGroupFragment();
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, defineNewGroupFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        manageScheduleButton.setOnClickListener(v -> {
+            ScheduleFragment fragment = new ScheduleFragment();
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, fragment)
                     .addToBackStack(null)
                     .commit();
         });

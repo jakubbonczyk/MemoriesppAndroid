@@ -21,6 +21,5 @@ public class UserGroup {
     @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
     private List<GroupMember> members;
 
-    @OneToMany(mappedBy = "userGroup", cascade = CascadeType.ALL)
-    private List<Schedule> schedules;
+
 }

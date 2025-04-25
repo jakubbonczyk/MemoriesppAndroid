@@ -41,8 +41,7 @@ public class User {
     @OneToMany(mappedBy = "teacher")
     private List<Grade> givenGrades;
 
-    @OneToMany(mappedBy = "user")
-    private List<Schedule> schedules;
+
 
     @OneToOne(mappedBy = "user")
     private SensitiveData sensitiveData;

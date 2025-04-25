@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app   ="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Spinner
+                android:id="@+id/groupSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                android:id="@+id/assignmentSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/dateBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wybierz datę"
+                android:layout_marginBottom="16dp"/>
+
+            <Spinner
+                android:id="@+id/startTimeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/times"
+                android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                android:id="@+id/endTimeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/times"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/addLessonBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dodaj lekcję"
+                android:layout_marginBottom="24dp"/>
+
+            <LinearLayout
+                android:id="@+id/lessonListContainer"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
