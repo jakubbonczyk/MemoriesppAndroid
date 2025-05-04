@@ -22,7 +22,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class StartActivity extends AppCompatActivity {
 
-    public static boolean ENABLE_ADS = true; // Zmieniaj na false podczas testów
+    public static boolean ENABLE_ADS = false; // Zmieniaj na false podczas testów
     private InterstitialAd mInterstitialAd;
     private TextView button;
 
