@@ -30,4 +30,7 @@ public class Schedule {
     @JoinColumn(name="group_members_has_class_id", nullable=false)
     private GroupMemberClass groupMemberClass;
 
+    @Column(name = "generated", nullable = false)
+    private Boolean generated = false;
+
 }

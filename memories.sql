@@ -172,9 +172,10 @@ CREATE TABLE `grades` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+ALTER TABLE `schedule` ADD COLUMN `generated` BOOLEAN NOT NULL DEFAULT FALSE;
 
 
--- (przykładowe dane)
+
 INSERT INTO `grades` (`grade`,`description`,`users_idstudent`,`users_idteacher`,`class_idclass`) VALUES
   (3,'test',1,2,1);
 
