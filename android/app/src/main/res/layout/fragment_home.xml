@@ -187,18 +187,55 @@
             app:layout_constraintStart_toStartOf="@+id/scheduleText"
             app:layout_constraintTop_toBottomOf="@+id/scheduleText" />
 
+        <LinearLayout
+            android:id="@+id/dateNavContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateNow">
+
+            <ImageButton
+                android:id="@+id/btnPrevDay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/baseline_arrow_left_24" />
+
+            <TextView
+                android:id="@+id/dateNow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnNextDay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/baseline_arrow_right_24" />
+
+        </LinearLayout>
+
         <ScrollView
+            android:id="@+id/scrollView3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@+id/dateNow"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="12dp">
+            app:layout_constraintTop_toBottomOf="@+id/dateNavContainer"
+            tools:layout_editor_absoluteX="32dp">
 
             <LinearLayout
                 android:id="@+id/scheduleContainer"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
 
         </ScrollView>
 
