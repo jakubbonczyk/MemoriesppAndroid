@@ -1,14 +1,13 @@
 package com.example.memoriespp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-
-import android.view.View;
-import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -17,11 +16,11 @@ import java.util.Map;
 
 import network.AuthApi;
 import network.LoginResponse;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -60,10 +59,17 @@ public class LoginActivity extends AppCompatActivity {
                         LoginResponse loginResponse = response.body();
                         String role = loginResponse.getRole();
 
+                        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("userId", loginResponse.getId());
+                        editor.putString("name", loginResponse.getName());
+                        editor.putString("surname", loginResponse.getSurname());
+                        editor.putString("role", loginResponse.getRole());
+                        editor.apply();
+
                         Snackbar.make(view, "Zalogowano jako " + role, Snackbar.LENGTH_SHORT).show();
 
                         Intent intent;
-
                         switch (role) {
                             case "A":
                                 intent = new Intent(LoginActivity.this, AdminMainActivity.class);
