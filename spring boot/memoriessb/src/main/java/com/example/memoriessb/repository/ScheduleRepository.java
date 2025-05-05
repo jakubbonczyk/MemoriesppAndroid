@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
+
     @Query("""
       SELECT new com.example.memoriessb.DTO.ScheduleResponseDTO(
         s.id,
@@ -17,21 +18,48 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
         s.lessonDate,
         s.startTime,
         s.endTime,
-        concat(u.name, ' ', u.surname),
-        c.className
+        concat(u.name,' ',u.surname),
+        c.className,
+        gm.userGroup.groupName
       )
       FROM Schedule s
       JOIN s.groupMemberClass gmc
       JOIN gmc.groupMember gm
       JOIN gm.user u
       JOIN gmc.schoolClass c
-      WHERE gm.userGroup.id = :groupId
+      WHERE gm.userGroup.id   = :groupId
         AND s.lessonDate BETWEEN :from AND :to
       ORDER BY s.lessonDate, s.startTime
     """)
     List<ScheduleResponseDTO> findByGroupAndDateRange(
             @Param("groupId") int groupId,
-            @Param("from") LocalDate from,
-            @Param("to") LocalDate to
+            @Param("from")    LocalDate from,
+            @Param("to")      LocalDate to
+    );
+
+    @Query("""
+      SELECT new com.example.memoriessb.DTO.ScheduleResponseDTO(
+        s.id,
+        gmc.id,
+        s.lessonDate,
+        s.startTime,
+        s.endTime,
+        concat(u.name,' ',u.surname),
+        c.className,
+        gm.userGroup.groupName
+      )
+      FROM Schedule s
+      JOIN s.groupMemberClass gmc
+      JOIN gmc.groupMember gm
+      JOIN gm.user u
+      JOIN gmc.schoolClass c
+      WHERE u.id               = :teacherId
+        AND s.lessonDate BETWEEN :from AND :to
+      ORDER BY s.lessonDate, s.startTime
+    """)
+    List<ScheduleResponseDTO> findByTeacherAndDateRange(
+            @Param("teacherId") int teacherId,
+            @Param("from")      LocalDate from,
+            @Param("to")        LocalDate to
     );
 }

@@ -15,5 +15,6 @@ public class ScheduleResponseDTO {
     private LocalTime startTime;
     private LocalTime endTime;
     private String teacherName;
-    private String className;
+    private String subjectName;
+    private String groupName;
 }

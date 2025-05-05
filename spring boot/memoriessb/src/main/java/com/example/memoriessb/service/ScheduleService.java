@@ -1,71 +1,63 @@
 package com.example.memoriessb.service;
 
-
-
 import com.example.memoriessb.DTO.ScheduleRequestDTO;
 import com.example.memoriessb.DTO.ScheduleResponseDTO;
 import com.example.memoriessb.etities.GroupMemberClass;
 import com.example.memoriessb.etities.Schedule;
 import com.example.memoriessb.repository.GroupMemberClassRepository;
 import com.example.memoriessb.repository.ScheduleRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ScheduleService{
+public class ScheduleService {
     private final ScheduleRepository scheduleRepo;
     private final GroupMemberClassRepository assignmentRepo;
-
 
     public ScheduleResponseDTO createLesson(ScheduleRequestDTO dto) {
         GroupMemberClass gmc = assignmentRepo.findById(dto.getAssignmentId())
                 .orElseThrow(() -> new EntityNotFoundException("Assignment not found"));
-
-        Schedule firstLesson = new Schedule();
-        firstLesson.setGroupMemberClass(gmc);
-        firstLesson.setLessonDate(dto.getLessonDate());
-        firstLesson.setStartTime(dto.getStartTime());
-        firstLesson.setEndTime(dto.getEndTime());
-        firstLesson.setGenerated(false);
-
-        Schedule savedFirst = scheduleRepo.save(firstLesson);
-
-        // Dodaj kolejne lekcje co tydzień w tym samym miesiącu
+        Schedule first = new Schedule();
+        first.setGroupMemberClass(gmc);
+        first.setLessonDate(dto.getLessonDate());
+        first.setStartTime(dto.getStartTime());
+        first.setEndTime(dto.getEndTime());
+        first.setGenerated(false);
+        Schedule saved = scheduleRepo.save(first);
         for (int i = 1; i <= 4; i++) {
-            LocalDate nextDate = dto.getLessonDate().plusWeeks(i);
-            if (nextDate.getMonth() == dto.getLessonDate().getMonth()) {
-                Schedule recurring = new Schedule();
-                recurring.setGroupMemberClass(gmc);
-                recurring.setLessonDate(nextDate);
-                recurring.setStartTime(dto.getStartTime());
-                recurring.setEndTime(dto.getEndTime());
-                recurring.setGenerated(true); // żeby było jasne, że to wygenerowane
-
-                scheduleRepo.save(recurring);
+            LocalDate next = dto.getLessonDate().plusWeeks(i);
+            if (next.getMonth() == dto.getLessonDate().getMonth()) {
+                Schedule r = new Schedule();
+                r.setGroupMemberClass(gmc);
+                r.setLessonDate(next);
+                r.setStartTime(dto.getStartTime());
+                r.setEndTime(dto.getEndTime());
+                r.setGenerated(true);
+                scheduleRepo.save(r);
             }
         }
-
-        // Zwracamy tylko pierwszy wpis
         return new ScheduleResponseDTO(
-                savedFirst.getId(),
+                saved.getId(),
                 gmc.getId(),
-                savedFirst.getLessonDate(),
-                savedFirst.getStartTime(),
-                savedFirst.getEndTime(),
+                saved.getLessonDate(),
+                saved.getStartTime(),
+                saved.getEndTime(),
                 gmc.getGroupMember().getUser().getName() + " " + gmc.getGroupMember().getUser().getSurname(),
-                gmc.getSchoolClass().getClassName()
+                gmc.getSchoolClass().getClassName(),
+                gmc.getGroupMember().getUserGroup().getGroupName()
         );
     }
 
-
-    public List<ScheduleResponseDTO> getScheduleForGroup(int groupId, java.time.LocalDate from, java.time.LocalDate to) {
+    public List<ScheduleResponseDTO> getScheduleForGroup(int groupId, LocalDate from, LocalDate to) {
         return scheduleRepo.findByGroupAndDateRange(groupId, from, to);
+    }
+
+    public List<ScheduleResponseDTO> getScheduleForTeacher(int teacherId, LocalDate from, LocalDate to) {
+        return scheduleRepo.findByTeacherAndDateRange(teacherId, from, to);
     }
 }
