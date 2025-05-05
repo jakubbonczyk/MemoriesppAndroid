@@ -3,6 +3,7 @@ package network;
 import com.google.gson.annotations.SerializedName;
 
 public class ScheduleResponseDTO {
+
     @SerializedName("id")
     private Integer id;
 
@@ -21,35 +22,40 @@ public class ScheduleResponseDTO {
     @SerializedName("teacherName")
     private String teacherName;
 
-    @SerializedName("className")
-    private String className;
+    @SerializedName("subjectName")      // musi być subjectName, nie className
+    private String subjectName;
 
-    public Integer getId() {
-        return id;
+    @SerializedName("groupName")        // nowe pole
+    private String groupName;
+
+    public ScheduleResponseDTO(Integer id,
+                               Integer assignmentId,
+                               String lessonDate,
+                               String startTime,
+                               String endTime,
+                               String teacherName,
+                               String subjectName,
+                               String groupName) {
+        this.id            = id;
+        this.assignmentId  = assignmentId;
+        this.lessonDate    = lessonDate;
+        this.startTime     = startTime;
+        this.endTime       = endTime;
+        this.teacherName   = teacherName;
+        this.subjectName   = subjectName;
+        this.groupName     = groupName;
     }
 
-    public Integer getAssignmentId() {
-        return assignmentId;
-    }
+    public Integer getId()             { return id; }
+    public Integer getAssignmentId()   { return assignmentId; }
+    public String  getLessonDate()     { return lessonDate; }
+    public String  getStartTime()      { return startTime; }
+    public String  getEndTime()        { return endTime; }
+    public String  getTeacherName()    { return teacherName; }
+    public String  getSubjectName()    { return subjectName; }
+    public String  getGroupName()      { return groupName; }
 
-    public String getLessonDate() {
-        return lessonDate;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public String getTeacherName() {
-        return teacherName;
-    }
-
-    public String getClassName() {
-        return className;
-    }
+    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+    public void setGroupName  (String groupName)   { this.groupName   = groupName;   }
+    // (opcjonalnie inne settery)
 }
-

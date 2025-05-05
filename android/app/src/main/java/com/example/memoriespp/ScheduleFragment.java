@@ -188,7 +188,7 @@ public class ScheduleFragment extends Fragment {
                 TextView tv = new TextView(requireContext());
                 tv.setText(
                         res.getLessonDate() + " | " +
-                                res.getTeacherName() + " — " + res.getClassName() +
+                                res.getTeacherName() + " — " + res.getSubjectName() +
                                 " | " + res.getStartTime().substring(0,5) +
                                 "–" + res.getEndTime().substring(0,5)
                 );
