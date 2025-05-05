@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -55,44 +54,29 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.home) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, homeFragment)
-                            .commit();
-                    return true;
-                } else if (itemId == R.id.settings) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, settingsFragment)
-                            .commit();
-                    return true;
-                } else if (itemId == R.id.grades) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, gradesFragment)
-                            .commit();
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            Fragment target = null;
+            if (id == R.id.home)       target = homeFragment;
+            else if (id == R.id.settings) target = settingsFragment;
+            else if (id == R.id.grades)   target = gradesFragment;
+            if (target != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, target)
+                        .commit();
+                return true;
             }
+            return false;
         });
 
         textViewName = findViewById(R.id.textView7);
         textViewRole = findViewById(R.id.textView8);
 
-        String name = getIntent().getStringExtra("name");
+        String name    = getIntent().getStringExtra("name");
         String surname = getIntent().getStringExtra("surname");
-        String role = getIntent().getStringExtra("role");
-
-        Bundle bundle = new Bundle();
-        bundle.putString("role", getIntent().getStringExtra("role"));
-        bundle.putString("image", getIntent().getStringExtra("image"));
-
-        settingsFragment.setArguments(bundle);
-        homeFragment.setArguments(bundle);
-        gradesFragment.setArguments(bundle);
+        String role    = getIntent().getStringExtra("role");
+        String image   = getIntent().getStringExtra("image");
+        int    userId  = getIntent().getIntExtra("userId", -1);
 
         if (name != null && surname != null) {
             textViewName.setText(name + " " + surname);
@@ -100,35 +84,35 @@ public class MainActivity extends AppCompatActivity {
 
         if (role != null) {
             switch (role) {
-                case "S":
-                    textViewRole.setText("Uczeń");
-                    break;
-                case "T":
-                    textViewRole.setText("Nauczyciel");
-                    break;
-                default:
-                    textViewRole.setText("Nieznana rola");
-                    break;
+                case "S": textViewRole.setText("Uczeń"); break;
+                case "T": textViewRole.setText("Nauczyciel"); break;
+                default:  textViewRole.setText("Nieznana rola"); break;
             }
         }
 
+        Bundle bundle = new Bundle();
+        bundle.putString("role",  role);
+        bundle.putString("image", image);
+        bundle.putInt("userId", userId);
+
+        settingsFragment.setArguments(bundle);
+        homeFragment    .setArguments(bundle);
+        gradesFragment  .setArguments(bundle);
+
         ImageView profileImageView = findViewById(R.id.imageView4);
-        int userId = getIntent().getIntExtra("userId", -1);
         if (userId != -1) {
             fetchAndSetProfileImage(userId);
         }
 
-        String imageBase64 = getIntent().getStringExtra("image");
-
-        if (imageBase64 != null && !imageBase64.isEmpty()) {
-            byte[] decodedBytes = Base64.decode(imageBase64, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-            profileImageView.setImageBitmap(bitmap);
+        if (image != null && !image.isEmpty()) {
+            byte[] decoded = Base64.decode(image, Base64.DEFAULT);
+            Bitmap bmp = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+            profileImageView.setImageBitmap(bmp);
         } else {
-            profileImageView.setImageResource(R.drawable.profpic); // domyślne
+            profileImageView.setImageResource(R.drawable.profpic);
         }
-
     }
+
 
     public void refreshProfileImage(String base64Image) {
         ImageView profileImageView = findViewById(R.id.imageView4);
