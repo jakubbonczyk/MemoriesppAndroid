@@ -10,6 +10,7 @@ public interface GroupMemberClassRepository
     List<GroupMemberClass> findAllByGroupMember_Id(Integer groupMemberId);
     List<GroupMemberClass> findAllByGroupMember_UserGroup_Id(int groupId);
     List<GroupMemberClass> findByGroupMember_UserGroup_Id(int groupId);
+    List<GroupMemberClass> findByGroupMemberId(int groupMemberId);
 }
 
 

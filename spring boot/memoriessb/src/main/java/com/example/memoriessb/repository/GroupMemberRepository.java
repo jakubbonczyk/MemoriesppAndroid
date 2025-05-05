@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Integer> {
     List<GroupMember> findAllByUserGroup_Id(Integer userGroupId);
 
     List<GroupMember> findAllByUser_Id(Integer userId);
+    Optional<GroupMember> findByUser_Id(Integer userId);
+
+
 }
