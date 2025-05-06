@@ -4,13 +4,13 @@ import com.example.memoriessb.etities.GroupMemberClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GroupMemberClassRepository
         extends JpaRepository<GroupMemberClass, Integer> {
     List<GroupMemberClass> findAllByGroupMember_Id(Integer groupMemberId);
-    List<GroupMemberClass> findAllByGroupMember_UserGroup_Id(int groupId);
     List<GroupMemberClass> findByGroupMember_UserGroup_Id(int groupId);
-    List<GroupMemberClass> findByGroupMemberId(int groupMemberId);
+    Optional<GroupMemberClass> findFirstByGroupMember_UserGroup_IdAndGroupMember_User_Id(Integer groupId, Integer userId);
 }
 
 

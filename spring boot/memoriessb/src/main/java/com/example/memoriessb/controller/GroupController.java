@@ -1,5 +1,6 @@
 package com.example.memoriessb.controller;
 
+import com.example.memoriessb.DTO.ClassDTO;
 import com.example.memoriessb.DTO.CreateGroupRequest;
 import com.example.memoriessb.DTO.GroupDTO;
 import com.example.memoriessb.DTO.UserDTO;
@@ -8,12 +9,11 @@ import com.example.memoriessb.etities.User;
 import com.example.memoriessb.repository.GroupMemberRepository;
 import com.example.memoriessb.repository.UserGroupRepository;
 import com.example.memoriessb.repository.UserRepository;
+import com.example.memoriessb.service.GroupMemberClassService;
 import com.example.memoriessb.service.UserGroupService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class GroupController {
     private final UserRepository userRepo;
     private final UserGroupRepository groupRepo;
     private final UserGroupService userGroupService;
+    private final GroupMemberClassService groupMemberClassService;
 
     @GetMapping("/{groupId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsInGroup(@PathVariable int groupId) {
@@ -83,5 +84,13 @@ public class GroupController {
         return userGroupService.findGroupsForTeacher(id);
     }
 
+
+    @GetMapping("/{groupId}/teachers/{teacherId}/subject")
+    public ClassDTO getSubjectForGroupAndTeacher(
+            @PathVariable Integer groupId,
+            @PathVariable Integer teacherId
+    ) {
+        return groupMemberClassService.findSubjectByGroupAndTeacher(groupId, teacherId);
+    }
 
 }

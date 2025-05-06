@@ -28,4 +28,10 @@ public interface GroupApi {
     );
     @GET("api/groups/teacher/{id}")
     Call<List<GroupDTO>> getGroupsForTeacher(@Path("id") int teacherId);
+
+    @GET("api/groups/{groupId}/teachers/{teacherId}/subject")
+    Call<ClassDTO> getSubjectForGroupAndTeacher(
+            @Path("groupId")   int groupId,
+            @Path("teacherId") int teacherId
+    );
 }
