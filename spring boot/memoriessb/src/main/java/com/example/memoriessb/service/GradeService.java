@@ -27,8 +27,9 @@ public class GradeService {
             return List.of();
         }
 
-        List<GroupMemberClass> gmcList = groupMemberClassRepository
-                .findByGroupMemberId(groupMember.get().getId());
+        Integer groupId = groupMember.get().getUserGroup().getId();
+
+        List<GroupMemberClass> gmcList = groupMemberClassRepository.findByGroupMember_UserGroup_Id(groupId);
 
         return gmcList.stream()
                 .map(gmc -> gmc.getSchoolClass())
@@ -36,4 +37,5 @@ public class GradeService {
                 .map(sc -> new SchoolClassDTO(sc.getId(), sc.getClassName()))
                 .collect(Collectors.toList());
     }
+
 }
