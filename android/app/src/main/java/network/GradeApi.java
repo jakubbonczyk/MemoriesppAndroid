@@ -25,4 +25,8 @@ public interface GradeApi {
             @Path("subjectId") int subjectId
     );
 
+    @GET("api/grades/{gradeId}")
+    Call<GradeDetailDTO> getGradeDetails(@Path("gradeId") int gradeId);
+
+
 }

@@ -5,41 +5,95 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import network.GradeApi;
+import network.GradeDetailDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SpecificGradeViewFragment extends Fragment {
 
-    private TextView gradeText;
-    private TextView categoryText;
-    private TextView teacherText;
-    private TextView dateText;
-    private TextView descriptionText;
+    private int gradeId;
+    private TextView gradeTv,
+            categoryTv,
+            teacherTv,
+            typeTv,
+            dateTv,
+            descriptionTv;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_specific_grade_view, container, false);
+        return inflater.inflate(R.layout.fragment_specific_grade_view, container, false);
+    }
 
-        gradeText = rootView.findViewById(R.id.grade);
-        categoryText = rootView.findViewById(R.id.gradeCategory);
-        teacherText = rootView.findViewById(R.id.gradeTeacher);
-        dateText = rootView.findViewById(R.id.gradeDate);
-        descriptionText = rootView.findViewById(R.id.gradeDescription);
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            int gradeValue = args.getInt("grade", 0);
-            String description = args.getString("description", "Brak opisu");
-            String teacher = args.getString("teacher", "Brak nauczyciela");
+        gradeTv       = view.findViewById(R.id.grade);
+        categoryTv    = view.findViewById(R.id.gradeCategory);
+        teacherTv     = view.findViewById(R.id.gradeTeacher);
+        typeTv        = view.findViewById(R.id.gradeType);
+        dateTv        = view.findViewById(R.id.gradeDate);
+        descriptionTv = view.findViewById(R.id.gradeDescription);
 
-            gradeText.setText(String.valueOf(gradeValue));
-            categoryText.setText("Ocena");
-            teacherText.setText("Nauczyciel: " + teacher);
-            dateText.setText("Brak daty");
-            descriptionText.setText(description);
+        if (getArguments() != null) {
+            gradeId = getArguments().getInt("gradeId", -1);
+        }
+        if (gradeId < 0) {
+            Toast.makeText(getContext(),
+                    "Brak ID oceny", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        return rootView;
+        fetchGradeDetails(gradeId);
+    }
+
+    private void fetchGradeDetails(int id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        GradeApi api = retrofit.create(GradeApi.class);
+        api.getGradeDetails(id)
+                .enqueue(new Callback<GradeDetailDTO>() {
+                    @Override
+                    public void onResponse(Call<GradeDetailDTO> call,
+                                           Response<GradeDetailDTO> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            fillDetails(response.body());
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Błąd pobierania szczegółów: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GradeDetailDTO> call, Throwable t) {
+                        Toast.makeText(getContext(),
+                                "Błąd sieci: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void fillDetails(GradeDetailDTO dto) {
+        gradeTv.setText(String.valueOf(dto.getGrade()));
+        categoryTv.setText("Ocena");
+        teacherTv.setText("Nauczyciel: " + dto.getTeacherName());
+        typeTv.setText("Typ oceny: " + dto.getType());
+        dateTv.setText("Data: " + dto.getIssueDate());
+        descriptionTv.setText(dto.getDescription());
     }
 }

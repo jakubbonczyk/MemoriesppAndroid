@@ -1,18 +1,14 @@
 package com.example.memoriessb.DTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class GradeSummaryDTO {
-    private int id;
+    private Integer id;
+    private Integer grade;
     private String type;
-    private int grade;
-
-    public GradeSummaryDTO(int id, String type, int grade) {
-        this.id = id;
-        this.type = type;
-        this.grade = grade;
-    }
-
+    private String issueDate;
 
 }

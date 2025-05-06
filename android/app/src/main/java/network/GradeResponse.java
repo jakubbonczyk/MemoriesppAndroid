@@ -1,29 +1,43 @@
 package network;
 
 public class GradeResponse {
-    private int grade;
-    private String type;
-    private String teacherName;
+    private Integer id;
+    private Integer grade;
     private String description;
-    private String formattedDate;
+    private String type;
+    private String issueDate;
+    private String teacherName;
 
-    public int getGrade() {
-        return grade;
+    public Integer getId() { return id; }
+    public Integer getGrade() { return grade; }
+    public String getDescription() { return description; }
+    public String getType() { return type; }
+    public String getIssueDate() { return issueDate; }
+    public String getTeacherName() { return teacherName; }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public void setGrade(Integer grade) {
+        this.grade = grade;
     }
 
-    public String getTeacherName() {
-        return teacherName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getDescription() {
-        return description;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getFormattedDate() {
-        return formattedDate;
+    public void setIssueDate(String issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 }
+
+

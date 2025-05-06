@@ -2,6 +2,7 @@ package com.example.memoriespp;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
@@ -26,91 +28,102 @@ public class GradeViewFragment extends Fragment {
 
     private LinearLayout gradesLayout;
     private int subjectId;
-    private String subjectName;
     private int userId;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_class_grade_view, container, false);
-        gradesLayout = rootView.findViewById(R.id.gradesLayout); // <- Upewnij się, że to ID jest w XML!
+        View root = inflater.inflate(R.layout.fragment_class_grade_view, container, false);
+        gradesLayout = root.findViewById(R.id.gradesLayout);
+        return root;
+    }
 
-        // Odczyt argumentów
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         Bundle args = getArguments();
         if (args != null) {
-            subjectId = args.getInt("subjectId");
-            subjectName = args.getString("subjectName");
+            subjectId = args.getInt("subjectId", -1);
         }
 
-        // Odczyt userId z SharedPreferences
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
-        userId = sharedPreferences.getInt("userId", -1);
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
+        userId = prefs.getInt("userId", -1);
 
-        if (userId != -1 && subjectId != -1) {
-            fetchGrades(userId, subjectId);
+        if (userId < 0 || subjectId < 0) {
+            Toast.makeText(getContext(),
+                    "Brak danych ucznia lub przedmiotu", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Błąd: brak danych ucznia lub przedmiotu", Toast.LENGTH_SHORT).show();
+            fetchGrades(userId, subjectId);
         }
-
-        return rootView;
     }
 
     private void fetchGrades(int studentId, int subjectId) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080")
+                .baseUrl("http://10.0.2.2:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        GradeApi gradeApi = retrofit.create(GradeApi.class);
-        Call<List<GradeResponse>> call = gradeApi.getGradesForSubject(studentId, subjectId);
+        GradeApi api = retrofit.create(GradeApi.class);
+        api.getGradesForSubject(studentId, subjectId)
+                .enqueue(new Callback<List<GradeResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<GradeResponse>> call,
+                                           Response<List<GradeResponse>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            displayGrades(response.body());
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Błąd pobierania ocen: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-        call.enqueue(new Callback<List<GradeResponse>>() {
-            @Override
-            public void onResponse(Call<List<GradeResponse>> call, Response<List<GradeResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    displayGrades(response.body());
-                } else {
-                    Toast.makeText(getContext(), "Błąd pobierania ocen", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<GradeResponse>> call, Throwable t) {
-                Toast.makeText(getContext(), "Błąd: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<List<GradeResponse>> call, Throwable t) {
+                        Toast.makeText(getContext(),
+                                "Błąd sieci: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void displayGrades(List<GradeResponse> grades) {
         gradesLayout.removeAllViews();
 
         for (GradeResponse grade : grades) {
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_grade, gradesLayout, false);
+            View item = LayoutInflater.from(getContext())
+                    .inflate(R.layout.item_grade, gradesLayout, false);
 
-            TextView category = view.findViewById(R.id.defineNewUser);
-            TextView date = view.findViewById(R.id.textView10);
-            TextView gradeText = view.findViewById(R.id.gradesAverage);
-            ImageButton button = view.findViewById(R.id.classGradeInfoButton);
+            TextView typeTv    = item.findViewById(R.id.defineNewUser);
+            TextView dateTv    = item.findViewById(R.id.textView10);
+            TextView gradeTv   = item.findViewById(R.id.gradesAverage);
+            ImageButton infoBtn= item.findViewById(R.id.classGradeInfoButton);
 
-            category.setText(grade.getType());
-            date.setText(grade.getFormattedDate());
-            gradeText.setText(String.valueOf(grade.getGrade()));
+            typeTv.setText(grade.getType());
+            dateTv.setText(grade.getIssueDate());
+            gradeTv.setText(String.valueOf(grade.getGrade()));
 
-            button.setOnClickListener(v -> {
-                SpecificGradeViewFragment fragment = new SpecificGradeViewFragment();
-                Bundle args = new Bundle();
-                args.putInt("grade", grade.getGrade());
-                args.putString("description", grade.getDescription());
-                args.putString("teacher", grade.getTeacherName());
-                fragment.setArguments(args);
+            Log.d("GradeView", "ID=" + grade.getId()
+                    + " type=" + grade.getType()
+                    + " date=" + grade.getIssueDate());
 
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment)
+            infoBtn.setOnClickListener(v -> {
+                SpecificGradeViewFragment frag = new SpecificGradeViewFragment();
+                Bundle b = new Bundle();
+                b.putInt("gradeId", grade.getId());
+                frag.setArguments(b);
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, frag)
                         .addToBackStack(null)
                         .commit();
             });
 
-            gradesLayout.addView(view);
+            gradesLayout.addView(item);
         }
     }
 }

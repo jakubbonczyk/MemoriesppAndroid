@@ -1,18 +1,21 @@
 package com.example.memoriessb.DTO;
 
-public class GradeDetailDTO {
-    private String type;
-    private int grade;
-    private String description;
-    private String teacherName;
-    private String teacherSurname;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-    public GradeDetailDTO(int id, String type, int grade, String description, String teacherName, String teacherSurname) {
-        this.type = type;
-        this.grade = grade;
-        this.description = description;
-        this.teacherName = teacherName;
-        this.teacherSurname = teacherSurname;
-    }
+@AllArgsConstructor
+@Getter
+@Setter
+public class GradeDetailDTO {
+    private Integer id;
+    private Integer grade;
+    private String type;
+    private String issueDate;
+    private String description;
+    private String studentName;
+    private String teacherName;
+    private String className;
+
 
 }

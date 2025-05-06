@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +25,8 @@ public class GradeService {
     private final GradeRepository gradeRepository;
     private final UserRepository userRepository;
     private final SchoolClassRepository schoolClassRepository;
+
+    private final DateTimeFormatter FMT = DateTimeFormatter.ISO_DATE;
 
     public void addGrade(GradeRequest req) {
         Grade g = new Grade();
@@ -64,12 +67,31 @@ public class GradeService {
     }
 
 
-    public List<GradeSummaryDTO> getGradesForSubject(int studentId, int subjectId) {
-        return gradeRepository.findGradesForStudentAndSubject(studentId, subjectId);
+    public List<GradeSummaryDTO> getGradesForSubject(int studentId, int classId) {
+        return gradeRepository.findByStudent_IdAndSchoolClass_IdOrderByIdDesc(studentId, classId)
+                .stream()
+                .map(g -> new GradeSummaryDTO(
+                        g.getId(),
+                        g.getGrade(),
+                        g.getType(),
+                        g.getIssueDate().format(FMT)
+                ))
+                .collect(Collectors.toList());
     }
 
+
     public GradeDetailDTO getGradeDetails(int gradeId) {
-        return gradeRepository.getGradeDetails(gradeId)
-                .orElseThrow(() -> new RuntimeException("Grade not found"));
+        Grade g = gradeRepository.findById(gradeId)
+                .orElseThrow(() -> new EntityNotFoundException("Ocena nie istnieje"));
+        return new GradeDetailDTO(
+                g.getId(),
+                g.getGrade(),
+                g.getType(),
+                g.getIssueDate().format(FMT),
+                g.getDescription(),
+                g.getStudent().getName() + " " + g.getStudent().getSurname(),
+                g.getTeacher().getName() + " " + g.getTeacher().getSurname(),
+                g.getSchoolClass().getClassName()
+        );
     }
 }

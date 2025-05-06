@@ -1,15 +1,17 @@
 package com.example.memoriessb.DTO;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class GradeRequest {
-    private int grade;
+    private Integer studentId;
+    private Integer teacherId;
+    private Integer classId;
+    private Integer grade;
     private String description;
     private String type;
-    private int studentId;
-    private int teacherId;
-    private int classId;
 }

@@ -3,6 +3,8 @@ package com.example.memoriessb.etities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "grades")
 @Data
@@ -23,6 +25,10 @@ public class Grade {
 
     @Column
     private String type;
+
+    @Column(name = "issue_date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
+    private LocalDate issueDate;
+
 
     @ManyToOne
     @JoinColumn(name = "users_idstudent", nullable = false)
