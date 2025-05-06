@@ -8,6 +8,7 @@ import lombok.Setter;
 public class GradeRequest {
     private int grade;
     private String description;
+    private String type;
     private int studentId;
     private int teacherId;
     private int classId;

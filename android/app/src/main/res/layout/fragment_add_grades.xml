@@ -27,8 +27,7 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <ScrollView
             android:id="@+id/scrollView2"
@@ -57,8 +56,7 @@
                 <Spinner
                     android:id="@+id/studentsSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:entries="@array/students"/>
+                    android:layout_height="50dp"/>
 
                 <TextView
                     android:id="@+id/subjectNameTv"
@@ -83,8 +81,25 @@
                 <Spinner
                     android:id="@+id/gradesSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:entries="@array/grades"/>
+                    android:layout_height="50dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Typ oceny"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <EditText
+                    android:id="@+id/typeEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="np. Sprawdzian, Kartkówka"
+                    android:inputType="text"
+                    android:layout_marginBottom="24dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -99,9 +114,8 @@
                     android:id="@+id/editTextTextMultiLine"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:ems="10"
                     android:gravity="start|top"
-                    android:inputType="textMultiLine" />
+                    android:inputType="textMultiLine"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/addGradeButton"
@@ -111,10 +125,9 @@
                     android:background="@drawable/background_button_light"
                     android:textColor="#fff"
                     android:text="@string/saveUserButton"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
             </LinearLayout>
         </ScrollView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import com.example.memoriessb.repository.SchoolClassRepository;
 import com.example.memoriessb.repository.UserRepository;
 import com.example.memoriessb.service.GradeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,36 +24,12 @@ import java.util.List;
 public class GradeController {
 
     private final GradeRepository gradeRepository;
-    private final UserRepository userRepository;
-    private final SchoolClassRepository schoolClassRepository;
     private final GradeService gradeService;
 
     @PostMapping
-    public ResponseEntity<String> addGrade(@RequestBody GradeRequest request) {
-        try {
-            User student = userRepository.findById(request.getStudentId())
-                    .orElseThrow(() -> new IllegalArgumentException("Student not found"));
-
-            User teacher = userRepository.findById(request.getTeacherId())
-                    .orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
-
-            SchoolClass schoolClass = schoolClassRepository.findById(request.getClassId())
-                    .orElseThrow(() -> new IllegalArgumentException("Class not found"));
-
-            Grade grade = new Grade();
-            grade.setGrade(request.getGrade());
-            grade.setDescription(request.getDescription());
-            grade.setStudent(student);
-            grade.setTeacher(teacher);
-            grade.setSchoolClass(schoolClass);
-
-            gradeRepository.save(grade);
-
-            return ResponseEntity.ok("Grade saved");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Błąd zapisu: " + e.getMessage());
-        }
+    public ResponseEntity<Void> addGrade(@RequestBody GradeRequest req) {
+        gradeService.addGrade(req);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/student/{studentId}")
