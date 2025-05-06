@@ -174,7 +174,7 @@ CREATE TABLE `grades` (
 
 ALTER TABLE `schedule` ADD COLUMN `generated` BOOLEAN NOT NULL DEFAULT FALSE;
 
-
+ALTER TABLE grades ADD COLUMN type VARCHAR(50)  DEFAULT 'Sprawdzian';
 
 INSERT INTO `grades` (`grade`,`description`,`users_idstudent`,`users_idteacher`,`class_idclass`) VALUES
   (3,'test',1,2,1);

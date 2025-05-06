@@ -19,5 +19,10 @@ public interface GradeApi {
     @GET("/api/class/student/{userId}/subjects")
     Call<List<ClassResponse>> getSubjectsForStudent(@Path("userId") int userId);
 
+    @GET("/api/grades/student/{studentId}/subject/{subjectId}")
+    Call<List<GradeResponse>> getGradesForSubject(
+            @Path("studentId") int studentId,
+            @Path("subjectId") int subjectId
+    );
 
 }

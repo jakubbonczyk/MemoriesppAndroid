@@ -21,6 +21,9 @@ public class Grade {
     @Column
     private String description;
 
+    @Column
+    private String type;
+
     @ManyToOne
     @JoinColumn(name = "users_idstudent", nullable = false)
     private User student;
