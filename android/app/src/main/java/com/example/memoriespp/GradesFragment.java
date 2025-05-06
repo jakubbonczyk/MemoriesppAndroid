@@ -134,9 +134,10 @@ public class GradesFragment extends Fragment {
             subjectAverage.setText("--");
 
             subjectButton.setOnClickListener(view -> {
-                SpecificGradeViewFragment fragment = new SpecificGradeViewFragment();
+                GradeViewFragment fragment = new GradeViewFragment();
                 Bundle args = new Bundle();
                 args.putInt("subjectId", subject.getId());
+                args.putString("subjectName", subject.getClassName());
                 fragment.setArguments(args);
 
                 requireActivity().getSupportFragmentManager().beginTransaction()
@@ -144,6 +145,7 @@ public class GradesFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
             });
+
 
             gradesLayout.addView(subjectView);
         }
