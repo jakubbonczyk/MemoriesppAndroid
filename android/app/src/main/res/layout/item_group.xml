@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@drawable/background_specific_user"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:layout_marginBottom="8dp"
-    android:gravity="center_vertical">
+    android:layout_height="100dp"
+    android:layout_marginBottom="15dp"
+    android:background="@drawable/background_lesson"
+    android:padding="12dp">
 
     <TextView
-        android:id="@+id/groupNameTv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:textColor="@color/black"
-        android:textSize="16sp"/>
+        android:id="@+id/tvGroupName"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:text="Group Name"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:src="@drawable/baseline_arrow_forward_ios_24" />
 </FrameLayout>

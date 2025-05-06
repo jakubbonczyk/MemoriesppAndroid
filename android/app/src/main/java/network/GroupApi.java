@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/memoriespp/network/GroupApi.java
 package network;
 
 import java.util.List;
@@ -27,4 +26,6 @@ public interface GroupApi {
             @Path("userId") int userId,
             @Path("groupId") int groupId
     );
+    @GET("api/groups/teacher/{id}")
+    Call<List<GroupDTO>> getGroupsForTeacher(@Path("id") int teacherId);
 }

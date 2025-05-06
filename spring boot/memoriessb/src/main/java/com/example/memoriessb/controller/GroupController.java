@@ -8,9 +8,12 @@ import com.example.memoriessb.etities.User;
 import com.example.memoriessb.repository.GroupMemberRepository;
 import com.example.memoriessb.repository.UserGroupRepository;
 import com.example.memoriessb.repository.UserRepository;
+import com.example.memoriessb.service.UserGroupService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class GroupController {
     private final GroupMemberRepository groupMemberRepo;
     private final UserRepository userRepo;
     private final UserGroupRepository groupRepo;
+    private final UserGroupService userGroupService;
 
     @GetMapping("/{groupId}/students")
     public ResponseEntity<List<UserDTO>> getStudentsInGroup(@PathVariable int groupId) {
@@ -72,6 +76,11 @@ public class GroupController {
                 .toList();
 
         return ResponseEntity.ok(teachers);
+    }
+
+    @GetMapping("/teacher/{id}")
+    public List<GroupDTO> getGroupsForTeacher(@PathVariable Integer id) {
+        return userGroupService.findGroupsForTeacher(id);
     }
 
 
