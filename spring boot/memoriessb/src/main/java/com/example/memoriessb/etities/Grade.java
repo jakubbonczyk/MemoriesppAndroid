@@ -41,4 +41,11 @@ public class Grade {
     @ManyToOne
     @JoinColumn(name = "class_idclass", nullable = false)
     private SchoolClass schoolClass;
+
+    @PrePersist
+    public void prePersist() {
+        if (issueDate == null) {
+            issueDate = LocalDate.now();
+        }
+    }
 }

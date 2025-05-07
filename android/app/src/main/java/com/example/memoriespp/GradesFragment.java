@@ -35,20 +35,17 @@ public class GradesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
 
+        addGradeLayout       = rootView.findViewById(R.id.addGradeLayout);
+        browseGradesLayout   = rootView.findViewById(R.id.browseGradesLayout);
+        gradesLayout         = rootView.findViewById(R.id.gradesLayout);
 
-        addGradeLayout = rootView.findViewById(R.id.addGradeLayout);
-        browseGradesLayout = rootView.findViewById(R.id.browseGradesLayout);
-        gradesLayout = rootView.findViewById(R.id.gradesLayout);
+        ImageButton addBtn   = rootView.findViewById(R.id.addGradeButton);
+        ImageButton lookBtn  = rootView.findViewById(R.id.lookThroughGradesButton);
 
-//        ImageButton seeGradeInfoButton = rootView.findViewById(R.id.classGradeButton);
-        ImageButton addGradeButton = rootView.findViewById(R.id.addGradeButton);
-        ImageButton lookThroughGradesButton = rootView.findViewById(R.id.lookThroughGradesButton);
-
-
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
-        int userId = sharedPreferences.getInt("userId", -1);
-        role = sharedPreferences.getString("role", "");
-
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
+        int userId    = prefs.getInt("userId", -1);
+        role          = prefs.getString("role", "");
 
         if ("S".equals(role)) {
             addGradeLayout.setVisibility(View.GONE);
@@ -58,7 +55,9 @@ public class GradesFragment extends Fragment {
             if (userId != -1) {
                 fetchSubjectsForStudent(userId);
             } else {
-                Toast.makeText(getContext(), "Nie można pobrać ID użytkownika", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        "Nie można pobrać ID użytkownika",
+                        Toast.LENGTH_SHORT).show();
             }
         } else {
             addGradeLayout.setVisibility(View.VISIBLE);
@@ -66,27 +65,18 @@ public class GradesFragment extends Fragment {
             gradesLayout.setVisibility(View.GONE);
         }
 
-//        // Obsługa przycisków
-//        seeGradeInfoButton.setOnClickListener(view -> {
-//            GradeViewFragment gradeViewFragment = new GradeViewFragment();
-//            getActivity().getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.container, gradeViewFragment)
-//                    .addToBackStack(null)
-//                    .commit();
-//        });
-
-        addGradeButton.setOnClickListener(view -> {
-            SelectGroupGradesFragment selectGroupGradesFragment = new SelectGroupGradesFragment();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, selectGroupGradesFragment)
+        addBtn.setOnClickListener(v -> {
+            SelectGroupGradesFragment frag = new SelectGroupGradesFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, frag)
                     .addToBackStack(null)
                     .commit();
         });
 
-        lookThroughGradesButton.setOnClickListener(view -> {
-            LookThroughGradesFragment lookThroughGradesFragment = new LookThroughGradesFragment();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, lookThroughGradesFragment)
+        lookBtn.setOnClickListener(v -> {
+            LookThroughGradesFragment frag = new LookThroughGradesFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, frag)
                     .addToBackStack(null)
                     .commit();
         });
@@ -100,52 +90,56 @@ public class GradesFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        GradeApi gradeApi = retrofit.create(GradeApi.class);
-        Call<List<ClassResponse>> call = gradeApi.getSubjectsForStudent(userId);
-
-        call.enqueue(new Callback<List<ClassResponse>>() {
-            @Override
-            public void onResponse(Call<List<ClassResponse>> call, Response<List<ClassResponse>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    displaySubjects(response.body());
-                } else {
-                    Toast.makeText(getContext(), "Błąd pobierania przedmiotów", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ClassResponse>> call, Throwable t) {
-                Toast.makeText(getContext(), "Błąd: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        GradeApi api = retrofit.create(GradeApi.class);
+        api.getSubjectsForStudent(userId)
+                .enqueue(new Callback<List<ClassResponse>>() {
+                    @Override
+                    public void onResponse(Call<List<ClassResponse>> call,
+                                           Response<List<ClassResponse>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            displaySubjects(response.body());
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Błąd pobierania przedmiotów",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<List<ClassResponse>> call, Throwable t) {
+                        Toast.makeText(getContext(),
+                                "Błąd: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void displaySubjects(List<ClassResponse> subjects) {
         gradesLayout.removeAllViews();
 
         for (ClassResponse subject : subjects) {
-            View subjectView = LayoutInflater.from(getContext()).inflate(R.layout.item_subject, null);
+            // ZAMIANA: drugi parametr -> gradesLayout, trzeci -> false
+            View subjectView = LayoutInflater.from(getContext())
+                    .inflate(R.layout.item_subject, gradesLayout, false);
 
-            TextView subjectName = subjectView.findViewById(R.id.subjectName);
-            TextView subjectAverage = subjectView.findViewById(R.id.subjectAverage);
-            ImageButton subjectButton = subjectView.findViewById(R.id.subjectButton);
+            TextView nameTv    = subjectView.findViewById(R.id.subjectName);
+            TextView avgTv     = subjectView.findViewById(R.id.subjectAverage);
+            ImageButton btn    = subjectView.findViewById(R.id.subjectButton);
 
-            subjectName.setText(subject.getClassName());
-            subjectAverage.setText("--");
+            nameTv.setText(subject.getClassName());
+            avgTv.setText("--");
 
-            subjectButton.setOnClickListener(view -> {
-                GradeViewFragment fragment = new GradeViewFragment();
+            btn.setOnClickListener(v -> {
+                GradeViewFragment frag = new GradeViewFragment();
                 Bundle args = new Bundle();
                 args.putInt("subjectId", subject.getId());
                 args.putString("subjectName", subject.getClassName());
-                fragment.setArguments(args);
+                frag.setArguments(args);
 
                 requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, fragment)
+                        .replace(R.id.container, frag)
                         .addToBackStack(null)
                         .commit();
             });
-
 
             gradesLayout.addView(subjectView);
         }
