@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
+import java.util.Locale;
 
 import network.ClassResponse;
 import network.GradeApi;
@@ -117,18 +118,24 @@ public class GradesFragment extends Fragment {
         gradesLayout.removeAllViews();
 
         for (ClassResponse subject : subjects) {
-            // ZAMIANA: drugi parametr -> gradesLayout, trzeci -> false
             View subjectView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_subject, gradesLayout, false);
 
-            TextView nameTv    = subjectView.findViewById(R.id.subjectName);
-            TextView avgTv     = subjectView.findViewById(R.id.subjectAverage);
-            ImageButton btn    = subjectView.findViewById(R.id.subjectButton);
+            TextView subjectName    = subjectView.findViewById(R.id.subjectName);
+            TextView subjectAverage = subjectView.findViewById(R.id.subjectAverage);
+            ImageButton subjectButton = subjectView.findViewById(R.id.subjectButton);
 
-            nameTv.setText(subject.getClassName());
-            avgTv.setText("--");
+            subjectName.setText(subject.getClassName());
+            Double avg = subject.getAverage();
+            if (avg != null) {
+                subjectAverage.setText(
+                        String.format(Locale.getDefault(), "%.2f", avg)
+                );
+            } else {
+                subjectAverage.setText("--");
+            }
 
-            btn.setOnClickListener(v -> {
+            subjectButton.setOnClickListener(view -> {
                 GradeViewFragment frag = new GradeViewFragment();
                 Bundle args = new Bundle();
                 args.putInt("subjectId", subject.getId());
@@ -144,4 +151,5 @@ public class GradesFragment extends Fragment {
             gradesLayout.addView(subjectView);
         }
     }
+
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,20 +48,34 @@ public class GradeService {
     }
 
     public List<SchoolClassDTO> getSubjectsForStudent(int userId) {
-        Optional<GroupMember> groupMember = groupMemberRepository.findByUser_Id(userId);
+        // 1) znajdź GroupMember
+        GroupMember gm = groupMemberRepository.findByUser_Id(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Brak członkostwa w grupie"));
 
-        if (groupMember.isEmpty()) {
-            return List.of();
-        }
-
-        Integer groupId = groupMember.get().getUserGroup().getId();
-
-        List<GroupMemberClass> gmcList = groupMemberClassRepository.findByGroupMember_UserGroup_Id(groupId);
-
-        return gmcList.stream()
-                .map(gmc -> gmc.getSchoolClass())
+        // 2) klasy z tej grupy
+        List<SchoolClass> classes = groupMemberClassRepository
+                .findByGroupMember_UserGroup_Id(gm.getUserGroup().getId())
+                .stream()
+                .map(GroupMemberClass::getSchoolClass)
                 .distinct()
-                .map(sc -> new SchoolClassDTO(sc.getId(), sc.getClassName()))
+                .collect(Collectors.toList());
+
+        // 3) dla każdej klasy policz średnią
+        return classes.stream()
+                .map(sc -> {
+                    // pobierz wszystkie oceny ucznia z tej klasy
+                    List<Grade> grades = gradeRepository
+                            .findByStudent_IdAndSchoolClass_IdOrderByIdDesc(userId, sc.getId());
+
+                    // policz średnią
+                    double avg = grades.stream()
+                            .mapToInt(Grade::getGrade)
+                            .average()
+                            .orElse(Double.NaN);
+
+                    Double average = Double.isNaN(avg) ? null : avg;
+                    return new SchoolClassDTO(sc.getId(), sc.getClassName(), average);
+                })
                 .collect(Collectors.toList());
     }
 

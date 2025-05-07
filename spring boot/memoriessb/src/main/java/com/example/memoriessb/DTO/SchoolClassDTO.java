@@ -10,5 +10,6 @@ import lombok.Setter;
 public class SchoolClassDTO {
     private int id;
     private String className;
+    private Double average;
 
 }
