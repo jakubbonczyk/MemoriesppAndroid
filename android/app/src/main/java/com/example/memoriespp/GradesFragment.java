@@ -45,8 +45,8 @@ public class GradesFragment extends Fragment {
 
         SharedPreferences prefs = requireActivity()
                 .getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
-        int userId    = prefs.getInt("userId", -1);
-        role          = prefs.getString("role", "");
+        int userId = prefs.getInt("userId", -1);
+        role       = prefs.getString("role", "");
 
         if ("S".equals(role)) {
             addGradeLayout.setVisibility(View.GONE);
@@ -105,6 +105,7 @@ public class GradesFragment extends Fragment {
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
+
                     @Override
                     public void onFailure(Call<List<ClassResponse>> call, Throwable t) {
                         Toast.makeText(getContext(),
@@ -151,5 +152,4 @@ public class GradesFragment extends Fragment {
             gradesLayout.addView(subjectView);
         }
     }
-
 }

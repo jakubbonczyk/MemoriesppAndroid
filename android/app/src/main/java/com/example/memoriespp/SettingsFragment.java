@@ -2,16 +2,16 @@ package com.example.memoriespp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +20,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import network.ClassResponse;
+import network.GradeApi;
 import network.UserApi;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,18 +44,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SettingsFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
-
     private ImageView profileImageView;
     private int userId = -1;
 
-    @Override public View onCreateView(LayoutInflater inf, ViewGroup c, Bundle s) {
-
+    @Override
+    public View onCreateView(LayoutInflater inf, ViewGroup c, Bundle s) {
         View root = inf.inflate(R.layout.fragment_settings, c, false);
 
-        profileImageView      = root.findViewById(R.id.profileImage);
-        Button changePicBtn   = root.findViewById(R.id.changeProfilePictureButton);
-        Button logoutBtn      = root.findViewById(R.id.logoutButton);
-        Button changeLangBtn  = root.findViewById(R.id.changeLanguageButton);
+        profileImageView = root.findViewById(R.id.profileImage);
+        Button changePicBtn = root.findViewById(R.id.changeProfilePictureButton);
+        Button logoutBtn = root.findViewById(R.id.logoutButton);
+        Button changeLangBtn = root.findViewById(R.id.changeLanguageButton);
+        Button yourResultsButton = root.findViewById(R.id.yourResultsButton);
 
         logoutBtn.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Poprawnie wylogowano", Toast.LENGTH_SHORT).show();
@@ -69,6 +76,18 @@ public class SettingsFragment extends Fragment {
             startActivityForResult(i, PICK_IMAGE_REQUEST);
         });
 
+        yourResultsButton.setOnClickListener(v -> {
+            SharedPreferences prefs = requireActivity()
+                    .getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
+            int storedId = prefs.getInt("userId", -1);
+
+            if (storedId != -1) {
+                fetchAndGeneratePdf(storedId);
+            } else {
+                Toast.makeText(getContext(), "Brak ID użytkownika", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         if (getActivity() != null)
             userId = getActivity().getIntent().getIntExtra("userId", -1);
 
@@ -82,29 +101,144 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
-    @Override public void onResume() {
-        super.onResume();
+    private void fetchAndGeneratePdf(int userId) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        GradeApi api = retrofit.create(GradeApi.class);
+        api.getSubjectsForStudent(userId).enqueue(new Callback<List<ClassResponse>>() {
+            @Override
+            public void onResponse(Call<List<ClassResponse>> call, Response<List<ClassResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    createPdf(response.body());
+                } else {
+                    Toast.makeText(getContext(), "Błąd pobierania ocen", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ClassResponse>> call, Throwable t) {
+                Toast.makeText(getContext(), "Błąd: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void createPdf(List<ClassResponse> subjects) {
+        PdfDocument pdf = new PdfDocument();
+        Paint paint = new Paint();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+        PdfDocument.Page page = pdf.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
+
+        int y = 60;
+        paint.setTextSize(20);
+        paint.setFakeBoldText(true);
+        canvas.drawText("Wykaz ocen", 240, y, paint);
+
+        paint.setTextSize(14);
+        paint.setFakeBoldText(false);
+        y += 40;
+
+        for (ClassResponse subject : subjects) {
+            String name = subject.getClassName();
+            Double avg = subject.getAverage();
+            String avgStr = avg != null ? getGradeDescription(avg) : "Brak danych";
+
+            StringBuilder line = new StringBuilder(name);
+            while (line.length() < 50) line.append(".");
+            line.append(avgStr);
+
+            canvas.drawText(line.toString(), 60, y, paint);
+            y += 25;
+        }
+
+        y += 30;
+        paint.setFakeBoldText(true);
+        canvas.drawText("Średnia wszystkich ocen: " + calculateOverallAverage(subjects), 60, y, paint);
+
+        pdf.finishPage(page);
+
+        try {
+            File baseDir = requireContext().getExternalFilesDir(null);
+            File downloadDir = new File(baseDir, "Download");
+            if (!downloadDir.exists()) downloadDir.mkdirs();
+
+            File file = new File(downloadDir, "oceny.pdf");
+            pdf.writeTo(new FileOutputStream(file));
+            Toast.makeText(getContext(), "Zapisano PDF: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Błąd zapisu PDF", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
+        pdf.close();
+    }
+
+    private String getGradeDescription(double avg) {
+        if (avg >= 5.5) return "Celujący";
+        if (avg >= 4.5) return "Bardzo dobry";
+        if (avg >= 3.5) return "Dobry";
+        if (avg >= 2.5) return "Dostateczny";
+        if (avg >= 1.5) return "Dopuszczający";
+        return "Niedostateczny";
+    }
+
+    private String calculateOverallAverage(List<ClassResponse> subjects) {
+        double sum = 0;
+        int count = 0;
+        for (ClassResponse s : subjects) {
+            if (s.getAverage() != null) {
+                sum += s.getAverage();
+                count++;
+            }
+        }
+        if (count == 0) return "--";
+        return String.format(Locale.getDefault(), "%.2f", sum / count);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (userId != -1) fetchLatestProfileImage(userId);
     }
 
-    @Override public void onActivityResult(int req, int res, Intent data) {
+    @Override
+    public void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
 
         if (req == PICK_IMAGE_REQUEST && res == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
             try (InputStream is = requireContext().getContentResolver().openInputStream(uri)) {
-
                 Bitmap bmp = BitmapFactory.decodeStream(is);
                 profileImageView.setImageBitmap(bmp);
 
                 String b64 = bitmapToBase64(bmp);
-
                 propagateImageToHost(b64);
                 sendImageToBackend(b64);
-
-            } catch (Exception e) { e.printStackTrace(); }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    private void fetchLatestProfileImage(int id) {
+        retrofit().create(UserApi.class)
+                .getUserById(id)
+                .enqueue(new Callback<Map<String, String>>() {
+                    public void onResponse(Call<Map<String, String>> c, Response<Map<String, String>> r) {
+                        if (!r.isSuccessful() || r.body() == null) return;
+
+                        String b64 = r.body().get("image");
+                        showBase64Image(b64);
+                        propagateImageToHost(b64);
+                    }
+
+                    public void onFailure(Call<Map<String, String>> c, Throwable t) {
+                        Log.e("FETCH", "Nie udało się pobrać zdjęcia: " + t.getMessage());
+                    }
+                });
     }
 
     private Retrofit retrofit() {
@@ -115,82 +249,62 @@ public class SettingsFragment extends Fragment {
     }
 
     private void sendImageToBackend(String b64) {
-        Map<String,String> body = new HashMap<>();
+        Map<String, String> body = new HashMap<>();
         body.put("image", b64);
 
         retrofit().create(UserApi.class)
                 .uploadProfileImage(userId, body)
                 .enqueue(new Callback<Void>() {
                     public void onResponse(Call<Void> c, Response<Void> r) {
-
-                        if (!r.isSuccessful()){
+                        if (!r.isSuccessful()) {
                             try {
-                                Log.e("IMG_UPLOAD", "HTTP " + r.code() + " – " + (r.errorBody()!=null? r.errorBody().string():"<no body>"));
+                                Log.e("IMG_UPLOAD", "HTTP " + r.code() + " – " +
+                                        (r.errorBody() != null ? r.errorBody().string() : "<no body>"));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            Toast.makeText(getContext(),
-                                    "Błąd aktualizacji zdjęcia", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Błąd aktualizacji zdjęcia", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         fetchLatestProfileImage(userId);
                     }
 
-                    public void onFailure(Call<Void> c, Throwable t){
-                        Toast.makeText(getContext(),
-                                "Błąd połączenia", Toast.LENGTH_SHORT).show();
+                    public void onFailure(Call<Void> c, Throwable t) {
+                        Toast.makeText(getContext(), "Błąd połączenia", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void fetchLatestProfileImage(int id) {
-
-        retrofit().create(UserApi.class)
-                .getUserById(id)
-                .enqueue(new Callback<Map<String,String>>() {
-                    public void onResponse(Call<Map<String,String>> c, Response<Map<String,String>> r) {
-
-                        if (!r.isSuccessful() || r.body()==null) return;
-
-                        String b64 = r.body().get("image");
-                        showBase64Image(b64);
-                        propagateImageToHost(b64);      // Main + Admin
-                    }
-                    public void onFailure(Call<Map<String,String>> c, Throwable t) {
-                        Log.e("FETCH","Nie udało się pobrać zdjęcia: "+t.getMessage());
-                    }
-                });
-    }
-
-    private void showBase64Image(String b64){
-        if (b64!=null && !b64.isEmpty())
+    private void showBase64Image(String b64) {
+        if (b64 != null && !b64.isEmpty())
             profileImageView.setImageBitmap(base64ToBitmap(b64));
         else
             profileImageView.setImageResource(R.drawable.profpic);
     }
 
-    private static String bitmapToBase64(Bitmap b){
+    private static String bitmapToBase64(Bitmap b) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        b.compress(Bitmap.CompressFormat.PNG,100,baos);
+        b.compress(Bitmap.CompressFormat.PNG, 100, baos);
         return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
     }
 
-    private static Bitmap base64ToBitmap(String b64){
+    private static Bitmap base64ToBitmap(String b64) {
         byte[] bytes = Base64.decode(b64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
-    private void propagateImageToHost(String b64){
+    private void propagateImageToHost(String b64) {
         if (getActivity() instanceof MainActivity)
-            ((MainActivity)getActivity()).refreshProfileImage(b64);
+            ((MainActivity) getActivity()).refreshProfileImage(b64);
         else if (getActivity() instanceof AdminMainActivity)
-            ((AdminMainActivity)getActivity()).refreshProfileImage(b64);
+            ((AdminMainActivity) getActivity()).refreshProfileImage(b64);
     }
 
-
-    private void setLocale(String lang){
-        Locale locale = new Locale(lang);  Locale.setDefault(locale);
-        Configuration cfg = new Configuration(); cfg.setLocale(locale);
+    private void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration cfg = new Configuration();
+        cfg.setLocale(locale);
         getResources().updateConfiguration(cfg, getResources().getDisplayMetrics());
     }
 }
