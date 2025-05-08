@@ -18,7 +18,6 @@ CREATE TABLE `class` (
   PRIMARY KEY (`idclass`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- (przykładowe dane)
 INSERT INTO `class` (`class_name`) VALUES
   ('Geografia 1');
 
@@ -35,7 +34,6 @@ CREATE TABLE `users` (
   PRIMARY KEY (`idusers`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- (przykładowe dane)
 INSERT INTO `users` (`name`, `surname`, `role`, `image`) VALUES
   ('Anna', 'Kowalska',  'S', NULL),
   ('Tomasz','Nowak',    'T', NULL),
@@ -57,14 +55,13 @@ CREATE TABLE `sensitive_data` (
     ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- (przykładowe dane)
 INSERT INTO `sensitive_data` (`login`, `password`, `users_idusers`) VALUES
   ('student', '$2a$10$mNl2xuzUAMsLGuxM9msvDeqEu3.DlcP0Rtz0oBmUEoBVhdId7n09m', 1),
   ('teacher', '$2a$10$mNl2xuzUAMsLGuxM9msvDeqEu3.DlcP0Rtz0oBmUEoBVhdId7n09m', 2),
   ('admin',   '$2a$10$mNl2xuzUAMsLGuxM9msvDeqEu3.DlcP0Rtz0oBmUEoBVhdId7n09m', 3);
 
 -- --------------------------------------------------------
--- Tabela `user_group` (dawniej `groups`)
+-- Tabela `user_group`
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `user_group`;
 CREATE TABLE `user_group` (
@@ -73,7 +70,6 @@ CREATE TABLE `user_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- (przykładowe dane)
 INSERT INTO `user_group` (`group_name`) VALUES
   ('Klasa 1');
 
@@ -96,54 +92,50 @@ CREATE TABLE `group_members` (
     ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- (przykładowe dane)
 INSERT INTO `group_members` (`user_group_id`,`users_idusers`) VALUES
   (1,1);
 
-
+-- --------------------------------------------------------
+-- Tabela `group_members_has_class`
+-- --------------------------------------------------------
 DROP TABLE IF EXISTS `group_members_has_class`;
-
 CREATE TABLE `group_members_has_class` (
-                                           `id`                         INT(11)        NOT NULL AUTO_INCREMENT,
-                                           `group_members_idgroup_members` INT(11)     NOT NULL,
-                                           `class_idclass`              INT(11)        NOT NULL,
-                                           PRIMARY KEY (`id`),
-                                           UNIQUE KEY `ux_gmc_group_member_class`
-                                               (`group_members_idgroup_members`,`class_idclass`),
-                                           KEY `fk_gmc_group_member_idx`    (`group_members_idgroup_members`),
-                                           KEY `fk_gmc_class_idx`           (`class_idclass`),
-                                           CONSTRAINT `fk_gmc_group_member`
-                                               FOREIGN KEY (`group_members_idgroup_members`)
-                                                   REFERENCES `group_members` (`idgroup_members`)
-                                                   ON DELETE CASCADE ON UPDATE CASCADE,
-                                           CONSTRAINT `fk_gmc_class`
-                                               FOREIGN KEY (`class_idclass`)
-                                                   REFERENCES `class` (`idclass`)
-                                                   ON DELETE NO ACTION  ON UPDATE NO ACTION
+  `id`                         INT(11)        NOT NULL AUTO_INCREMENT,
+  `group_members_idgroup_members` INT(11)     NOT NULL,
+  `class_idclass`              INT(11)        NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_gmc_group_member_class`
+      (`group_members_idgroup_members`,`class_idclass`),
+  KEY `fk_gmc_group_member_idx`    (`group_members_idgroup_members`),
+  KEY `fk_gmc_class_idx`           (`class_idclass`),
+  CONSTRAINT `fk_gmc_group_member`
+      FOREIGN KEY (`group_members_idgroup_members`)
+          REFERENCES `group_members` (`idgroup_members`)
+          ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_gmc_class`
+      FOREIGN KEY (`class_idclass`)
+          REFERENCES `class` (`idclass`)
+          ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 -- Tabela `schedule`
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `schedule`;
-
 CREATE TABLE `schedule` (
-                            `idschedule`                    INT(11)      NOT NULL AUTO_INCREMENT,
-                            `lesson_date`                   DATE         NOT NULL,
-                            `start_time`                    TIME         NOT NULL,
-                            `end_time`                      TIME         NOT NULL,
-                            `group_members_has_class_id`    INT(11)      NOT NULL,
-                            PRIMARY KEY (`idschedule`),
-                            INDEX `idx_schedule_gmhc` (`group_members_has_class_id`),
-                            CONSTRAINT `fk_schedule_gmhc`
-                                FOREIGN KEY (`group_members_has_class_id`)
-                                    REFERENCES `group_members_has_class` (`id`)
-                                    ON DELETE NO ACTION
-                                    ON UPDATE NO ACTION
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
-
+  `idschedule`                    INT(11)      NOT NULL AUTO_INCREMENT,
+  `lesson_date`                   DATE         NOT NULL,
+  `start_time`                    TIME         NOT NULL,
+  `end_time`                      TIME         NOT NULL,
+  `group_members_has_class_id`    INT(11)      NOT NULL,
+  `generated`                     BOOLEAN      NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (`idschedule`),
+  INDEX `idx_schedule_gmhc` (`group_members_has_class_id`),
+  CONSTRAINT `fk_schedule_gmhc`
+    FOREIGN KEY (`group_members_has_class_id`)
+    REFERENCES `group_members_has_class` (`id`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 -- Tabela `grades`
@@ -156,6 +148,9 @@ CREATE TABLE `grades` (
   `users_idstudent`  INT(11)     NOT NULL,
   `users_idteacher`  INT(11)     NOT NULL,
   `class_idclass`    INT(11)     NOT NULL,
+  `type`             VARCHAR(50) DEFAULT 'Sprawdzian',
+  `issue_date`       DATE        NOT NULL DEFAULT (CURRENT_DATE),
+  `notified`         BOOLEAN     NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`idgrades`),
   KEY `fk_grades_student_idx` (`users_idstudent`),
   KEY `fk_grades_teacher_idx` (`users_idteacher`),
@@ -170,13 +165,5 @@ CREATE TABLE `grades` (
     FOREIGN KEY (`class_idclass`) REFERENCES `class`(`idclass`)
     ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
-ALTER TABLE `schedule` ADD COLUMN `generated` BOOLEAN NOT NULL DEFAULT FALSE;
-
-ALTER TABLE grades ADD COLUMN type VARCHAR(50)  DEFAULT 'Sprawdzian';
-
-ALTER TABLE grades ADD COLUMN issue_date DATE NOT NULL DEFAULT (CURRENT_DATE);
-
 
 COMMIT;
