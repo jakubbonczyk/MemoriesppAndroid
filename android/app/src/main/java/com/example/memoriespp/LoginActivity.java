@@ -65,6 +65,12 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("name", loginResponse.getName());
                         editor.putString("surname", loginResponse.getSurname());
                         editor.putString("role", loginResponse.getRole());
+                        if ("S".equals(role)) {
+                            editor.putString("studentName", loginResponse.getName() + " " + loginResponse.getSurname());
+                            editor.putString("className", loginResponse.getClassName());
+                        }
+
+
                         editor.apply();
 
                         Snackbar.make(view, "Zalogowano jako " + role, Snackbar.LENGTH_SHORT).show();

@@ -8,5 +8,6 @@ public record LoginResponse(
         String name,
         String surname,
         User.Role role,
-        String image
+        String image,
+        String className
 ) {}

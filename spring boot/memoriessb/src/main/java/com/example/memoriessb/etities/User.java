@@ -49,6 +49,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<GroupMember> groupMemberships;
 
+    @ManyToOne
+    @JoinColumn(name = "class_idclass")
+    private SchoolClass schoolClass;
+
 
 }
 

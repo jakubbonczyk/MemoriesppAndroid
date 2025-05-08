@@ -16,4 +16,5 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Intege
     Optional<GroupMember> findByUser_Id(Integer userId);
 
 
+
 }

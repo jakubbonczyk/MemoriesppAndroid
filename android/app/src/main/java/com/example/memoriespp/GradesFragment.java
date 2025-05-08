@@ -26,8 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GradesFragment extends Fragment {
 
-    private FrameLayout browseGradesLayout;
     private FrameLayout addGradeLayout;
+    private FrameLayout browseGradesLayout;
     private LinearLayout gradesLayout;
     private String role;
 
@@ -36,17 +36,17 @@ public class GradesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_grades, container, false);
 
-        addGradeLayout       = rootView.findViewById(R.id.addGradeLayout);
-        browseGradesLayout   = rootView.findViewById(R.id.browseGradesLayout);
-        gradesLayout         = rootView.findViewById(R.id.gradesLayout);
+        addGradeLayout = rootView.findViewById(R.id.addGradeLayout);
+        browseGradesLayout = rootView.findViewById(R.id.browseGradesLayout);
+        gradesLayout = rootView.findViewById(R.id.gradesLayout);
 
-        ImageButton addBtn   = rootView.findViewById(R.id.addGradeButton);
-        ImageButton lookBtn  = rootView.findViewById(R.id.lookThroughGradesButton);
+        ImageButton addBtn = rootView.findViewById(R.id.addGradeButton);
+        ImageButton lookBtn = rootView.findViewById(R.id.lookThroughGradesButton);
 
         SharedPreferences prefs = requireActivity()
                 .getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
         int userId = prefs.getInt("userId", -1);
-        role       = prefs.getString("role", "");
+        role = prefs.getString("role", "");
 
         if ("S".equals(role)) {
             addGradeLayout.setVisibility(View.GONE);
@@ -122,19 +122,15 @@ public class GradesFragment extends Fragment {
             View subjectView = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_subject, gradesLayout, false);
 
-            TextView subjectName    = subjectView.findViewById(R.id.subjectName);
+            TextView subjectName = subjectView.findViewById(R.id.subjectName);
             TextView subjectAverage = subjectView.findViewById(R.id.subjectAverage);
             ImageButton subjectButton = subjectView.findViewById(R.id.subjectButton);
 
             subjectName.setText(subject.getClassName());
             Double avg = subject.getAverage();
-            if (avg != null) {
-                subjectAverage.setText(
-                        String.format(Locale.getDefault(), "%.2f", avg)
-                );
-            } else {
-                subjectAverage.setText("--");
-            }
+            subjectAverage.setText(avg != null
+                    ? String.format(Locale.getDefault(), "%.2f", avg)
+                    : "--");
 
             subjectButton.setOnClickListener(view -> {
                 GradeViewFragment frag = new GradeViewFragment();

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import java.io.ByteArrayOutputStream;
@@ -112,11 +113,17 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<ClassResponse>> call, Response<List<ClassResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    createPdf(response.body());
+
+                    SharedPreferences prefs = requireActivity().getSharedPreferences("MyPrefs", getContext().MODE_PRIVATE);
+                    String studentName = prefs.getString("studentName", "Brak danych");
+                    String className = prefs.getString("className", "Brak danych");
+
+                    createPdf(response.body(), studentName, className);
                 } else {
                     Toast.makeText(getContext(), "Błąd pobierania ocen", Toast.LENGTH_SHORT).show();
                 }
             }
+
 
             @Override
             public void onFailure(Call<List<ClassResponse>> call, Throwable t) {
@@ -125,7 +132,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    private void createPdf(List<ClassResponse> subjects) {
+    private void createPdf(List<ClassResponse> subjects, String studentName, String className) {
         PdfDocument pdf = new PdfDocument();
         Paint paint = new Paint();
         PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
@@ -137,9 +144,13 @@ public class SettingsFragment extends Fragment {
         paint.setFakeBoldText(true);
         canvas.drawText("Wykaz ocen", 240, y, paint);
 
+        y += 30;
         paint.setTextSize(14);
         paint.setFakeBoldText(false);
-        y += 40;
+        canvas.drawText("Uczeń: " + studentName, 60, y, paint);
+        y += 20;
+        canvas.drawText("Klasa: " + className, 60, y, paint);
+        y += 30;
 
         for (ClassResponse subject : subjects) {
             String name = subject.getClassName();
@@ -168,6 +179,18 @@ public class SettingsFragment extends Fragment {
             File file = new File(downloadDir, "oceny.pdf");
             pdf.writeTo(new FileOutputStream(file));
             Toast.makeText(getContext(), "Zapisano PDF: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+            Uri uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.example.memoriespp.fileprovider",
+                    file
+            );
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+
         } catch (Exception e) {
             Toast.makeText(getContext(), "Błąd zapisu PDF", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -175,6 +198,8 @@ public class SettingsFragment extends Fragment {
 
         pdf.close();
     }
+
+
 
     private String getGradeDescription(double avg) {
         if (avg >= 5.5) return "Celujący";

@@ -2,20 +2,15 @@ package com.example.memoriessb.service;
 
 import com.example.memoriessb.DTO.LoginResponse;
 import com.example.memoriessb.DTO.RegisterUserRequest;
-import com.example.memoriessb.etities.GroupMember;
-import com.example.memoriessb.etities.SensitiveData;
-import com.example.memoriessb.etities.User;
-import com.example.memoriessb.etities.UserGroup;
-import com.example.memoriessb.repository.GroupMemberRepository;
-import com.example.memoriessb.repository.SensitiveDataRepository;
-import com.example.memoriessb.repository.UserGroupRepository;
-import com.example.memoriessb.repository.UserRepository;
+import com.example.memoriessb.etities.*;
+import com.example.memoriessb.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +22,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserGroupRepository userGroupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final GroupMemberClassRepository groupMemberClassRepository;
 
 
     public LoginResponse login(String login, String password) {
@@ -39,8 +35,24 @@ public class AuthService {
 
         User user = data.getUser();
         String b64 = user.getImage() == null ? null : Base64.getEncoder().encodeToString(user.getImage());
-        return new LoginResponse(user.getId(), user.getName(), user.getSurname(), user.getRole(), b64);
+
+        List<GroupMember> members = groupMemberRepository.findAllByUser_Id(user.getId());
+        String className = (members != null && !members.isEmpty() && members.get(0).getUserGroup() != null)
+                ? members.get(0).getUserGroup().getGroupName()
+                : null;
+
+
+        return new LoginResponse(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getRole(),
+                b64,
+                className
+        );
     }
+
+
 
     public void registerUser(RegisterUserRequest request) {
         log.debug("registerUser() request = {}", request);
