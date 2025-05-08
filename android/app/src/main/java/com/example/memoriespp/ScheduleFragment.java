@@ -22,6 +22,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 import network.AssignmentDTO;
 import network.GroupApi;
@@ -169,6 +174,25 @@ public class ScheduleFragment extends Fragment {
         AssignmentDTO a = assignmentList.get(pos);
         String start = startTimeSpinner.getSelectedItem().toString() + ":00";
         String end   = endTimeSpinner  .getSelectedItem().toString() + ":00";
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            Date startTime = sdf.parse(start);
+            Date endTime   = sdf.parse(end);
+
+            if (!endTime.after(startTime)) {
+                Toast.makeText(getContext(),
+                        "Godzina zakończenia musi być późniejsza niż rozpoczęcia!",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+        } catch (ParseException e) {
+            Toast.makeText(getContext(),
+                    "Błąd formatu godziny", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
 
         ScheduleRequestDTO dto = new ScheduleRequestDTO(
                 a.getAssignmentId(),
