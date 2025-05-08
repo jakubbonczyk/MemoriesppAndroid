@@ -21,6 +21,9 @@ public interface GroupApi {
     @GET("/api/users/{id}/groups")
     Call<List<GroupResponse>> getGroupsForUser(@Path("id") int userId);
 
+    @GET("/api/groups/{groupId}/assignments")
+    Call<List<AssignmentResponse>> getAssignmentsForGroup(@Path("groupId") int groupId);
+
     @POST("/api/assign/user/{userId}/group/{groupId}")
     Call<String> assignUserToGroup(
             @Path("userId") int userId,

@@ -15,8 +15,13 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+import network.AssignmentResponse;
 import network.ClassApi;
 import network.ClassResponse;
 import network.GroupApi;
@@ -46,6 +51,8 @@ public class AssignTeacherToClassFragment extends Fragment {
     private List<UserResponse> teachers = new ArrayList<>();
     private List<Spinner> spinners = new ArrayList<>();
     private List<Boolean> isAssigned = new ArrayList<>();
+    private Set<Integer> alreadyAssignedSubjects = new HashSet<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -80,10 +87,16 @@ public class AssignTeacherToClassFragment extends Fragment {
                                        int position,
                                        long id) {
                 selectedGroupId = groupList.get(position).getId();
-                loadTeachersForGroup(selectedGroupId);
+                alreadyAssignedSubjects.clear();
+
+                // najpierw pobierz przypisania, potem załaduj nauczycieli
+                loadAlreadyAssignedSubjects(() -> loadTeachersForGroup(selectedGroupId));
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
+
 
         saveBtn.setOnClickListener(v -> saveAssignments());
 
@@ -166,6 +179,34 @@ public class AssignTeacherToClassFragment extends Fragment {
                 });
     }
 
+    private void loadAlreadyAssignedSubjects(Runnable onComplete) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        GroupApi api = retrofit.create(GroupApi.class);
+        api.getAssignmentsForGroup(selectedGroupId).enqueue(new Callback<List<AssignmentResponse>>() {
+            @Override
+            public void onResponse(Call<List<AssignmentResponse>> call, Response<List<AssignmentResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (AssignmentResponse assignment : response.body()) {
+                        alreadyAssignedSubjects.add(assignment.getClassId());
+                    }
+                }
+                onComplete.run(); // kontynuuj
+            }
+
+            @Override
+            public void onFailure(Call<List<AssignmentResponse>> call, Throwable t) {
+                Toast.makeText(requireContext(), "Błąd podczas pobierania przypisań", Toast.LENGTH_SHORT).show();
+                onComplete.run(); // mimo błędu kontynuuj
+            }
+        });
+    }
+
+
+
     private void populateTeacherRows(int groupId, List<UserResponse> list) {
         teachersContainer.removeAllViews();
         spinners.clear();
@@ -230,25 +271,61 @@ public class AssignTeacherToClassFragment extends Fragment {
     }
 
     private void saveAssignments() {
+        // Mapa: classId -> userId (lokalne przypisania w tym formularzu)
+        Map<Integer, Integer> assignedSubjects = new HashMap<>();
+
         for (int i = 0; i < teachers.size(); i++) {
             if (isAssigned.get(i)) continue;
-            int classPos = spinners.get(i).getSelectedItemPosition();
-            int classId  = classList.get(classPos).getId();
-            int userId   = teachers.get(i).getId();
 
+            int classPos = spinners.get(i).getSelectedItemPosition();
+            int classId = classList.get(classPos).getId();
+            int userId = teachers.get(i).getId();
+
+            // WALIDACJA: sprawdź, czy przedmiot nie był już przypisany wcześniej
+            if (alreadyAssignedSubjects.contains(classId)) {
+                Toast.makeText(requireContext(),
+                        "Przedmiot \"" + classList.get(classPos).getClassName() + "\" został już wcześniej przypisany innemu nauczycielowi.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // WALIDACJA: sprawdź, czy nie jest też przypisany w bieżącym formularzu
+            if (assignedSubjects.containsKey(classId)) {
+                Toast.makeText(requireContext(),
+                        "Przedmiot \"" + classList.get(classPos).getClassName() + "\" został przypisany więcej niż raz.",
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            assignedSubjects.put(classId, userId);
+
+            // Wyślij przypisanie do backendu
             classApi.assignTeacherToClass(userId, selectedGroupId, classId)
                     .enqueue(new Callback<String>() {
-                        @Override public void onResponse(Call<String> c,
-                                                         Response<String> r) { }
-                        @Override public void onFailure(Call<String> c, Throwable t) { }
+                        @Override
+                        public void onResponse(Call<String> c, Response<String> r) {
+                            // Można dodać reakcję po sukcesie, jeśli potrzeba
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> c, Throwable t) {
+                            Toast.makeText(requireContext(),
+                                    "Błąd podczas przypisywania przedmiotu: " + t.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     });
         }
+
         Toast.makeText(requireContext(),
                 "Zapisano nowe przypisania", Toast.LENGTH_SHORT).show();
+
+        // Odśwież fragment
         AssignTeacherToClassFragment assignTeacherToClassFragment = new AssignTeacherToClassFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, assignTeacherToClassFragment)
                 .addToBackStack(null)
                 .commit();
     }
+
+
 }
