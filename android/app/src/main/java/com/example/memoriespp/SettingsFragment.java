@@ -50,8 +50,13 @@ public class SettingsFragment extends Fragment {
         Button logoutBtn      = root.findViewById(R.id.logoutButton);
         Button changeLangBtn  = root.findViewById(R.id.changeLanguageButton);
 
-        logoutBtn.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Poprawnie wylogowano", Toast.LENGTH_SHORT).show());
+        logoutBtn.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Poprawnie wylogowano", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(requireContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        });
 
         changeLangBtn.setOnClickListener(v -> {
             String newL = Locale.getDefault().getLanguage().equals("pl") ? "en" : "pl";
