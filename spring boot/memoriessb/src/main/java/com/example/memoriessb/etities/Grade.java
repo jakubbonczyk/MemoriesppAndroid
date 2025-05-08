@@ -48,4 +48,7 @@ public class Grade {
             issueDate = LocalDate.now();
         }
     }
+
+    @Column(nullable = false)
+    private boolean notified = false;
 }

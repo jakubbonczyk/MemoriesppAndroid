@@ -47,4 +47,12 @@ public class GradeController {
                 gradeService.getGradeDetails(gradeId)
         );
     }
+
+    @GetMapping("/student/{studentId}/new")
+    public ResponseEntity<List<NewGradeDTO>> getNewGrades(
+            @PathVariable Integer studentId) {
+        List<NewGradeDTO> dtos = gradeService.getNewGradesForStudent(studentId);
+        return ResponseEntity.ok(dtos);
+    }
+
 }

@@ -1,15 +1,13 @@
 package com.example.memoriessb.service;
 
 
-import com.example.memoriessb.DTO.GradeDetailDTO;
-import com.example.memoriessb.DTO.GradeRequest;
-import com.example.memoriessb.DTO.GradeSummaryDTO;
-import com.example.memoriessb.DTO.SchoolClassDTO;
+import com.example.memoriessb.DTO.*;
 import com.example.memoriessb.etities.*;
 import com.example.memoriessb.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -107,4 +105,28 @@ public class GradeService {
                 g.getSchoolClass().getClassName()
         );
     }
+
+    @Transactional
+    public List<NewGradeDTO> getNewGradesForStudent(int studentId) {
+        // 1) pobierz niepowiadomione oceny
+        List<Grade> newGrades = gradeRepository.findByStudent_IdAndNotifiedFalse(studentId);
+
+        // 2) zmapuj na DTO
+        List<NewGradeDTO> dtos = newGrades.stream()
+                .map(g -> new NewGradeDTO(
+                        g.getId(),
+                        g.getGrade(),
+                        g.getType(),
+                        g.getIssueDate().toString(),
+                        g.getSchoolClass().getClassName()
+                ))
+                .collect(Collectors.toList());
+
+        // 3) oznacz jako powiadomione
+        newGrades.forEach(g -> g.setNotified(true));
+        gradeRepository.saveAll(newGrades);
+
+        return dtos;
+    }
+
 }

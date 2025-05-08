@@ -28,5 +28,10 @@ public interface GradeApi {
     @GET("api/grades/{gradeId}")
     Call<GradeDetailDTO> getGradeDetails(@Path("gradeId") int gradeId);
 
+    @GET("/api/grades/student/{studentId}/new")
+    Call<List<NewGradeResponse>> getNewGrades(
+            @Path("studentId") int studentId
+    );
+
 
 }
