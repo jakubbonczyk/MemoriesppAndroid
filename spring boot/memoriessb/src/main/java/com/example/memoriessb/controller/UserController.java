@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,6 +27,31 @@ public class UserController {
     private final GroupMemberRepository groupMemberRepo;
     private final UserGroupRepository userGroupRepo;
     private final SensitiveDataRepository sensitiveRepo;
+
+    @PutMapping("/{id}/profile-image")
+    public ResponseEntity<Void> uploadProfileImage(
+            @PathVariable int id,
+            @RequestBody Map<String,String> body
+    ) {
+        User u = userRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika"));
+
+        String b64 = body.get("image");
+        if (b64 == null || b64.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        byte[] imageBytes;
+        try {
+            imageBytes = Base64.getDecoder().decode(b64);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        u.setImage(imageBytes);
+        userRepo.save(u);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/teachers")
     public ResponseEntity<List<UserDTO>> getAllTeachers() {
@@ -69,8 +96,18 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika"));
         SensitiveData sd = sensitiveRepo.findByUser(u)
                 .orElseThrow(() -> new IllegalArgumentException("Brak danych wrażliwych"));
+
+        String base64 = u.getImage() != null
+                ? Base64.getEncoder().encodeToString(u.getImage())
+                : "";
+
         return ResponseEntity.ok(new EditUserResponse(
-                u.getId(), sd.getLogin(), u.getName(), u.getSurname(), u.getRole()
+                u.getId(),
+                sd.getLogin(),
+                u.getName(),
+                u.getSurname(),
+                u.getRole(),
+                base64
         ));
     }
 

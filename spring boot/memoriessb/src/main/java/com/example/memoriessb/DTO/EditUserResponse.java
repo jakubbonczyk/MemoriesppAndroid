@@ -12,4 +12,5 @@ public class EditUserResponse {
     private String name;
     private String surname;
     private User.Role role;
+    String image;
 }
