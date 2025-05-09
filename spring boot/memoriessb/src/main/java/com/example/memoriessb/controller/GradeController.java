@@ -5,9 +5,12 @@ import com.example.memoriessb.service.GradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/grades")
 @RequiredArgsConstructor
@@ -25,7 +28,7 @@ public class GradeController {
     public ResponseEntity<List<GradeSummaryDTO>> getGradesForStudent(
             @PathVariable Integer studentId) {
         return ResponseEntity.ok(
-                gradeService.getGradesForSubject(studentId, 0)
+                gradeService.getAllGradesForStudent(studentId)
         );
     }
 
@@ -53,6 +56,33 @@ public class GradeController {
             @PathVariable Integer studentId) {
         List<NewGradeDTO> dtos = gradeService.getNewGradesForStudent(studentId);
         return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/teacher/{teacherId}/classes")
+    public ResponseEntity<List<SchoolClassDTO>> getClassesForTeacher(
+            @PathVariable int teacherId) {
+        return ResponseEntity.ok(
+                gradeService.getClassesForTeacher(teacherId)
+        );
+    }
+
+
+    // 1) lista grup nauczyciela
+    @GetMapping("/teacher/{teacherId}/groups")
+    public ResponseEntity<List<TeacherGroupDTO>> getGroupsForTeacher(
+            @PathVariable int teacherId) {
+        return ResponseEntity.ok(
+                gradeService.getGroupsForTeacher(teacherId)
+        );
+    }
+
+    // 2) uczniowie w grupie
+    @GetMapping("/group/{groupId}/students")
+    public ResponseEntity<List<StudentDTO>> getStudentsForGroup(
+            @PathVariable int groupId) {
+        return ResponseEntity.ok(
+                gradeService.getStudentsForGroup(groupId)
+        );
     }
 
 }

@@ -22,6 +22,7 @@ public class GradeService {
     private final GradeRepository gradeRepository;
     private final UserRepository userRepository;
     private final SchoolClassRepository schoolClassRepository;
+    private final UserGroupRepository userGroupRepository;
 
     private final DateTimeFormatter FMT = DateTimeFormatter.ISO_DATE;
 
@@ -127,6 +128,58 @@ public class GradeService {
         gradeRepository.saveAll(newGrades);
 
         return dtos;
+    }
+
+    public List<SchoolClassDTO> getClassesForTeacher(int teacherId) {
+        List<SchoolClass> classes = gradeRepository.findDistinctClassesByTeacherId(teacherId);
+        return classes.stream()
+                .map(sc -> new SchoolClassDTO(
+                        sc.getId(),
+                        sc.getClassName(),
+                        gradeRepository.findByTeacher_IdAndSchoolClass_Id(teacherId, sc.getId())
+                                .stream().mapToInt(Grade::getGrade).average().orElse(Double.NaN)
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<StudentDTO> getStudentsForGroup(int groupId) {
+        return groupMemberRepository.findByUserGroup_Id(groupId).stream()
+                .map(GroupMember::getUser)
+                .filter(user -> user.getRole() == User.Role.S)
+                .map(user -> new StudentDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getSurname()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<GradeSummaryDTO> getAllGradesForStudent(int studentId) {
+        return gradeRepository.findByStudent_IdOrderByIdDesc(studentId).stream()
+                .map(g -> new GradeSummaryDTO(
+                        g.getId(),
+                        g.getGrade(),
+                        g.getType(),
+                        g.getIssueDate().format(FMT)
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+    public List<TeacherGroupDTO> getGroupsForTeacher(int teacherId) {
+        // 1) wyciągnij pośrednio z ocen unikalne ID grup
+        List<Integer> groupIds = gradeRepository
+                .findDistinctGroupIdsByTeacherId(teacherId);
+
+        // 2) pobierz te grupy z bazy i zamapuj na DTO
+        return userGroupRepository
+                .findAllById(groupIds)
+                .stream()
+                .map(ug -> new TeacherGroupDTO(ug.getId(), ug.getGroupName()))
+                .collect(Collectors.toList());
     }
 
 }

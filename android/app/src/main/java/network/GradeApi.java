@@ -30,8 +30,20 @@ public interface GradeApi {
 
     @GET("/api/grades/student/{studentId}/new")
     Call<List<NewGradeResponse>> getNewGrades(
-            @Path("studentId") int studentId
+        @Path("studentId") int studentId
     );
+
+
+    @GET("/api/grades/group/{groupId}/students")
+    Call<List<StudentResponse>> getStudentsForGroup(
+            @Path("groupId") int groupId
+    );
+
+    @GET("/api/grades/teacher/{teacherId}/groups")
+    Call<List<TeacherGroupResponse>> getGroupsForTeacher(
+            @Path("teacherId") int teacherId
+    );
+
 
 
 }

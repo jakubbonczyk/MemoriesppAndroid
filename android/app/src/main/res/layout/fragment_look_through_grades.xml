@@ -39,51 +39,12 @@
             app:layout_constraintTop_toBottomOf="@+id/chooseGroupText">
 
             <LinearLayout
+                android:id="@+id/classesLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="15dp">
-
-                    <ImageButton
-                        android:id="@+id/groupNameButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:background="@drawable/background_lesson" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|start"
-                        android:layout_marginLeft="12dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/groupNameText2"
-                            android:layout_width="270dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center|start"
-                            android:text="@string/groupNameText2"
-                            android:textColor="@color/white"
-                            android:textSize="24sp"
-                            android:textStyle="bold" />
-
-                        <ImageView
-                            android:id="@+id/imageView7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="8dp"
-                            android:gravity="end"
-                            android:src="@drawable/baseline_arrow_forward_ios_24" />
-                    </LinearLayout>
-                </FrameLayout>
+                android:orientation="vertical"/>
 
 
-            </LinearLayout>
         </ScrollView>
 
 

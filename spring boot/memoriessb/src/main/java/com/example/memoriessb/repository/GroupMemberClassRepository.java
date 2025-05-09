@@ -12,6 +12,8 @@ public interface GroupMemberClassRepository
     List<GroupMemberClass> findByGroupMember_UserGroup_Id(int groupId);
     Optional<GroupMemberClass> findFirstByGroupMember_UserGroup_IdAndGroupMember_User_Id(Integer groupId, Integer userId);
     List<GroupMemberClass> findByGroupMember_Id(Integer groupMemberId);
+    List<GroupMemberClass> findBySchoolClass_Id(Integer classId);
+
 }
 
 
