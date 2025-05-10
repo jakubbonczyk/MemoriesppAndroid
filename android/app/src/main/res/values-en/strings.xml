@@ -197,4 +197,6 @@
     <string name="teacher">Teachers</string>
     <string name="classes">Class</string>
 
+    <string name="theme_dark">Turn on dark mode</string>
+    <string name="theme_light">Turn on light mode</string>
 </resources>

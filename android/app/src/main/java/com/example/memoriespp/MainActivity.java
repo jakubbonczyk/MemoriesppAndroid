@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -72,9 +73,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        boolean darkMode = prefs.getBoolean("dark_mode", false);
+        AppCompatDelegate.setDefaultNightMode(
+                darkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+        );
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // --- kanał powiadomień ---
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     "grades_channel",
@@ -86,17 +94,13 @@ public class MainActivity extends AppCompatActivity {
                     .createNotificationChannel(channel);
         }
 
-        // --- wychwycenie dzwoneczka ---
         notificationButton = findViewById(R.id.imageView6);
         notificationButton.setOnClickListener(v -> showPendingNotifications());
 
-
-        // przygotuj badge, ale jeszcze go nie pokazuj
         notificationBadge = BadgeDrawable.create(this);
         notificationBadge.setBackgroundColor(0xFFE53935); // czerwony
         notificationBadge.setBadgeGravity(BadgeDrawable.TOP_END);
 
-        // reszta standardowego onCreate:
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -158,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
             profileImageView.setImageResource(R.drawable.profpic);
         }
 
-        // od razu pokaż badge jeśli już jest flaga
         updateNotificationBadge();
     }
 
@@ -263,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<List<NewGradeResponse>> call,
                                        Response<List<NewGradeResponse>> resp) {
                     if (resp.isSuccessful() && resp.body() != null && !resp.body().isEmpty()) {
-                        // ustal flagę w prefs i pokaż badge
                         pendingNotifications = resp.body();
                         prefs.edit().putBoolean(KEY_HAS_NEW_NOTIF, true).apply();
                         runOnUiThread(() -> {
@@ -272,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
                                     "Masz " + resp.body().size() + " nowych ocen!",
                                     Toast.LENGTH_SHORT).show();
                         });
-                        // dodatkowo każdą ocenę możesz też od razu notyfikować
                         for (NewGradeResponse g : resp.body()) {
                             showNotification(g);
                         }
@@ -331,12 +332,10 @@ public class MainActivity extends AppCompatActivity {
     private void showPendingNotifications() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        // 1) Weź listę, którą złapaliśmy wcześniej w checkForNewGrades()
         List<NewGradeResponse> list = (pendingNotifications != null)
                 ? pendingNotifications
                 : Collections.emptyList();
 
-        // 2) Jeśli pusta, wyświetl komunikat i return
         if (list.isEmpty()) {
             new AlertDialog.Builder(this)
                     .setTitle("Twoje powiadomienia")
@@ -346,7 +345,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // 3) Przygotuj tablicę tekstów do dialogu
         String[] items = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
             NewGradeResponse g = list.get(i);
@@ -354,11 +352,9 @@ public class MainActivity extends AppCompatActivity {
                     g.getType(), g.getClassName(), g.getGrade());
         }
 
-        // 4) Wyczyść flagę + schowaj badge
         prefs.edit().putBoolean(KEY_HAS_NEW_NOTIF, false).apply();
         updateNotificationBadge();
 
-        // 5) Pokaż dialog z listą powiadomień
         new AlertDialog.Builder(this)
                 .setTitle("Twoje powiadomienia")
                 .setItems(items, null)

@@ -199,4 +199,7 @@
 <!--fragment_assign_teacher_to_class.xml-->
     <string name="teacher">Nauczyciele</string>
     <string name="classes">Przedmiot</string>
+
+    <string name="theme_dark">Włącz ciemny motyw</string>
+    <string name="theme_light">Włącz jasny motyw</string>
 </resources>

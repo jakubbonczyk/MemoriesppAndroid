@@ -1,6 +1,7 @@
 package com.example.memoriespp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -10,7 +11,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -51,6 +55,32 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inf, ViewGroup c, Bundle s) {
         View root = inf.inflate(R.layout.fragment_settings, c, false);
+
+        SharedPreferences themePrefs = requireActivity()
+                .getSharedPreferences("ThemePrefs", Context.MODE_PRIVATE);
+        boolean isDarkMode = themePrefs.getBoolean("dark_mode", false);
+
+        Button changeThemeBtn = root.findViewById(R.id.changeThemeButton);
+
+        changeThemeBtn.setText(
+                isDarkMode ? R.string.theme_light : R.string.theme_dark
+        );
+
+        changeThemeBtn.setOnClickListener(v -> {
+            boolean dark = !themePrefs.getBoolean("dark_mode", false);
+            // zapisz wybór
+            themePrefs.edit()
+                    .putBoolean("dark_mode", dark)
+                    .apply();
+            // przełącz tryb
+            AppCompatDelegate.setDefaultNightMode(
+                    dark
+                            ? AppCompatDelegate.MODE_NIGHT_YES
+                            : AppCompatDelegate.MODE_NIGHT_NO
+            );
+            // odśwież UI
+            requireActivity().recreate();
+        });
 
         profileImageView = root.findViewById(R.id.profileImage);
         Button changePicBtn = root.findViewById(R.id.changeProfilePictureButton);
@@ -87,6 +117,23 @@ public class SettingsFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), "Brak ID użytkownika", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        Button changeNotifBtn = root.findViewById(R.id.changeNotificationsSettingsButton);
+        changeNotifBtn.setOnClickListener(v -> {
+            Intent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().getPackageName());
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                intent = new Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+                        .putExtra("app_package", requireContext().getPackageName())
+                        .putExtra("app_uid", requireActivity().getApplicationInfo().uid);
+            } else {
+                intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .setData(Uri.parse("package:" + requireContext().getPackageName()));
+            }
+            startActivity(intent);
         });
 
         if (getActivity() != null)
