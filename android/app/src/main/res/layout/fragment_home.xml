@@ -19,149 +19,61 @@
             android:id="@+id/yourGradebook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/yourGradebook"
-            android:textSize="24sp"
             android:textColor="@color/black"
+            android:textSize="24sp"
             android:textStyle="bold"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintBottom_toTopOf="@+id/buttonsId"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="32dp" />
 
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
+        <LinearLayout
+            android:id="@+id/buttonsId"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/yourGradebook">
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/yourGradebook"
+            tools:layout_editor_absoluteX="32dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp">
+            <!--BUTTON 1-->
 
-                <!--BUTTON 1-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:layout_marginBottom="10dp">
 
-                <FrameLayout
-                    android:layout_width="130dp"
+                <ImageButton
+                    android:id="@+id/gradesButton"
+                    android:layout_width="match_parent"
                     android:layout_height="130dp"
-                    android:layout_marginRight="10dp">
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/red_button_background" />
 
-                    <ImageButton
-                        android:id="@+id/classesButton"
-                        android:layout_width="130dp"
-                        android:layout_height="130dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/classes_button" />
+                <TextView
+                    android:id="@+id/gradesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/gradesText"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/classesHomeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|top"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginRight="5dp"
-                        android:text="@string/classesHomeButton"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/classesIcon"
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="12dp"
-                        android:rotation="20"
-                        android:src="@drawable/outline_book_24" />
-                </FrameLayout>
-
-                <!--BUTTON 2-->
-
-                <FrameLayout
-                    android:id="@+id/teacherLayout"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:layout_marginRight="10dp">
-
-
-                    <ImageButton
-                        android:id="@+id/teachersButton"
-                        android:layout_width="130dp"
-                        android:layout_height="130dp"
-                        android:background="@null"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/teachers_button" />
-
-                    <TextView
-                        android:id="@+id/teachersText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|top"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginRight="5dp"
-                        android:text="@string/teachersText"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/teachersIcon"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="12dp"
-                        android:rotation="20"
-                        android:src="@drawable/outline_history_edu_24" />
-                </FrameLayout>
-
-                <!--BUTTON 3-->
-
-                <FrameLayout
-                    android:layout_width="130dp"
-                    android:layout_height="130dp">
-
-
-                    <ImageButton
-                        android:id="@+id/gradesButton"
-                        android:layout_width="130dp"
-                        android:layout_height="130dp"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/grades_button" />
-
-                    <TextView
-                        android:id="@+id/gradesText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|top"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginTop="18dp"
-                        android:text="@string/gradesText"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/gradesIcon"
-                        android:layout_width="75dp"
-                        android:layout_height="75dp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="12dp"
-                        android:rotation="20"
-                        android:src="@drawable/outline_looks_5_24" />
-                </FrameLayout>
-
-
-            </LinearLayout>
-        </HorizontalScrollView>
+                <ImageView
+                    android:id="@+id/classesIcon"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:layout_gravity="center|right"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="12dp"
+                    android:rotation="20"
+                    android:src="@drawable/outline_looks_5_24" />
+            </FrameLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/scheduleText"
@@ -172,7 +84,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+            app:layout_constraintTop_toBottomOf="@+id/buttonsId"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="32dp" />
 

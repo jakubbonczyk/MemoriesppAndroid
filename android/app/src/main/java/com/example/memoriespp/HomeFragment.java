@@ -36,11 +36,10 @@ public class HomeFragment extends Fragment {
     private ScheduleApi  scheduleApi;
     private GroupApi     groupApi;
     private TextView     dateNow;
-    private ImageButton  btnPrevDay, btnNextDay;
+    private ImageButton  btnPrevDay, btnNextDay, gradesButton;
     private LocalDate    displayedDate;
     private int userId, groupId;
     private String role;
-    private FrameLayout teachersFrameLayout;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,14 +52,27 @@ public class HomeFragment extends Fragment {
         btnPrevDay       = root.findViewById(R.id.btnPrevDay);
         btnNextDay       = root.findViewById(R.id.btnNextDay);
         scheduleContainer= root.findViewById(R.id.scheduleContainer);
-        teachersFrameLayout = root.findViewById(R.id.teacherLayout);
+        gradesButton = root.findViewById(R.id.gradesButton);
+
+        gradesButton.setOnClickListener(v -> {
+            GradesFragment frag = new GradesFragment();
+            Bundle args = new Bundle();
+            args.putInt("userId", userId);
+            args.putString("role", role);
+            frag.setArguments(args);
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, frag)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         // ** Pobierz role i userId **
         if (getArguments() != null) {
             role   = getArguments().getString("role");
             userId = getArguments().getInt("userId", -1);
         }
-        teachersFrameLayout.setVisibility("T".equals(role) ? View.GONE : View.VISIBLE);
+//        teachersFrameLayout.setVisibility("T".equals(role) ? View.GONE : View.VISIBLE);
 
         // ** Retrofit **
         Retrofit rt = new Retrofit.Builder()
