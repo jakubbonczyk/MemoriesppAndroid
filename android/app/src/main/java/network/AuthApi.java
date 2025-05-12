@@ -12,4 +12,7 @@ public interface AuthApi {
 
     @POST("/api/auth/register")
     Call<String> registerUser(@Body RegisterUserRequest request);
+
+    @POST("/api/auth/request-password-reset")
+    Call<Void> requestPasswordReset(@Body Map<String, String> body);
 }

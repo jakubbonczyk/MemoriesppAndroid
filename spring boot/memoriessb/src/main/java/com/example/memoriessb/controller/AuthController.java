@@ -2,6 +2,7 @@ package com.example.memoriessb.controller;
 
 import com.example.memoriessb.DTO.RegisterUserRequest;
 import com.example.memoriessb.service.AuthService;
+import com.example.memoriessb.service.PasswordResetService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordResetService passwordResetService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterUserRequest request) {
@@ -43,6 +45,34 @@ public class AuthController {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+        }
+    }
+
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<?> requestPasswordReset(@RequestBody Map<String, String> body) {
+        String login = body.get("login");
+        if (login == null || login.isEmpty()) {
+            return ResponseEntity.badRequest().body("Brak loginu (e-maila)");
+        }
+
+        passwordResetService.requestPasswordReset(login);
+        return ResponseEntity.ok("Jeśli konto istnieje, link resetujący został wysłany.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> body) {
+        String token = body.get("token");
+        String newPassword = body.get("newPassword");
+
+        if (token == null || newPassword == null) {
+            return ResponseEntity.badRequest().body("Brak tokenu lub hasła");
+        }
+
+        boolean success = passwordResetService.resetPassword(token, newPassword);
+        if (success) {
+            return ResponseEntity.ok("Hasło zostało zaktualizowane");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nieprawidłowy lub wygasły token");
         }
     }
 }

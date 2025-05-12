@@ -19,13 +19,10 @@ public class LocaleHelperInstrumentedTest {
     public void testSetLocaleSetsCorrectLanguage() {
         Context context = ApplicationProvider.getApplicationContext();
 
-        // Najpierw ustawiamy język (czyli zapisujemy do prefs)
         LocaleHelper.changeLanguage(context, "it");
 
-        // Potem wywołujemy metodę, która powinna go odczytać i ustawić
         LocaleHelper.setLocale(context);
 
-        // Sprawdzamy czy Locale.getDefault() ma teraz włoski
         assertEquals("it", Locale.getDefault().getLanguage());
     }
 }

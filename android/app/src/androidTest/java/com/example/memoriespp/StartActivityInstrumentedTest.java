@@ -20,7 +20,6 @@ public class StartActivityInstrumentedTest {
 
     @Before
     public void prepare() {
-        // ustal flagę z StartActivity
         StartActivity.ENABLE_ADS = false;
     }
 

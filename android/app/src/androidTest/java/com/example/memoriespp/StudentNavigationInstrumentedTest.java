@@ -36,7 +36,7 @@ public class StudentNavigationInstrumentedTest {
         onView(withId(R.id.home))
                 .perform(click());
 
-        onView(withId(R.id.classesButton))
+        onView(withId(R.id.gradesButton))
                 .perform(scrollTo(), click());
 
         onView(withId(R.id.constraintLayout))
@@ -45,7 +45,7 @@ public class StudentNavigationInstrumentedTest {
         onView(withId(R.id.home))
                 .perform(click());
 
-        onView(withId(R.id.teachersButton))
+        onView(withId(R.id.gradesButton))
                 .perform(scrollTo(), click());
 
         onView(withId(R.id.constraintLayout))
