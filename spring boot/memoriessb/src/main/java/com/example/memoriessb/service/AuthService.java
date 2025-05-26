@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.Base64;
 import java.util.List;
 
+/**
+ * Serwis odpowiedzialny za autoryzację i rejestrację użytkowników.
+ * Obsługuje logowanie na podstawie danych logowania oraz tworzenie nowych kont użytkowników.
+ */
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -24,7 +28,14 @@ public class AuthService {
     private final GroupMemberRepository groupMemberRepository;
     private final GroupMemberClassRepository groupMemberClassRepository;
 
-
+    /**
+     * Loguje użytkownika na podstawie loginu i hasła.
+     *
+     * @param login    login użytkownika (np. e-mail)
+     * @param password niezaszyfrowane hasło
+     * @return dane użytkownika w postaci {@link LoginResponse}
+     * @throws IllegalArgumentException jeśli login nie istnieje lub hasło jest nieprawidłowe
+     */
     public LoginResponse login(String login, String password) {
         SensitiveData data = sensitiveDataRepository.findByLogin(login)
                 .orElseThrow(() -> new IllegalArgumentException("Nieprawidłowy login"));
@@ -53,7 +64,13 @@ public class AuthService {
     }
 
 
-
+    /**
+     * Rejestruje nowego użytkownika w systemie.
+     * Tworzy użytkownika, jego dane logowania oraz przypisuje do grupy, jeśli podano identyfikator grupy.
+     *
+     * @param request dane rejestracyjne użytkownika
+     * @throws IllegalArgumentException jeśli login jest już zajęty lub nie istnieje wskazana grupa
+     */
     public void registerUser(RegisterUserRequest request) {
         log.debug("registerUser() request = {}", request);
         try {

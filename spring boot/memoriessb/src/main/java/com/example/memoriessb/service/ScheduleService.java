@@ -13,12 +13,23 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Serwis odpowiedzialny za zarządzanie planem zajęć.
+ * Umożliwia tworzenie nowych lekcji oraz pobieranie harmonogramów dla nauczycieli i grup.
+ */
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepo;
     private final GroupMemberClassRepository assignmentRepo;
 
+    /**
+     * Tworzy nową lekcję oraz zaplanowane powtórzenia na kolejne tygodnie (do końca miesiąca).
+     *
+     * @param dto obiekt zawierający datę, godzinę oraz identyfikator przypisania nauczyciel–przedmiot
+     * @return szczegóły utworzonej pierwszej lekcji w postaci {@link ScheduleResponseDTO}
+     * @throws EntityNotFoundException jeśli przypisanie nie istnieje
+     */
     public ScheduleResponseDTO createLesson(ScheduleRequestDTO dto) {
         GroupMemberClass gmc = assignmentRepo.findById(dto.getAssignmentId())
                 .orElseThrow(() -> new EntityNotFoundException("Assignment not found"));
@@ -53,10 +64,26 @@ public class ScheduleService {
         );
     }
 
+    /**
+     * Zwraca harmonogram lekcji dla danej grupy w określonym przedziale dat.
+     *
+     * @param groupId identyfikator grupy
+     * @param from    data początkowa zakresu
+     * @param to      data końcowa zakresu
+     * @return lista lekcji w postaci {@link ScheduleResponseDTO}
+     */
     public List<ScheduleResponseDTO> getScheduleForGroup(int groupId, LocalDate from, LocalDate to) {
         return scheduleRepo.findByGroupAndDateRange(groupId, from, to);
     }
 
+    /**
+     * Zwraca harmonogram lekcji prowadzonych przez danego nauczyciela w określonym przedziale dat.
+     *
+     * @param teacherId identyfikator nauczyciela
+     * @param from      data początkowa zakresu
+     * @param to        data końcowa zakresu
+     * @return lista lekcji w postaci {@link ScheduleResponseDTO}
+     */
     public List<ScheduleResponseDTO> getScheduleForTeacher(int teacherId, LocalDate from, LocalDate to) {
         return scheduleRepo.findByTeacherAndDateRange(teacherId, from, to);
     }

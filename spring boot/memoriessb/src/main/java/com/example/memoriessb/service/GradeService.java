@@ -13,6 +13,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serwis odpowiedzialny za zarządzanie ocenami uczniów.
+ * Umożliwia dodawanie ocen, pobieranie szczegółów, analizowanie średnich oraz zarządzanie powiadomieniami o ocenach.
+ */
 @Service
 @AllArgsConstructor
 public class GradeService {
@@ -26,6 +30,12 @@ public class GradeService {
 
     private final DateTimeFormatter FMT = DateTimeFormatter.ISO_DATE;
 
+    /**
+     * Dodaje nową ocenę na podstawie przesłanego żądania.
+     *
+     * @param req dane oceny zawierające identyfikatory ucznia, nauczyciela i przedmiotu
+     * @throws EntityNotFoundException jeśli uczeń, nauczyciel lub przedmiot nie istnieje
+     */
     public void addGrade(GradeRequest req) {
         Grade g = new Grade();
         g.setGrade(req.getGrade());
@@ -46,12 +56,17 @@ public class GradeService {
         gradeRepository.save(g);
     }
 
+    /**
+     * Zwraca listę przedmiotów ucznia wraz ze średnią ocen z każdego z nich.
+     *
+     * @param userId identyfikator ucznia
+     * @return lista przedmiotów z obliczonymi średnimi ocenami
+     * @throws EntityNotFoundException jeśli użytkownik nie jest przypisany do grupy
+     */
     public List<SchoolClassDTO> getSubjectsForStudent(int userId) {
-        // 1) znajdź GroupMember
         GroupMember gm = groupMemberRepository.findByUser_Id(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Brak członkostwa w grupie"));
 
-        // 2) klasy z tej grupy
         List<SchoolClass> classes = groupMemberClassRepository
                 .findByGroupMember_UserGroup_Id(gm.getUserGroup().getId())
                 .stream()
@@ -59,14 +74,11 @@ public class GradeService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 3) dla każdej klasy policz średnią
         return classes.stream()
                 .map(sc -> {
-                    // pobierz wszystkie oceny ucznia z tej klasy
                     List<Grade> grades = gradeRepository
                             .findByStudent_IdAndSchoolClass_IdOrderByIdDesc(userId, sc.getId());
 
-                    // policz średnią
                     double avg = grades.stream()
                             .mapToInt(Grade::getGrade)
                             .average()
@@ -78,7 +90,13 @@ public class GradeService {
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * Zwraca szczegóły wszystkich ocen ucznia z danego przedmiotu.
+     *
+     * @param studentId identyfikator ucznia
+     * @param classId   identyfikator przedmiotu
+     * @return lista ocen z danego przedmiotu
+     */
     public List<GradeSummaryDTO> getGradesForSubject(int studentId, int classId) {
         return gradeRepository.findByStudent_IdAndSchoolClass_IdOrderByIdDesc(studentId, classId)
                 .stream()
@@ -91,7 +109,13 @@ public class GradeService {
                 .collect(Collectors.toList());
     }
 
-
+    /**
+     * Zwraca szczegóły jednej oceny (pełne informacje).
+     *
+     * @param gradeId identyfikator oceny
+     * @return szczegóły oceny w postaci DTO
+     * @throws EntityNotFoundException jeśli ocena nie istnieje
+     */
     public GradeDetailDTO getGradeDetails(int gradeId) {
         Grade g = gradeRepository.findById(gradeId)
                 .orElseThrow(() -> new EntityNotFoundException("Ocena nie istnieje"));
@@ -107,12 +131,16 @@ public class GradeService {
         );
     }
 
+    /**
+     * Zwraca nieprzeczytane (nowe) oceny ucznia oraz oznacza je jako przeczytane.
+     *
+     * @param studentId identyfikator ucznia
+     * @return lista nowych ocen
+     */
     @Transactional
     public List<NewGradeDTO> getNewGradesForStudent(int studentId) {
-        // 1) pobierz niepowiadomione oceny
         List<Grade> newGrades = gradeRepository.findByStudent_IdAndNotifiedFalse(studentId);
 
-        // 2) zmapuj na DTO
         List<NewGradeDTO> dtos = newGrades.stream()
                 .map(g -> new NewGradeDTO(
                         g.getId(),
@@ -123,13 +151,18 @@ public class GradeService {
                 ))
                 .collect(Collectors.toList());
 
-        // 3) oznacz jako powiadomione
         newGrades.forEach(g -> g.setNotified(true));
         gradeRepository.saveAll(newGrades);
 
         return dtos;
     }
 
+    /**
+     * Zwraca listę klas, w których nauczyciel wystawił oceny, wraz ze średnią ocen z każdej klasy.
+     *
+     * @param teacherId identyfikator nauczyciela
+     * @return lista przedmiotów z obliczonymi średnimi ocenami
+     */
     public List<SchoolClassDTO> getClassesForTeacher(int teacherId) {
         List<SchoolClass> classes = gradeRepository.findDistinctClassesByTeacherId(teacherId);
         return classes.stream()
@@ -142,6 +175,12 @@ public class GradeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Zwraca listę uczniów przypisanych do danej grupy.
+     *
+     * @param groupId identyfikator grupy
+     * @return lista uczniów w postaci DTO
+     */
     public List<StudentDTO> getStudentsForGroup(int groupId) {
         return groupMemberRepository.findByUserGroup_Id(groupId).stream()
                 .map(GroupMember::getUser)
@@ -154,6 +193,12 @@ public class GradeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Zwraca wszystkie oceny ucznia posortowane malejąco po ID.
+     *
+     * @param studentId identyfikator ucznia
+     * @return lista ocen ucznia
+     */
     public List<GradeSummaryDTO> getAllGradesForStudent(int studentId) {
         return gradeRepository.findByStudent_IdOrderByIdDesc(studentId).stream()
                 .map(g -> new GradeSummaryDTO(
@@ -165,16 +210,16 @@ public class GradeService {
                 .collect(Collectors.toList());
     }
 
-
-
-
-
+    /**
+     * Zwraca listę grup, w których nauczyciel wystawił jakiekolwiek oceny.
+     *
+     * @param teacherId identyfikator nauczyciela
+     * @return lista grup w postaci DTO
+     */
     public List<TeacherGroupDTO> getGroupsForTeacher(int teacherId) {
-        // 1) wyciągnij pośrednio z ocen unikalne ID grup
         List<Integer> groupIds = gradeRepository
                 .findDistinctGroupIdsByTeacherId(teacherId);
 
-        // 2) pobierz te grupy z bazy i zamapuj na DTO
         return userGroupRepository
                 .findAllById(groupIds)
                 .stream()

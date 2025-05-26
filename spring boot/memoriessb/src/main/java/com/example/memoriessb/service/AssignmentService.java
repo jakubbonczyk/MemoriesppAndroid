@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Serwis odpowiedzialny za przypisywanie nauczycieli do grup i przedmiotów.
+ * Umożliwia dodawanie nauczyciela do grupy oraz przypisywanie go do wybranych klas.
+ */
 @Service
 @RequiredArgsConstructor
 public class AssignmentService {
@@ -17,29 +21,40 @@ public class AssignmentService {
     private final SchoolClassRepository classRepo;
     private final GroupMemberClassRepository gmClassRepo;
 
-
+    /**
+     * Przypisuje nauczyciela do wybranej grupy.
+     *
+     * @param userId  identyfikator nauczyciela
+     * @param groupId identyfikator grupy, do której ma zostać przypisany
+     * @throws IllegalArgumentException jeśli użytkownik lub grupa nie istnieją
+     */
     public void assignTeacherToGroup(int userId, int groupId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie ma takiego usera: " + userId));
         UserGroup group = userGroupRepo.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie ma takiej grupy: " + groupId));
 
-        // Zapiszemy nowy GroupMember; JPA wygeneruje poprawny INSERT
         GroupMember gm = new GroupMember();
         gm.setUser(user);
         gm.setUserGroup(group);
         groupMemberRepo.save(gm);
     }
 
+    /**
+     * Zwraca listę klas (przedmiotów), do których przypisany jest nauczyciel w danej grupie.
+     *
+     * @param userId  identyfikator nauczyciela
+     * @param groupId identyfikator grupy
+     * @return lista przypisanych klas
+     * @throws IllegalArgumentException jeśli nauczyciel nie należy do podanej grupy
+     */
     public List<SchoolClass> getAssignedClasses(int userId, int groupId) {
-        // 1) znajdź wpis w group_members
         GroupMember gm = groupMemberRepo
                 .findAllByUserGroup_Id(groupId).stream()
                 .filter(m -> m.getUser().getId().equals(userId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Użytkownik nie należy do tej grupy"));
 
-        // 2) pobierz wszystkie powiązania z group_members_has_class
         return gmClassRepo
                 .findAllByGroupMember_Id(gm.getId())
                 .stream()
@@ -47,8 +62,15 @@ public class AssignmentService {
                 .toList();
     }
 
+    /**
+     * Przypisuje nauczyciela z danej grupy do wybranego przedmiotu (klasy).
+     *
+     * @param userId  identyfikator nauczyciela
+     * @param groupId identyfikator grupy, do której należy nauczyciel
+     * @param classId identyfikator klasy (przedmiotu)
+     * @throws IllegalArgumentException jeśli użytkownik nie należy do grupy lub klasa nie istnieje
+     */
     public void assignTeacherToClass(int userId, int groupId, int classId) {
-        // 1) Znajdź wpis w group_members
         GroupMember gm = groupMemberRepo
                 .findAllByUserGroup_Id(groupId).stream()
                 .filter(m -> m.getUser().getId().equals(userId))
@@ -56,12 +78,10 @@ public class AssignmentService {
                 .orElseThrow(() ->
                         new IllegalArgumentException("Użytkownik nie należy do tej grupy"));
 
-        // 2) Znajdź encję SchoolClass
         SchoolClass cls = classRepo.findById(classId)
                 .orElseThrow(() ->
                         new IllegalArgumentException("Brak przedmiotu o ID=" + classId));
 
-        // 3) Zapisz nową relację (INSERT do group_members_has_class)
         gmClassRepo.save(new GroupMemberClass(gm, cls));
     }
 }

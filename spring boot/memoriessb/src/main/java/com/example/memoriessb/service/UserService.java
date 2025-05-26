@@ -9,13 +9,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
+/**
+ * Serwis odpowiedzialny za operacje na użytkownikach systemu.
+ * Umożliwia aktualizację zdjęcia profilowego oraz pobieranie podstawowych danych użytkownika.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
 
-
+    /**
+     * Aktualizuje zdjęcie profilowe użytkownika na podstawie przesłanego ciągu Base64.
+     *
+     * @param userId       identyfikator użytkownika
+     * @param base64Image  zakodowany obraz w formacie Base64 (może być null, jeśli usuwamy zdjęcie)
+     * @throws IllegalArgumentException jeśli użytkownik nie istnieje lub dekodowanie się nie powiedzie
+     */
     public void updateUserImage(Integer userId, String base64Image) {
         log.info("updateUserImage() dla id={} ({} znaków)", userId,
                 base64Image == null ? 0 : base64Image.length());
@@ -38,7 +48,14 @@ public class UserService {
         }
     }
 
-
+    /**
+     * Zwraca podstawowe informacje o użytkowniku w postaci mapy klucz–wartość.
+     * Dane mogą być wykorzystane np. do wyświetlania profilu.
+     *
+     * @param userId identyfikator użytkownika
+     * @return mapa zawierająca ID, imię, nazwisko, rolę oraz zdjęcie w formacie Base64
+     * @throws IllegalArgumentException jeśli użytkownik nie istnieje
+     */
     public java.util.Map<String, Object> getUserDto(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

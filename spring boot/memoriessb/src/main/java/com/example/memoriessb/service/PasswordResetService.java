@@ -14,6 +14,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Serwis odpowiedzialny za obsługę procesu resetowania hasła użytkownika.
+ * Generuje tokeny resetujące, wysyła wiadomości e-mail oraz zmienia hasła po weryfikacji tokenu.
+ */
 @Service
 @RequiredArgsConstructor
 public class PasswordResetService {
@@ -24,6 +28,12 @@ public class PasswordResetService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Rozpoczyna proces resetowania hasła dla użytkownika o podanym loginie.
+     * Tworzy token resetujący z ważnością 30 minut i wysyła go na e-mail.
+     *
+     * @param login login użytkownika (np. adres e-mail)
+     */
     public void requestPasswordReset(String login) {
         Optional<SensitiveData> sensitiveOpt = sensitiveDataRepository.findByLogin(login);
         if (sensitiveOpt.isEmpty()) return;
@@ -43,6 +53,13 @@ public class PasswordResetService {
         emailService.sendPasswordResetEmail(login, token);
     }
 
+    /**
+     * Resetuje hasło użytkownika, jeśli podany token jest ważny.
+     *
+     * @param token       token resetujący wysłany do użytkownika
+     * @param newPassword nowe hasło (w postaci jawnej)
+     * @return true jeśli hasło zostało pomyślnie zresetowane, false jeśli token jest nieważny lub wygasł
+     */
     public boolean resetPassword(String token, String newPassword) {
         Optional<PasswordResetToken> tokenOpt = tokenRepository.findByToken(token);
         if (tokenOpt.isEmpty()) return false;

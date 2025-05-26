@@ -9,8 +9,20 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Repozytorium JPA dla encji {@link Schedule}.
+ * Odpowiada za operacje na planie zajęć oraz projekcje danych do {@link ScheduleResponseDTO}.
+ */
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
+    /**
+     * Zwraca listę zaplanowanych lekcji dla danej grupy w określonym przedziale dat.
+     *
+     * @param groupId identyfikator grupy użytkowników
+     * @param from    data początkowa zakresu
+     * @param to      data końcowa zakresu
+     * @return lista lekcji w postaci DTO
+     */
     @Query("""
       SELECT new com.example.memoriessb.DTO.ScheduleResponseDTO(
         s.id,
@@ -37,6 +49,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
             @Param("to")      LocalDate to
     );
 
+    /**
+     * Zwraca listę zaplanowanych lekcji prowadzonych przez danego nauczyciela
+     * w określonym przedziale dat.
+     *
+     * @param teacherId identyfikator nauczyciela
+     * @param from      data początkowa zakresu
+     * @param to        data końcowa zakresu
+     * @return lista lekcji w postaci DTO
+     */
     @Query("""
       SELECT new com.example.memoriessb.DTO.ScheduleResponseDTO(
         s.id,
