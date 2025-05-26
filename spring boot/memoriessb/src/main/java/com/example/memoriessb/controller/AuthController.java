@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+/**
+ * Kontroler REST odpowiedzialny za rejestrację, logowanie oraz resetowanie hasła.
+ * Udostępnia punkty końcowe związane z autoryzacją i zarządzaniem kontem użytkownika.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -20,6 +24,12 @@ public class AuthController {
     private final AuthService authService;
     private final PasswordResetService passwordResetService;
 
+    /**
+     * Rejestruje nowego użytkownika na podstawie przesłanych danych.
+     *
+     * @param request dane rejestracyjne użytkownika
+     * @return komunikat o powodzeniu lub błędzie rejestracji
+     */
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterUserRequest request) {
         log.debug(">>> POST /api/auth/register payload = {}", request);
@@ -35,6 +45,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Loguje użytkownika na podstawie loginu i hasła.
+     *
+     * @param credentials mapa z kluczami "login" i "password"
+     * @return obiekt {@link com.example.memoriessb.DTO.LoginResponse} lub komunikat o błędzie
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
         try {
@@ -48,6 +64,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Wysyła e-mail z linkiem do zresetowania hasła, jeśli login istnieje.
+     *
+     * @param body mapa zawierająca klucz "login" (adres e-mail)
+     * @return komunikat o wysłaniu wiadomości
+     */
     @PostMapping("/request-password-reset")
     public ResponseEntity<?> requestPasswordReset(@RequestBody Map<String, String> body) {
         String login = body.get("login");
@@ -59,6 +81,12 @@ public class AuthController {
         return ResponseEntity.ok("Jeśli konto istnieje, link resetujący został wysłany.");
     }
 
+    /**
+     * Resetuje hasło użytkownika na podstawie tokenu i nowego hasła.
+     *
+     * @param body mapa zawierająca klucze "token" i "newPassword"
+     * @return komunikat o powodzeniu lub błędzie resetu hasła
+     */
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> body) {
         String token = body.get("token");

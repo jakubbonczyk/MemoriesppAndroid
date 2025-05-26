@@ -18,6 +18,10 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Kontroler REST odpowiedzialny za zarządzanie użytkownikami systemu.
+ * Umożliwia pobieranie, edytowanie i przypisywanie użytkowników do grup oraz aktualizację zdjęć profilowych.
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -28,6 +32,13 @@ public class UserController {
     private final UserGroupRepository userGroupRepo;
     private final SensitiveDataRepository sensitiveRepo;
 
+    /**
+     * Aktualizuje zdjęcie profilowe użytkownika na podstawie zakodowanego ciągu Base64.
+     *
+     * @param id   identyfikator użytkownika
+     * @param body mapa z kluczem "image" zawierającym dane Base64
+     * @return odpowiedź HTTP 200 OK lub 400 Bad Request
+     */
     @PutMapping("/{id}/profile-image")
     public ResponseEntity<Void> uploadProfileImage(
             @PathVariable int id,
@@ -53,6 +64,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Zwraca listę wszystkich użytkowników z rolą nauczyciela.
+     *
+     * @return lista nauczycieli w postaci {@link UserDTO}
+     */
     @GetMapping("/teachers")
     public ResponseEntity<List<UserDTO>> getAllTeachers() {
         List<UserDTO> teachers = userRepo.findAll().stream()
@@ -66,15 +82,19 @@ public class UserController {
         return ResponseEntity.ok(teachers);
     }
 
+    /**
+     * Zwraca listę grup, do których przypisany jest dany użytkownik.
+     *
+     * @param userId identyfikator użytkownika
+     * @return lista grup {@link GroupDTO}
+     */
     @GetMapping("/{userId}/groups")
     public ResponseEntity<List<GroupDTO>> getGroupsForUser(@PathVariable Integer userId) {
-        // najpierw ID grup z group_members
         List<Integer> groupIds = groupMemberRepo
                 .findAllByUser_Id(userId)
                 .stream()
                 .map(gm -> gm.getUserGroup().getId())
                 .toList();
-        // potem pobierz je i zmapuj na DTO
         List<GroupDTO> dtos = userGroupRepo.findAllById(groupIds)
                 .stream()
                 .map(g -> new GroupDTO(g.getId(), g.getGroupName()))
@@ -82,6 +102,11 @@ public class UserController {
         return ResponseEntity.ok(dtos);
     }
 
+    /**
+     * Zwraca listę wszystkich użytkowników w systemie.
+     *
+     * @return lista użytkowników w postaci {@link UserDTO}
+     */
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> dtos = userRepo.findAll().stream()
@@ -90,6 +115,12 @@ public class UserController {
         return ResponseEntity.ok(dtos);
     }
 
+    /**
+     * Zwraca dane użytkownika do edycji, wraz z loginem i zakodowanym zdjęciem profilowym.
+     *
+     * @param id identyfikator użytkownika
+     * @return dane użytkownika w postaci {@link EditUserResponse}
+     */
     @GetMapping("/{id}")
     public ResponseEntity<EditUserResponse> getUser(@PathVariable int id) {
         User u = userRepo.findById(id)
@@ -111,6 +142,13 @@ public class UserController {
         ));
     }
 
+    /**
+     * Aktualizuje dane użytkownika (imię, nazwisko, rola, login).
+     *
+     * @param id  identyfikator użytkownika
+     * @param req dane do aktualizacji {@link EditUserRequest}
+     * @return komunikat o powodzeniu
+     */
     @PutMapping("/{id}")
     public ResponseEntity<String> updateUser(
             @PathVariable int id,

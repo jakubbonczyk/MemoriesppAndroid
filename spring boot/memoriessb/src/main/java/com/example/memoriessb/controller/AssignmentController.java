@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Kontroler REST odpowiedzialny za przypisywanie nauczycieli do grup i przedmiotów.
+ * Umożliwia przypisanie nauczyciela do grupy oraz do konkretnej klasy w tej grupie.
+ */
 @RestController
 @RequestMapping("/api/assign")
 @RequiredArgsConstructor
@@ -16,6 +20,13 @@ public class AssignmentController {
 
     private final AssignmentService assignmentService;
 
+    /**
+     * Przypisuje nauczyciela do wskazanej grupy.
+     *
+     * @param userId  identyfikator nauczyciela
+     * @param groupId identyfikator grupy
+     * @return odpowiedź HTTP 200 OK
+     */
     @PostMapping("/user/{userId}/group/{groupId}")
     public ResponseEntity<String> assignUserToGroup(
             @PathVariable int userId,
@@ -25,6 +36,14 @@ public class AssignmentController {
         return ResponseEntity.ok("OK");
     }
 
+    /**
+     * Przypisuje nauczyciela do konkretnej klasy (przedmiotu) w ramach grupy.
+     *
+     * @param userId  identyfikator nauczyciela
+     * @param groupId identyfikator grupy
+     * @param classId identyfikator klasy (przedmiotu)
+     * @return odpowiedź HTTP 200 OK
+     */
     @PostMapping("/user/{userId}/group/{groupId}/class/{classId}")
     public ResponseEntity<Void> assign(
             @PathVariable int userId,
@@ -35,6 +54,13 @@ public class AssignmentController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Zwraca listę klas (przedmiotów), do których przypisany jest nauczyciel w danej grupie.
+     *
+     * @param userId  identyfikator nauczyciela
+     * @param groupId identyfikator grupy
+     * @return lista klas w postaci {@link ClassDTO}
+     */
     @GetMapping("/user/{userId}/group/{groupId}/classes")
     public ResponseEntity<List<ClassDTO>> getAssignedClasses(
             @PathVariable int userId,

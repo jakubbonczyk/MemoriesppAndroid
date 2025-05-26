@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Kontroler REST odpowiedzialny za zarządzanie przedmiotami (klasami).
+ * Umożliwia tworzenie nowych klas oraz pobieranie listy wszystkich klas.
+ */
 @RestController
 @RequestMapping("/api/classes")
 @RequiredArgsConstructor
@@ -17,6 +21,12 @@ public class SchoolClassController {
 
     private final SchoolClassRepository schoolClassRepository;
 
+    /**
+     * Tworzy nowy przedmiot (klasę) na podstawie przesłanej nazwy.
+     *
+     * @param request obiekt zawierający nazwę nowej klasy
+     * @return utworzony przedmiot w postaci {@link ClassDTO}
+     */
     @PostMapping
     public ResponseEntity<ClassDTO> createClass(@RequestBody CreateClassRequest request) {
         SchoolClass sc = new SchoolClass();
@@ -25,6 +35,11 @@ public class SchoolClassController {
         return ResponseEntity.ok(new ClassDTO(saved.getId(), saved.getClassName()));
     }
 
+    /**
+     * Zwraca listę wszystkich przedmiotów (klas) zarejestrowanych w systemie.
+     *
+     * @return lista klas w postaci {@link ClassDTO}
+     */
     @GetMapping
     public ResponseEntity<List<ClassDTO>> getAllClasses() {
         List<ClassDTO> list = schoolClassRepository.findAll().stream()
