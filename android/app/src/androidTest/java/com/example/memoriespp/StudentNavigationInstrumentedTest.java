@@ -15,16 +15,30 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Testy instrumentalne sprawdzające nawigację ucznia w aplikacji.
+ * Sprawdzają, czy po kliknięciu odpowiednich przycisków, uczeń jest w stanie
+ * przejść do widoku ocen oraz wrócić na ekran główny, powtarzając te kroki.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class StudentNavigationInstrumentedTest {
 
+    /**
+     * Przygotowuje środowisko testowe przed każdym testem.
+     * Ustawia zmienną `ENABLE_ADS` na `false` oraz uruchamia główną aktywność aplikacji.
+     */
     @Before
     public void setUp() {
         StartActivity.ENABLE_ADS = false;
         ActivityScenario.launch(MainActivity.class);
     }
 
+    /**
+     * Testuje nawigację ucznia pomiędzy ekranem ocen a ekranem głównym.
+     * Sprawdza, czy kliknięcie przycisku "Oceny" prowadzi do ekranu ocen,
+     * a kliknięcie przycisku "Home" powraca na ekran główny.
+     */
     @Test
     public void testStudentNavigation() {
         onView(withId(R.id.gradesButton))
