@@ -18,6 +18,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za wyświetlanie szczegółów pojedynczej oceny.
+ *
+ * Pobiera dane z backendu na podstawie przekazanego ID oceny i wyświetla:
+ * - wartość oceny,
+ * - typ,
+ * - datę wystawienia,
+ * - nauczyciela,
+ * - opis.
+ */
 public class SpecificGradeViewFragment extends Fragment {
 
     private int gradeId;
@@ -28,6 +38,11 @@ public class SpecificGradeViewFragment extends Fragment {
             dateTv,
             descriptionTv;
 
+    /**
+     * Tworzy i zwraca widok interfejsu fragmentu na podstawie pliku XML.
+     *
+     * @return główny widok fragmentu zdefiniowany w layout `fragment_specific_grade_view`
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
@@ -35,6 +50,10 @@ public class SpecificGradeViewFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_specific_grade_view, container, false);
     }
 
+    /**
+     * Inicjalizuje interfejs użytkownika i pobiera ID oceny z argumentów.
+     * Jeśli ID jest poprawne, rozpoczyna pobieranie szczegółów oceny z backendu.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -58,6 +77,11 @@ public class SpecificGradeViewFragment extends Fragment {
         fetchGradeDetails(gradeId);
     }
 
+    /**
+     * Wysyła zapytanie do backendu o szczegóły oceny na podstawie przekazanego ID.
+     *
+     * @param id identyfikator oceny do pobrania
+     */
     private void fetchGradeDetails(int id) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/")
@@ -88,6 +112,11 @@ public class SpecificGradeViewFragment extends Fragment {
                 });
     }
 
+    /**
+     * Wypełnia pola interfejsu danymi oceny po udanym pobraniu z backendu.
+     *
+     * @param dto obiekt zawierający szczegóły oceny
+     */
     private void fillDetails(GradeDetailDTO dto) {
         gradeTv.setText(String.valueOf(dto.getGrade()));
         categoryTv.setText("Ocena");

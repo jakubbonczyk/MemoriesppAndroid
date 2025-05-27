@@ -23,6 +23,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment umożliwiający edycję danych użytkownika: imienia, nazwiska, roli i loginu (e-mail).
+ * Umożliwia również ręczne zainicjowanie resetu hasła (obecnie symulowane tylko komunikatem).
+ */
 public class EditUserFragment extends Fragment {
 
     private Spinner roleSpinner;
@@ -31,6 +35,15 @@ public class EditUserFragment extends Fragment {
     private UserApi userApi;
     private int userId;
 
+    /**
+     * Tworzy widok fragmentu, inicjalizuje komponenty UI oraz ustawia logikę
+     * obsługi zapisu i resetu hasła.
+     *
+     * @param inflater obiekt służący do "nadmuchania" widoku z XML-a
+     * @param container kontener, do którego zostanie dodany widok
+     * @param savedInstanceState zapisany stan (jeśli dotyczy)
+     * @return widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -41,7 +54,6 @@ public class EditUserFragment extends Fragment {
                 false
         );
 
-        // 1) znajdź widoki
         roleSpinner   = root.findViewById(R.id.spinner);
         nameInput     = root.findViewById(R.id.nameInput);
         surnameInput  = root.findViewById(R.id.surnameInput);
@@ -49,22 +61,18 @@ public class EditUserFragment extends Fragment {
         resetPwBtn    = root.findViewById(R.id.resetPasswordButton);
         saveUserBtn   = root.findViewById(R.id.saveUserButton);
 
-        // 2) skonfiguruj Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                .addConverterFactory(ScalarsConverterFactory.create()) // plain‐text
-                .addConverterFactory(GsonConverterFactory.create())    // JSON
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         userApi = retrofit.create(UserApi.class);
 
-        // 3) pobierz userId z argumentów
         userId = requireArguments().getInt("userId");
         loadUser(userId);
 
-        // 4) listener zapisu
         saveUserBtn.setOnClickListener(v -> saveUser());
 
-        // 5) listener resetu hasła (tylko Toast)
         resetPwBtn.setOnClickListener(v -> {
             Toast.makeText(getContext(),
                             "Zresetowano hasło",
@@ -75,6 +83,11 @@ public class EditUserFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Ładuje dane użytkownika z API na podstawie ID i wypełnia pola formularza.
+     *
+     * @param userId identyfikator użytkownika do edycji
+     */
     private void loadUser(int userId) {
         userApi.getUserById(userId)
                 .enqueue(new Callback<Map<String,String>>() {
@@ -83,12 +96,10 @@ public class EditUserFragment extends Fragment {
                                            Response<Map<String,String>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Map<String,String> m = response.body();
-                            // wypełnij pola
                             nameInput.setText(m.get("name"));
                             surnameInput.setText(m.get("surname"));
                             emailInput.setText(m.get("login"));
 
-                            // mapowanie roli na wyświetlany tekst
                             String roleCode    = m.get("role");
                             String displayRole = "Uczniowie";
                             if ("A".equals(roleCode)) {
@@ -97,7 +108,6 @@ public class EditUserFragment extends Fragment {
                                 displayRole = "Nauczyciele";
                             }
 
-                            // ustaw spinner
                             @SuppressWarnings("unchecked")
                             ArrayAdapter<String> adapter =
                                     (ArrayAdapter<String>) roleSpinner.getAdapter();
@@ -123,14 +133,16 @@ public class EditUserFragment extends Fragment {
                 });
     }
 
+    /**
+     * Pobiera dane z formularza i wysyła żądanie aktualizacji użytkownika na serwerze.
+     * Po pomyślnym zapisie cofa do poprzedniego fragmentu.
+     */
     private void saveUser() {
-        // odczytaj dane z formularza
         String name     = nameInput.getText().toString().trim();
         String surname  = surnameInput.getText().toString().trim();
         String login    = emailInput.getText().toString().trim();
         String roleDisp = roleSpinner.getSelectedItem().toString();
 
-        // mapowanie na kod roli
         String roleCode;
         if ("Admin".equals(roleDisp)) {
             roleCode = "A";
@@ -157,7 +169,6 @@ public class EditUserFragment extends Fragment {
                                             "Zapisano zmiany",
                                             Toast.LENGTH_SHORT)
                                     .show();
-                            // cofnij do poprzedniego ekranu
                             getActivity().getSupportFragmentManager().popBackStack();
                         } else {
                             Toast.makeText(getContext(),

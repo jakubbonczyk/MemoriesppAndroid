@@ -1,21 +1,28 @@
 package com.example.memoriespp;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
+/**
+ * Ekran główny administratora, wyświetlany po zalogowaniu.
+ * Umożliwia szybki dostęp do trzech sekcji: użytkowników, grup i klas.
+ */
 public class AdminHomeFragment extends Fragment {
 
+    /**
+     * Tworzy i inicjalizuje widok fragmentu. Obsługuje kliknięcia w przyciski
+     * nawigujące do fragmentów zarządzania użytkownikami, grupami i klasami.
+     *
+     * @param inflater obiekt służący do tworzenia widoku z XML-a
+     * @param container widok rodzica (np. FrameLayout)
+     * @param savedInstanceState stan zapisany (jeśli istnieje)
+     * @return główny widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

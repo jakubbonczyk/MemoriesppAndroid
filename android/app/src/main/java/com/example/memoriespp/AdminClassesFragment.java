@@ -8,8 +8,24 @@ import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment interfejsu administratora odpowiedzialny za zarządzanie klasami.
+ * Umożliwia przejście do widoków:
+ * - definiowania nowej klasy,
+ * - przeglądania istniejących klas,
+ * - przypisywania nauczycieli do klas.
+ */
 public class AdminClassesFragment extends Fragment {
 
+    /**
+     * Tworzy i inicjalizuje widok fragmentu. Obsługuje kliknięcia przycisków i
+     * przełącza się do odpowiednich fragmentów administratora.
+     *
+     * @param inflater obiekt do "nadmuchiwania" widoków XML
+     * @param container kontener dla widoku
+     * @param savedInstanceState stan zapisany (jeśli istnieje)
+     * @return zainicjalizowany widok główny fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

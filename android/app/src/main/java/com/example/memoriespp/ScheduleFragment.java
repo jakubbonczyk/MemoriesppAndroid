@@ -41,6 +41,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za definiowanie nowych lekcji w planie zajęć.
+ *
+ * Umożliwia administratorowi wybór grupy, przypisania (nauczyciel + przedmiot),
+ * daty oraz przedziału godzinowego. Po zatwierdzeniu dane są wysyłane do backendu,
+ * a nowa lekcja jest wyświetlana na liście.
+ */
 public class ScheduleFragment extends Fragment {
 
     private Spinner groupSpinner, assignmentSpinner, startTimeSpinner, endTimeSpinner;
@@ -55,6 +62,14 @@ public class ScheduleFragment extends Fragment {
     private List<GroupResponse> groupList = new ArrayList<>();
     private List<AssignmentDTO> assignmentList = new ArrayList<>();
 
+    /**
+     * Tworzy widok interfejsu użytkownika dla tego fragmentu.
+     *
+     * @param inf obiekt LayoutInflater do nadmuchania widoku
+     * @param container kontener, do którego widok zostanie dołączony
+     * @param savedInstanceState zapisany stan (jeśli istnieje)
+     * @return widok zainflacjonowany z pliku fragment_schedule.xml
+     */
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inf,
                              @Nullable ViewGroup container,
@@ -62,6 +77,15 @@ public class ScheduleFragment extends Fragment {
         return inf.inflate(R.layout.fragment_schedule, container, false);
     }
 
+    /**
+     * Wywoływana po utworzeniu widoku fragmentu.
+     *
+     * Inicjalizuje kontrolki interfejsu (spinnery, przyciski), konfiguruje
+     * klienta Retrofit oraz ustawia nasłuchiwacze zdarzeń.
+     *
+     * @param v główny widok fragmentu
+     * @param s zapisany stan (jeśli istnieje)
+     */
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle s) {
         groupSpinner        = v.findViewById(R.id.groupSpinner);
@@ -87,6 +111,10 @@ public class ScheduleFragment extends Fragment {
         addLessonBtn.setOnClickListener(x -> onAddLesson());
     }
 
+    /**
+     * Ładuje wszystkie grupy i ustawia je w spinnerze.
+     * Po wyborze grupy pobiera przypisane przedmioty i nauczycieli.
+     */
     private void loadGroups() {
         groupApi.getAllGroups().enqueue(new Callback<List<GroupResponse>>() {
             @Override public void onResponse(Call<List<GroupResponse>> c,
@@ -116,6 +144,12 @@ public class ScheduleFragment extends Fragment {
         });
     }
 
+    /**
+     * Ładuje przypisania nauczycieli i przedmiotów dla wybranej grupy
+     * i ustawia je w spinnerze przypisań.
+     *
+     * @param groupId identyfikator wybranej grupy
+     */
     private void loadAssignments(int groupId) {
         assignmentApi.getAssignments(groupId)
                 .enqueue(new Callback<List<AssignmentDTO>>() {
@@ -140,6 +174,9 @@ public class ScheduleFragment extends Fragment {
                 });
     }
 
+    /**
+     * Inicjalizuje spinnery godzin rozpoczęcia i zakończenia lekcji.
+     */
     private void initTimeSpinners() {
         ArrayAdapter<CharSequence> ta = ArrayAdapter.createFromResource(
                 requireContext(),
@@ -151,6 +188,10 @@ public class ScheduleFragment extends Fragment {
         endTimeSpinner  .setAdapter(ta);
     }
 
+
+    /**
+     * Inicjalizuje przycisk wyboru daty i pokazuje DatePickerDialog.
+     */
     private void initDatePicker() {
         dateBtn.setOnClickListener(x -> {
             Calendar c = Calendar.getInstance();
@@ -164,6 +205,11 @@ public class ScheduleFragment extends Fragment {
         });
     }
 
+
+    /**
+     * Tworzy nową lekcję na podstawie wybranych danych i wysyła ją do backendu.
+     * Po pomyślnym dodaniu wyświetla ją w dolnej części ekranu.
+     */
     private void onAddLesson() {
         if (selectedDate==null || assignmentList.isEmpty()) {
             Toast.makeText(getContext(),
@@ -207,7 +253,6 @@ public class ScheduleFragment extends Fragment {
                     Toast.makeText(getContext(),"Nie udało się dodać",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // dopisz do listy
                 ScheduleResponseDTO res = r.body();
                 TextView tv = new TextView(requireContext());
                 tv.setText(

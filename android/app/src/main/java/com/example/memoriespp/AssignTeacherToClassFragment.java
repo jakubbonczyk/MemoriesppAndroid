@@ -34,6 +34,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment administracyjny umożliwiający przypisywanie nauczycieli do przedmiotów
+ * w wybranej grupie. Pobiera listę grup, przedmiotów i nauczycieli, umożliwia
+ * administratorowi dokonanie przypisań i zapisuje je do backendu.
+ */
 public class AssignTeacherToClassFragment extends Fragment {
 
     private Spinner chooseGroupSpinner;
@@ -54,6 +59,15 @@ public class AssignTeacherToClassFragment extends Fragment {
     private Set<Integer> alreadyAssignedSubjects = new HashSet<>();
 
 
+    /**
+     * Inicjalizuje widok fragmentu, ładuje dane (grupy, przedmioty) oraz
+     * ustawia akcje kliknięć i wyborów.
+     *
+     * @param inflater obiekt do "nadmuchiwania" layoutu
+     * @param container kontener rodzica
+     * @param savedInstanceState zapisany stan (jeśli istnieje)
+     * @return widok główny fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -89,7 +103,6 @@ public class AssignTeacherToClassFragment extends Fragment {
                 selectedGroupId = groupList.get(position).getId();
                 alreadyAssignedSubjects.clear();
 
-                // najpierw pobierz przypisania, potem załaduj nauczycieli
                 loadAlreadyAssignedSubjects(() -> loadTeachersForGroup(selectedGroupId));
             }
 
@@ -103,6 +116,9 @@ public class AssignTeacherToClassFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Ładuje z serwera listę wszystkich przedmiotów (klas), które mogą być przypisane.
+     */
     private void loadClasses() {
         classApi.getAllClasses()
                 .enqueue(new Callback<List<ClassResponse>>() {
@@ -124,6 +140,9 @@ public class AssignTeacherToClassFragment extends Fragment {
                 });
     }
 
+    /**
+     * Ładuje z serwera listę grup i wypełnia spinner wyboru grupy.
+     */
     private void loadGroups() {
         groupApi.getAllGroups()
                 .enqueue(new Callback<List<GroupResponse>>() {
@@ -158,6 +177,11 @@ public class AssignTeacherToClassFragment extends Fragment {
                 });
     }
 
+    /**
+     * Ładuje listę nauczycieli przypisanych do danej grupy.
+     *
+     * @param groupId identyfikator wybranej grupy
+     */
     private void loadTeachersForGroup(int groupId) {
         groupApi.getTeachersByGroup(groupId)
                 .enqueue(new Callback<List<UserResponse>>() {
@@ -179,6 +203,12 @@ public class AssignTeacherToClassFragment extends Fragment {
                 });
     }
 
+    /**
+     * Ładuje listę przedmiotów, które zostały już przypisane nauczycielom w danej grupie.
+     * Wywołuje podaną akcję po zakończeniu pobierania.
+     *
+     * @param onComplete kod wykonywany po zakończeniu pobierania
+     */
     private void loadAlreadyAssignedSubjects(Runnable onComplete) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/")
@@ -194,26 +224,31 @@ public class AssignTeacherToClassFragment extends Fragment {
                         alreadyAssignedSubjects.add(assignment.getClassId());
                     }
                 }
-                onComplete.run(); // kontynuuj
+                onComplete.run();
             }
 
             @Override
             public void onFailure(Call<List<AssignmentResponse>> call, Throwable t) {
                 Toast.makeText(requireContext(), "Błąd podczas pobierania przypisań", Toast.LENGTH_SHORT).show();
-                onComplete.run(); // mimo błędu kontynuuj
+                onComplete.run();
             }
         });
     }
 
-
-
+    /**
+     * Tworzy dynamicznie wiersze przypisujące nauczycieli do przedmiotów.
+     * Dla każdego nauczyciela tworzy widok z nazwiskiem i spinnerem przedmiotów.
+     * Jeśli nauczyciel ma już przypisany przedmiot, spinner jest zablokowany.
+     *
+     * @param groupId identyfikator grupy
+     * @param list lista nauczycieli przypisanych do grupy
+     */
     private void populateTeacherRows(int groupId, List<UserResponse> list) {
         teachersContainer.removeAllViews();
         spinners.clear();
         isAssigned.clear();
         teachers = list;
 
-        // przygotuj nazwy przedmiotów
         List<String> classNames = new ArrayList<>();
         for (ClassResponse cls : classList) {
             classNames.add(cls.getClassName());
@@ -243,7 +278,6 @@ public class AssignTeacherToClassFragment extends Fragment {
             spinners.add(sp);
             isAssigned.add(false);
 
-            // pobierz i ustaw już przypisane
             classApi.getAssignedClasses(localUserId, finalGroupId)
                     .enqueue(new Callback<List<ClassResponse>>() {
                         @Override
@@ -270,8 +304,11 @@ public class AssignTeacherToClassFragment extends Fragment {
         }
     }
 
+    /**
+     * Zapisuje nowe przypisania nauczycieli do przedmiotów. Waliduje unikalność przypisań
+     * i wysyła dane do backendu. Po zapisaniu przeładowuje fragment.
+     */
     private void saveAssignments() {
-        // Mapa: classId -> userId (lokalne przypisania w tym formularzu)
         Map<Integer, Integer> assignedSubjects = new HashMap<>();
 
         for (int i = 0; i < teachers.size(); i++) {
@@ -281,7 +318,6 @@ public class AssignTeacherToClassFragment extends Fragment {
             int classId = classList.get(classPos).getId();
             int userId = teachers.get(i).getId();
 
-            // WALIDACJA: sprawdź, czy przedmiot nie był już przypisany wcześniej
             if (alreadyAssignedSubjects.contains(classId)) {
                 Toast.makeText(requireContext(),
                         "Przedmiot \"" + classList.get(classPos).getClassName() + "\" został już wcześniej przypisany innemu nauczycielowi.",
@@ -289,7 +325,6 @@ public class AssignTeacherToClassFragment extends Fragment {
                 return;
             }
 
-            // WALIDACJA: sprawdź, czy nie jest też przypisany w bieżącym formularzu
             if (assignedSubjects.containsKey(classId)) {
                 Toast.makeText(requireContext(),
                         "Przedmiot \"" + classList.get(classPos).getClassName() + "\" został przypisany więcej niż raz.",
@@ -299,12 +334,10 @@ public class AssignTeacherToClassFragment extends Fragment {
 
             assignedSubjects.put(classId, userId);
 
-            // Wyślij przypisanie do backendu
             classApi.assignTeacherToClass(userId, selectedGroupId, classId)
                     .enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> c, Response<String> r) {
-                            // Można dodać reakcję po sukcesie, jeśli potrzeba
                         }
 
                         @Override
@@ -319,7 +352,6 @@ public class AssignTeacherToClassFragment extends Fragment {
         Toast.makeText(requireContext(),
                 "Zapisano nowe przypisania", Toast.LENGTH_SHORT).show();
 
-        // Odśwież fragment
         AssignTeacherToClassFragment assignTeacherToClassFragment = new AssignTeacherToClassFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, assignTeacherToClassFragment)

@@ -24,6 +24,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za obsługę ocen użytkownika.
+ * W zależności od roli użytkownika (uczeń/nauczyciel), wyświetla różne elementy interfejsu:
+ * - uczeń: lista przedmiotów z ocenami
+ * - nauczyciel: przyciski do dodawania i przeglądania ocen
+ */
 public class GradesFragment extends Fragment {
 
     private FrameLayout addGradeLayout;
@@ -31,6 +37,15 @@ public class GradesFragment extends Fragment {
     private LinearLayout gradesLayout;
     private String role;
 
+    /**
+     * Tworzy widok fragmentu, inicjalizuje logikę przycisków oraz pobiera dane użytkownika.
+     * W przypadku ucznia – pobiera przypisane przedmioty i ich średnie oceny.
+     *
+     * @param inflater inflater do tworzenia widoku
+     * @param container kontener nadrzędny
+     * @param savedInstanceState zapisany stan (jeśli dotyczy)
+     * @return gotowy widok
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +100,11 @@ public class GradesFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Wysyła zapytanie do backendu w celu pobrania listy przedmiotów przypisanych do ucznia.
+     *
+     * @param userId identyfikator ucznia
+     */
     private void fetchSubjectsForStudent(int userId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
@@ -115,6 +135,12 @@ public class GradesFragment extends Fragment {
                 });
     }
 
+    /**
+     * Wyświetla listę przedmiotów w interfejsie użytkownika ucznia.
+     * Dla każdego przedmiotu pokazuje jego nazwę, średnią ocenę i przycisk do szczegółowego widoku.
+     *
+     * @param subjects lista przedmiotów przypisanych do ucznia
+     */
     private void displaySubjects(List<ClassResponse> subjects) {
         gradesLayout.removeAllViews();
 

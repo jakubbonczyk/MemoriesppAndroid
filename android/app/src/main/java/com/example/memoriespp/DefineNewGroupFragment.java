@@ -20,17 +20,29 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment służący do tworzenia nowych grup użytkowników w systemie.
+ * Umożliwia administratorowi wpisanie nazwy grupy i przesłanie jej do backendu.
+ */
 public class DefineNewGroupFragment extends Fragment {
 
     private EditText groupNameInput;
     private GroupApi groupApi;
 
+    /**
+     * Inicjalizuje widok fragmentu i ustawia akcję przycisku do tworzenia nowej grupy.
+     *
+     * @param inflater obiekt do tworzenia widoku
+     * @param container kontener, w którym znajduje się fragment
+     * @param savedInstanceState stan zapisany (jeśli istnieje)
+     * @return główny widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_define_new_group, container, false);
 
-        groupNameInput    = rootView.findViewById(R.id.emailInput);  // możesz przemianować na groupNameInput
+        groupNameInput    = rootView.findViewById(R.id.emailInput);
         AppCompatButton addNewGroupButton = rootView.findViewById(R.id.addNewGroupButton);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -44,6 +56,11 @@ public class DefineNewGroupFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Obsługuje logikę tworzenia nowej grupy:
+     * sprawdza poprawność danych wejściowych, wysyła żądanie POST do API,
+     * a w przypadku sukcesu przekierowuje z powrotem do ekranu zarządzania grupami.
+     */
     private void defineNewGroup() {
         String name = groupNameInput.getText().toString().trim();
         if (name.isEmpty()) {

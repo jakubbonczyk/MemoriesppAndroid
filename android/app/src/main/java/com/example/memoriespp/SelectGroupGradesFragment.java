@@ -23,15 +23,37 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+/**
+ * Fragment umożliwiający nauczycielowi wybór jednej z przypisanych grup
+ * w celu dodania ocen. Po kliknięciu w grupę następuje przejście do
+ * formularza dodawania ocen.
+ */
 public class SelectGroupGradesFragment extends Fragment {
     private LinearLayout groupContainer;
     private GroupApi api;
 
+    /**
+     * Tworzy widok interfejsu użytkownika dla tego fragmentu.
+     *
+     * @param inflater obiekt LayoutInflater do nadmuchania widoku
+     * @param container kontener rodzica
+     * @param savedInstanceState zapisany stan fragmentu (jeśli istnieje)
+     * @return widok utworzony na podstawie layoutu fragment_select_group_grades.xml
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_select_group_grades, container, false);
     }
 
+
+    /**
+     * Inicjalizuje widok fragmentu – pobiera grupy nauczyciela i
+     * dynamicznie tworzy widoki reprezentujące każdą z nich.
+     *
+     * @param view główny widok fragmentu
+     * @param savedInstanceState zapisany stan fragmentu (jeśli istnieje)
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

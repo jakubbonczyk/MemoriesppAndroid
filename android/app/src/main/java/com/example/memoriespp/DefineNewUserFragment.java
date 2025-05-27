@@ -30,6 +30,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment służący do tworzenia nowego użytkownika (ucznia, nauczyciela lub administratora).
+ * Administrator może podać dane osobowe użytkownika, wybrać rolę oraz grupę,
+ * a następnie utworzyć konto przez wysłanie żądania do API.
+ */
 public class DefineNewUserFragment extends Fragment {
 
     private Spinner roleSpinner, groupSpinner;
@@ -38,6 +43,14 @@ public class DefineNewUserFragment extends Fragment {
     private GroupApi groupApi;
     private List<GroupResponse> groupList = new ArrayList<>();
 
+    /**
+     * Inicjalizuje interfejs użytkownika, ładuje dane grup i przypisuje zdarzenia kliknięć.
+     *
+     * @param inflater inflater widoku
+     * @param container kontener dla fragmentu
+     * @param savedInstanceState stan zapisany (jeśli istnieje)
+     * @return zainicjalizowany widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,6 +103,9 @@ public class DefineNewUserFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Pobiera listę wszystkich dostępnych grup z backendu i ustawia je w spinnerze grup.
+     */
     private void loadGroups() {
         groupApi.getAllGroups().enqueue(new Callback<List<GroupResponse>>() {
             @Override
@@ -124,6 +140,11 @@ public class DefineNewUserFragment extends Fragment {
         });
     }
 
+    /**
+     * Waliduje wprowadzone dane, tworzy obiekt `RegisterUserRequest`
+     * i wysyła żądanie rejestracji użytkownika do API.
+     * Obsługuje odpowiedzi błędne oraz komunikaty zwrotne.
+     */
     private void defineNewUser() {
         String name    = nameInput.getText().toString().trim();
         String surname = surnameInput.getText().toString().trim();
@@ -192,6 +213,10 @@ public class DefineNewUserFragment extends Fragment {
         });
     }
 
+    /**
+     * Pomocnicza klasa reprezentująca rolę użytkownika w spinnerze.
+     * Zawiera kod roli ("S", "T", "A") oraz nazwę wyświetlaną.
+     */
     private static class RoleItem {
         final String code, name;
         RoleItem(String code, String name) {

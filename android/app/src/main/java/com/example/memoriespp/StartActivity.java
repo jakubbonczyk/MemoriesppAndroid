@@ -20,17 +20,32 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
+/**
+ * Ekran startowy aplikacji.
+ * Odpowiada za:
+ * - wyświetlenie przycisku przejścia do logowania
+ * - opcjonalne wyświetlenie reklamy pełnoekranowej przed przejściem
+ * - ustawienie języka aplikacji przy uruchomieniu
+ */
 public class StartActivity extends AppCompatActivity {
 
-    public static boolean ENABLE_ADS = false; // Zmieniaj na false podczas testów
+    public static boolean ENABLE_ADS = false;
     private InterstitialAd mInterstitialAd;
     private TextView button;
 
+    /**
+     * Ustawia lokalizację językową aplikacji na podstawie zapisanych preferencji.
+     */
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
+    /**
+     * Inicjalizuje widok ekranu startowego oraz reklamy pełnoekranowej.
+     * Ustawia listener na przycisku uruchamiającym przejście do ekranu logowania
+     * lub wyświetlającym reklamę, jeśli jest włączona.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +60,10 @@ public class StartActivity extends AppCompatActivity {
 
         button = findViewById(R.id.button);
 
-        // Domyślnie zablokuj przycisk jeśli są włączone reklamy
         button.setEnabled(!ENABLE_ADS);
 
-        // Inicjalizacja Mobile Ads SDK
         MobileAds.initialize(this, initializationStatus -> {});
 
-        // Załaduj reklamę na start
         loadInterstitialAd();
 
         button.setOnClickListener(view -> {
@@ -60,14 +72,14 @@ public class StartActivity extends AppCompatActivity {
                     @Override
                     public void onAdDismissedFullScreenContent() {
                         mInterstitialAd = null;
-                        loadInterstitialAd(); // Załaduj nową
+                        loadInterstitialAd();
                         goToLogin();
                     }
 
                     @Override
                     public void onAdFailedToShowFullScreenContent(AdError adError) {
                         mInterstitialAd = null;
-                        loadInterstitialAd(); // Załaduj nową mimo błędu
+                        loadInterstitialAd();
                         goToLogin();
                     }
                 });
@@ -81,6 +93,10 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Ładuje reklamę pełnoekranową i przypisuje ją do pola `mInterstitialAd`.
+     * Po załadowaniu aktywuje przycisk przejścia dalej.
+     */
     private void loadInterstitialAd() {
         if (ENABLE_ADS) {
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -89,7 +105,6 @@ public class StartActivity extends AppCompatActivity {
                         @Override
                         public void onAdLoaded(InterstitialAd interstitialAd) {
                             mInterstitialAd = interstitialAd;
-                            // Włącz przycisk po załadowaniu reklamy
                             if (button != null) {
                                 button.setEnabled(true);
                             }
@@ -98,7 +113,6 @@ public class StartActivity extends AppCompatActivity {
                         @Override
                         public void onAdFailedToLoad(LoadAdError adError) {
                             mInterstitialAd = null;
-                            // Włącz przycisk mimo błędu, żeby user nie utknął
                             if (button != null) {
                                 button.setEnabled(true);
                             }
@@ -107,6 +121,9 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Przechodzi do ekranu logowania (`LoginActivity`) i kończy bieżącą aktywność.
+     */
     private void goToLogin() {
         Log.d("DEBUG", "Przechodzę do LoginActivity");
         Intent intent = new Intent(StartActivity.this, LoginActivity.class);

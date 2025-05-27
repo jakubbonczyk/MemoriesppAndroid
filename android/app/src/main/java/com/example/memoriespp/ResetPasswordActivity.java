@@ -20,11 +20,24 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Aktywność odpowiedzialna za resetowanie hasła użytkownika.
+ * Użytkownik wprowadza swój adres e-mail, a aplikacja wysyła żądanie
+ * na backend o wygenerowanie tymczasowego hasła lub linku resetującego.
+ * Jeśli operacja zakończy się sukcesem, użytkownik zostaje przekierowany
+ * z powrotem do ekranu logowania.
+ */
 public class ResetPasswordActivity extends AppCompatActivity {
 
     private EditText emailField;
     private AuthApi authApi;
 
+    /**
+     * Inicjalizuje widok, tworzy instancję Retrofit oraz ustawia listener
+     * na przycisku wysyłającym żądanie resetu hasła.
+     *
+     * @param savedInstanceState zapisany stan aktywności (jeśli istnieje)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

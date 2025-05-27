@@ -22,8 +22,19 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Ekran logowania użytkownika do aplikacji Memories++.
+ * Umożliwia podanie loginu i hasła, oraz przejście do formularza resetowania hasła.
+ * W zależności od roli użytkownika uruchamia odpowiednią aktywność główną.
+ */
 public class LoginActivity extends AppCompatActivity {
 
+    /**
+     * Metoda inicjalizująca widok logowania.
+     * Obsługuje przyciski: zaloguj się oraz resetuj hasło.
+     *
+     * @param savedInstanceState zapisany stan (jeśli istniał)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

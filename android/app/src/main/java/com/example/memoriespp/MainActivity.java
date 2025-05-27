@@ -1,9 +1,9 @@
 package com.example.memoriespp;
 
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +31,6 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +44,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+/**
+ * Główna aktywność użytkownika.
+ * Zakres odpowiedzialności:
+ * - Home, Grades, Settings
+ * - Motyw i język
+ * - Zdjęcie profilowe
+ * - Powiadomienia o ocenach
+ */
 @ExperimentalBadgeUtils
 public class MainActivity extends AppCompatActivity {
 
@@ -60,17 +67,26 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewName;
     TextView textViewRole;
 
-    // ** nowy **
     private ImageButton notificationButton;
     private BadgeDrawable notificationBadge;
     private List<NewGradeResponse> pendingNotifications;
 
+    /**
+     * Ustawia kontekst z uwzględnieniem aktualnego języka aplikacji.
+     *
+     * @param newBase bazowy kontekst aplikacji
+     */
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.setLocale(newBase));
     }
 
-
+    /**
+     * Inicjalizuje widok, motyw, język oraz fragmenty.
+     * Tworzy kanał powiadomień (Android 8+) i ustawia słuchaczy dla nawigacji.
+     *
+     * @param savedInstanceState stan zapisany przez system Android (jeśli istnieje)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -98,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(v -> showPendingNotifications());
 
         notificationBadge = BadgeDrawable.create(this);
-        notificationBadge.setBackgroundColor(0xFFE53935); // czerwony
+        notificationBadge.setBackgroundColor(0xFFE53935);
         notificationBadge.setBadgeGravity(BadgeDrawable.TOP_END);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -165,14 +181,20 @@ public class MainActivity extends AppCompatActivity {
         updateNotificationBadge();
     }
 
+    /**
+     * Po wznowieniu aktywności sprawdza, czy są nowe oceny i aktualizuje badge.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         checkForNewGrades();
     }
 
-
-
+    /**
+     * Ustawia zdjęcie profilowe z zakodowanego ciągu base64.
+     *
+     * @param base64Image obraz w formacie Base64
+     */
     public void refreshProfileImage(String base64Image) {
         ImageView profileImageView = findViewById(R.id.imageView4);
         if (base64Image != null && !base64Image.isEmpty()) {
@@ -184,6 +206,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Pobiera zdjęcie profilowe użytkownika z API i ustawia je w widoku.
+     *
+     * @param userId identyfikator użytkownika
+     */
     private void fetchAndSetProfileImage(int userId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
@@ -233,6 +260,10 @@ public class MainActivity extends AppCompatActivity {
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.container);
     }
 
+    /**
+     * Aktualizuje wizualny znacznik (kropkę) powiadomień na przycisku dzwonka.
+     * Znacznik znika, jeśli nie ma nowych ocen.
+     */
     private void updateNotificationBadge() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         boolean hasNew = prefs.getBoolean(KEY_HAS_NEW_NOTIF, false);
@@ -250,6 +281,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sprawdza z serwera, czy użytkownik otrzymał nowe oceny.
+     * Jeśli tak, pokazuje powiadomienia systemowe oraz znacznik powiadomień.
+     */
     private void checkForNewGrades() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int userId = prefs.getInt("userId", -1);
@@ -286,8 +321,13 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    /**
+     * Wyświetla powiadomienie systemowe o nowej ocenie.
+     *
+     * @param g obiekt zawierający dane o nowej ocenie
+     */
     private void showNotification(NewGradeResponse g) {
-        // uprawnienie POST_NOTIFICATIONS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ContextCompat.checkSelfPermission(this,
                         android.Manifest.permission.POST_NOTIFICATIONS)
@@ -312,6 +352,9 @@ public class MainActivity extends AppCompatActivity {
                 .notify(g.getId(), builder.build());
     }
 
+    /**
+     * Obsługuje rezultat zapytania o zgodę na powiadomienia (Android 13+).
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -326,8 +369,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Pobiera listę nowych powiadomień z serwera i wyświetla je w AlertDialogu.
-     * Czyści także flagę "masz nowe" i chowa badge.
+     * Wyświetla dialog z listą wszystkich nieprzeczytanych ocen.
+     * Czyści flagę nowych powiadomień oraz badge z ikony.
      */
     private void showPendingNotifications() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);

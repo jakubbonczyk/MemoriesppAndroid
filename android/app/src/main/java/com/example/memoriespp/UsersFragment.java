@@ -8,8 +8,18 @@ import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment odpowiedzialny za zarządzanie użytkownikami w systemie.
+ * Umożliwia administratorowi przejście do ekranu przeglądania użytkowników,
+ * dodawania nowych oraz przypisywania nauczycieli do grup.
+ */
 public class UsersFragment extends Fragment {
 
+    /**
+     * Tworzy widok fragmentu zarządzania użytkownikami.
+     * Inicjalizuje przyciski do przeglądania, definiowania i przypisywania nauczycieli,
+     * oraz ustawia akcje nawigacyjne do odpowiednich fragmentów.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

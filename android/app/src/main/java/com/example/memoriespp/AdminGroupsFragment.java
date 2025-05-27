@@ -8,8 +8,24 @@ import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment interfejsu administratora odpowiedzialny za zarządzanie grupami.
+ * Umożliwia przejście do widoków:
+ * - przeglądania istniejących grup,
+ * - definiowania nowej grupy,
+ * - zarządzania planem zajęć.
+ */
 public class AdminGroupsFragment extends Fragment {
 
+    /**
+     * Tworzy i inicjalizuje widok fragmentu. Ustawia akcje kliknięcia dla przycisków
+     * nawigujących do odpowiednich fragmentów administracyjnych.
+     *
+     * @param inflater obiekt używany do „nadmuchiwania” layoutu
+     * @param container kontener rodzica (ViewGroup)
+     * @param savedInstanceState poprzedni stan (jeśli istnieje)
+     * @return zainicjalizowany widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -1,4 +1,3 @@
-// LookThroughClassesFragment.java
 package com.example.memoriespp;
 
 import android.os.Bundle;
@@ -24,6 +23,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment umożliwiający przeglądanie oraz filtrowanie listy wszystkich przedmiotów
+ * (klas) pobranych z serwera.
+ * Używany przez administratora do podglądu istniejących wpisów.
+ */
 public class LookThroughClassesFragment extends Fragment {
 
     private SearchView searchView;
@@ -31,6 +35,14 @@ public class LookThroughClassesFragment extends Fragment {
     private ClassApi classApi;
     private List<ClassResponse> classList = new ArrayList<>();
 
+    /**
+     * Tworzy widok fragmentu i inicjalizuje elementy interfejsu.
+     *
+     * @param inflater używany do "napompowania" layoutu XML
+     * @param container widok-rodzic
+     * @param savedInstanceState stan zapisany (jeśli istnieje)
+     * @return korzeń hierarchii widoku
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,7 +51,6 @@ public class LookThroughClassesFragment extends Fragment {
         searchView        = root.findViewById(R.id.searchView);
         classesContainer  = root.findViewById(R.id.classesContainer);
 
-        // Inicjalizacja Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .addConverterFactory(ScalarsConverterFactory.create())
@@ -47,10 +58,8 @@ public class LookThroughClassesFragment extends Fragment {
                 .build();
         classApi = retrofit.create(ClassApi.class);
 
-        // 1) Załaduj wszystkie przedmioty
         loadClasses();
 
-        // 2) (opcjonalne) filtrowanie przez SearchView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -67,6 +76,9 @@ public class LookThroughClassesFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Pobiera wszystkie przedmioty z API i wyświetla je w kontenerze.
+     */
     private void loadClasses() {
         classApi.getAllClasses().enqueue(new Callback<List<ClassResponse>>() {
             @Override
@@ -90,6 +102,11 @@ public class LookThroughClassesFragment extends Fragment {
         });
     }
 
+    /**
+     * Wyświetla listę przedmiotów w widoku.
+     *
+     * @param list lista przedmiotów do wyświetlenia
+     */
     private void displayClasses(List<ClassResponse> list) {
         classesContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -101,6 +118,11 @@ public class LookThroughClassesFragment extends Fragment {
         }
     }
 
+    /**
+     * Filtruje listę przedmiotów na podstawie tekstu wyszukiwania.
+     *
+     * @param query tekst wpisany przez użytkownika
+     */
     private void filterClasses(String query) {
         String lower = query.toLowerCase();
         List<ClassResponse> filtered = new ArrayList<>();

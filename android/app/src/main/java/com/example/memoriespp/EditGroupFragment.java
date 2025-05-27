@@ -9,8 +9,23 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment służący do edycji informacji o grupie.
+ * Po kliknięciu przycisku zapisu użytkownik zostaje przekierowany
+ * z powrotem do ekranu zarządzania grupami.
+ */
 public class EditGroupFragment extends Fragment {
 
+    /**
+     * Tworzy i zwraca widok fragmentu, ustawiając akcję dla przycisku zapisu.
+     * Aktualnie symuluje zapis grupy poprzez wyświetlenie komunikatu i przejście
+     * do ekranu AdminGroupsFragment.
+     *
+     * @param inflater obiekt LayoutInflater służący do tworzenia widoku z pliku XML
+     * @param container widok nadrzędny, do którego zostanie dołączony ten fragment
+     * @param savedInstanceState zapisany stan fragmentu (jeśli istnieje)
+     * @return widok dla tego fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

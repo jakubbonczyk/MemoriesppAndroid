@@ -25,6 +25,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za wyświetlanie i filtrowanie listy użytkowników.
+ * Umożliwia wyszukiwanie użytkowników po imieniu i nazwisku, oraz ich edycję
+ * poprzez długie kliknięcie i wybór opcji z menu kontekstowego.
+ */
 public class LookThroughUsersFragment extends Fragment {
 
     private SearchView searchView;
@@ -34,6 +39,15 @@ public class LookThroughUsersFragment extends Fragment {
 
     private List<UserResponse> allUsers = new ArrayList<>();
 
+    /**
+     * Inicjalizuje widok fragmentu, ustawia API Retrofit oraz rejestruje
+     * listener dla SearchView. Ładuje listę wszystkich użytkowników.
+     *
+     * @param inflater  obiekt LayoutInflater do tworzenia widoku
+     * @param container kontener-rodzic
+     * @param savedInstanceState poprzedni stan (jeśli istnieje)
+     * @return widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,6 +83,10 @@ public class LookThroughUsersFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Pobiera listę wszystkich użytkowników z backendu
+     * za pomocą interfejsu UserApi i wyświetla je w widoku.
+     */
     private void loadUsers() {
         userApi.getAllUsers().enqueue(new Callback<List<UserResponse>>() {
             @Override
@@ -92,6 +110,11 @@ public class LookThroughUsersFragment extends Fragment {
         });
     }
 
+    /**
+     * Wyświetla użytkowników w kontenerze z możliwością edycji przez długie kliknięcie.
+     *
+     * @param list lista użytkowników do wyświetlenia
+     */
     private void displayUsers(List<UserResponse> list) {
         usersContainer.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -100,7 +123,6 @@ public class LookThroughUsersFragment extends Fragment {
             TextView tv = item.findViewById(R.id.userNameTv);
             tv.setText(user.getName() + " " + user.getSurname());
 
-            // Dodaj długie przytrzymanie do edycji
             item.setOnLongClickListener(v -> {
                 PopupMenu popup = new PopupMenu(getContext(), v);
                 popup.getMenu().add("Edycja");
@@ -126,6 +148,11 @@ public class LookThroughUsersFragment extends Fragment {
         }
     }
 
+    /**
+     * Filtrowanie listy użytkowników na podstawie wpisanego tekstu.
+     *
+     * @param query ciąg znaków do wyszukania (ignoruje wielkość liter)
+     */
     private void filterUsers(String query) {
         String lower = query.toLowerCase();
         List<UserResponse> filtered = new ArrayList<>();

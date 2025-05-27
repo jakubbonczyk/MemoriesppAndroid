@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +28,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za przypisywanie nauczycieli do grup.
+ * Umożliwia wybór nauczyciela, wyświetlenie jego aktualnych grup
+ * oraz dodanie go do nowych grup za pomocą dialogu.
+ */
 public class AssignTeacherToGroupFragment extends Fragment {
 
     private Spinner chooseTeacherSpinner;
@@ -41,8 +45,17 @@ public class AssignTeacherToGroupFragment extends Fragment {
     private List<GroupResponse> currentGroups = new ArrayList<>();
     private List<GroupResponse> allGroups     = new ArrayList<>();
 
-    private int selectedTeacherId;  // <— tu przechowujemy ID wybranego nauczyciela
+    private int selectedTeacherId;
 
+    /**
+     * Inicjalizuje interfejs użytkownika fragmentu, ustawia obsługę
+     * wyboru nauczyciela oraz przyciski do dodawania grup i zapisu zmian.
+     *
+     * @param inflater obiekt LayoutInflater do tworzenia widoku
+     * @param container kontener rodzica
+     * @param savedInstanceState zapisany stan instancji
+     * @return główny widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -59,16 +72,13 @@ public class AssignTeacherToGroupFragment extends Fragment {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
-                // najpierw scalars, żeby obsłużyć plain-text odpowiedzi typu "OK"
                 .addConverterFactory(ScalarsConverterFactory.create())
-                // potem JSON dla innych endpointów
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         userApi  = retrofit.create(UserApi.class);
         groupApi = retrofit.create(GroupApi.class);
 
-        // 1) Załaduj WSZYSTKIE grupy do allGroups (do popupa)
         groupApi.getAllGroups().enqueue(new Callback<List<GroupResponse>>() {
             @Override
             public void onResponse(Call<List<GroupResponse>> call,
@@ -80,14 +90,11 @@ public class AssignTeacherToGroupFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<GroupResponse>> call, Throwable t) {
-                // opcjonalnie loguj błąd
             }
         });
 
-        // 2) Załaduj listę nauczycieli
         loadTeachers();
 
-        // 3) Po wybraniu nauczyciela pobierz jego grupy
         chooseTeacherSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent,
@@ -102,11 +109,9 @@ public class AssignTeacherToGroupFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
-        // 4) Popup „Dodaj kolejną grupę”
         addAnotherGroupBtn.setOnClickListener(v -> showAddGroupPopup());
 
 
-        // 5) (opcjonalnie) przycisk Zapisz – tutaj możesz zrobić dodatkowe potwierdzenie
         saveBtn.setOnClickListener(v ->
                 Toast.makeText(getContext(), "Zapisałem wszystkie zmiany", Toast.LENGTH_SHORT).show()
         );
@@ -114,6 +119,9 @@ public class AssignTeacherToGroupFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Pobiera listę nauczycieli z serwera i wypełnia spinner wyboru nauczyciela.
+     */
     private void loadTeachers() {
         userApi.getAllTeachers().enqueue(new Callback<List<UserResponse>>() {
             @Override
@@ -148,6 +156,12 @@ public class AssignTeacherToGroupFragment extends Fragment {
         });
     }
 
+    /**
+     * Pobiera z serwera grupy przypisane do wybranego nauczyciela
+     * i wyświetla je w kontenerze.
+     *
+     * @param userId identyfikator nauczyciela
+     */
     private void loadGroupsForUser(int userId) {
         groupApi.getGroupsForUser(userId).enqueue(new Callback<List<GroupResponse>>() {
             @Override
@@ -172,6 +186,12 @@ public class AssignTeacherToGroupFragment extends Fragment {
         });
     }
 
+    /**
+     * Tworzy dynamicznie widoki wierszy przedstawiających grupy,
+     * do których przypisany jest nauczyciel.
+     *
+     * @param groups lista grup przypisanych do nauczyciela
+     */
     private void populateGroupRows(List<GroupResponse> groups) {
         groupsContainer.removeAllViews();
         LayoutInflater inf = LayoutInflater.from(getContext());
@@ -186,8 +206,11 @@ public class AssignTeacherToGroupFragment extends Fragment {
         }
     }
 
+    /**
+     * Wyświetla dialog umożliwiający przypisanie nauczyciela do nowej grupy.
+     * Filtruje grupy, do których nauczyciel nie jest jeszcze przypisany.
+     */
     private void showAddGroupPopup() {
-        // 1) Oblicz grupy do dodania
         List<GroupResponse> toAdd = new ArrayList<>();
         for (GroupResponse g : allGroups) {
             boolean already = false;
@@ -197,7 +220,6 @@ public class AssignTeacherToGroupFragment extends Fragment {
             if (!already) toAdd.add(g);
         }
 
-        // 2) Jeśli pusto – pokaż komunikat
         if (toAdd.isEmpty()) {
             new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                     .setTitle("Dodaj grupę")
@@ -207,18 +229,15 @@ public class AssignTeacherToGroupFragment extends Fragment {
             return;
         }
 
-        // 3) Przygotuj tablicę nazw
         String[] names = new String[toAdd.size()];
         for (int i = 0; i < toAdd.size(); i++) {
             names[i] = toAdd.get(i).getGroupName();
         }
 
-        // 4) AlertDialog z listą do wyboru
         new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                 .setTitle("Dodaj grupę")
                 .setItems(names, (dialog, which) -> {
                     GroupResponse chosen = toAdd.get(which);
-                    // wywołaj endpoint przypisania
                     groupApi.assignUserToGroup(selectedTeacherId, chosen.getId())
                             .enqueue(new Callback<String>() {
                                 @Override

@@ -24,12 +24,25 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za wyświetlanie listy ocen ucznia dla konkretnego przedmiotu.
+ * Pobiera dane z API na podstawie ID ucznia (z SharedPreferences) i ID przedmiotu (z argumentów Bundle).
+ * Pozwala użytkownikowi przejść do widoku szczegółowego pojedynczej oceny.
+ */
 public class GradeViewFragment extends Fragment {
 
     private LinearLayout gradesLayout;
     private int subjectId;
     private int userId;
 
+    /**
+     * Tworzy główny widok fragmentu i inicjalizuje referencję do kontenera ocen.
+     *
+     * @param inflater inflater do tworzenia widoku
+     * @param container kontener nadrzędny
+     * @param savedInstanceState zapisany stan (jeśli istnieje)
+     * @return główny widok fragmentu
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
@@ -39,6 +52,13 @@ public class GradeViewFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Wywoływane po utworzeniu widoku. Pobiera identyfikatory ucznia i przedmiotu
+     * oraz inicjuje pobieranie ocen.
+     *
+     * @param view widok stworzony przez onCreateView
+     * @param savedInstanceState zapisany stan (jeśli istnieje)
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -60,6 +80,12 @@ public class GradeViewFragment extends Fragment {
         }
     }
 
+    /**
+     * Wysyła zapytanie do API w celu pobrania ocen danego ucznia z konkretnego przedmiotu.
+     *
+     * @param studentId ID ucznia
+     * @param subjectId ID przedmiotu
+     */
     private void fetchGrades(int studentId, int subjectId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/")
@@ -90,6 +116,11 @@ public class GradeViewFragment extends Fragment {
                 });
     }
 
+    /**
+     * Wyświetla listę ocen w kontenerze widoku. Dla każdej oceny tworzony jest osobny widok z przyciskiem do szczegółów.
+     *
+     * @param grades lista ocen zwrócona z API
+     */
     private void displayGrades(List<GradeResponse> grades) {
         gradesLayout.removeAllViews();
 

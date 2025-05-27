@@ -23,6 +23,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za przeglądanie listy wszystkich grup
+ * dostępnych w systemie. Pozwala również na filtrowanie grup
+ * za pomocą pola wyszukiwania.
+ */
 public class LookThroughGroupsFragment extends Fragment {
 
     private SearchView searchView;
@@ -30,6 +35,15 @@ public class LookThroughGroupsFragment extends Fragment {
     private GroupApi groupApi;
     private List<GroupResponse> allGroups = new ArrayList<>();
 
+    /**
+     * Tworzy widok fragmentu oraz inicjalizuje komponenty
+     * i zapytanie do API w celu pobrania listy grup.
+     *
+     * @param inflater LayoutInflater do tworzenia widoku
+     * @param container kontener-rodzic widoku
+     * @param savedInstanceState zapisany stan (jeśli istnieje)
+     * @return widok fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -40,7 +54,6 @@ public class LookThroughGroupsFragment extends Fragment {
                 container,
                 false);
 
-        // tutaj importowałem poprawnie z androidx.appcompat.widget.SearchView
         searchView      = root.findViewById(R.id.searchView);
         groupsContainer = root.findViewById(R.id.groupsContainer);
 
@@ -70,6 +83,11 @@ public class LookThroughGroupsFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Wysyła zapytanie HTTP do backendu w celu pobrania listy
+     * wszystkich grup. Wynik jest wyświetlany w widoku lub
+     * w przypadku błędu pokazuje komunikat.
+     */
     private void loadGroups() {
         groupApi.getAllGroups().enqueue(new Callback<List<GroupResponse>>() {
             @Override
@@ -93,6 +111,11 @@ public class LookThroughGroupsFragment extends Fragment {
         });
     }
 
+    /**
+     * Wyświetla przekazaną listę grup w kontenerze layoutu.
+     *
+     * @param list lista grup do wyświetlenia
+     */
     private void displayGroups(List<GroupResponse> list) {
         groupsContainer.removeAllViews();
         LayoutInflater inf = LayoutInflater.from(getContext());
@@ -104,6 +127,12 @@ public class LookThroughGroupsFragment extends Fragment {
         }
     }
 
+    /**
+     * Filtruje listę grup na podstawie tekstu wpisanego w SearchView
+     * i aktualizuje widok wyświetlanych wyników.
+     *
+     * @param query tekst do filtrowania (wielkość liter ignorowana)
+     */
     private void filterGroups(String query) {
         String lower = query.toLowerCase().trim();
         List<GroupResponse> filtered = new ArrayList<>();

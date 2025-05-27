@@ -46,12 +46,26 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment ustawień użytkownika.
+ *
+ * Odpowiada za:
+ * - zmianę motywu (jasny/ciemny),
+ * - zmianę języka interfejsu,
+ * - zarządzanie zdjęciem profilowym (podgląd, zmiana, zapis do backendu),
+ * - wylogowywanie użytkownika,
+ * - dostęp do ustawień powiadomień systemowych,
+ * - generowanie PDF z ocenami ucznia.
+ */
 public class SettingsFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageView profileImageView;
     private int userId = -1;
 
+    /**
+     * Tworzy i konfiguruje główny widok fragmentu ustawień.
+     */
     @Override
     public View onCreateView(LayoutInflater inf, ViewGroup c, Bundle s) {
         View root = inf.inflate(R.layout.fragment_settings, c, false);
@@ -68,17 +82,14 @@ public class SettingsFragment extends Fragment {
 
         changeThemeBtn.setOnClickListener(v -> {
             boolean dark = !themePrefs.getBoolean("dark_mode", false);
-            // zapisz wybór
             themePrefs.edit()
                     .putBoolean("dark_mode", dark)
                     .apply();
-            // przełącz tryb
             AppCompatDelegate.setDefaultNightMode(
                     dark
                             ? AppCompatDelegate.MODE_NIGHT_YES
                             : AppCompatDelegate.MODE_NIGHT_NO
             );
-            // odśwież UI
             requireActivity().recreate();
         });
 
@@ -149,6 +160,9 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Pobiera dane ucznia i generuje dokument PDF z jego ocenami.
+     */
     private void fetchAndGeneratePdf(int userId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
@@ -179,6 +193,9 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    /**
+     * Tworzy PDF z ocenami ucznia i otwiera go w przeglądarce PDF.
+     */
     private void createPdf(List<ClassResponse> subjects, String studentName, String className) {
         PdfDocument pdf = new PdfDocument();
         Paint paint = new Paint();
@@ -247,7 +264,9 @@ public class SettingsFragment extends Fragment {
     }
 
 
-
+    /**
+     * Zwraca opis słowny średniej oceny.
+     */
     private String getGradeDescription(double avg) {
         if (avg >= 5.5) return "Celujący";
         if (avg >= 4.5) return "Bardzo dobry";
@@ -257,6 +276,10 @@ public class SettingsFragment extends Fragment {
         return "Niedostateczny";
     }
 
+
+    /**
+     * Oblicza średnią arytmetyczną wszystkich ocen ucznia.
+     */
     private String calculateOverallAverage(List<ClassResponse> subjects) {
         double sum = 0;
         int count = 0;
@@ -270,12 +293,19 @@ public class SettingsFragment extends Fragment {
         return String.format(Locale.getDefault(), "%.2f", sum / count);
     }
 
+    /**
+     * Wznawia fragment i odświeża zdjęcie profilowe użytkownika.
+     */
     @Override
     public void onResume() {
         super.onResume();
         if (userId != -1) fetchLatestProfileImage(userId);
     }
 
+    /**
+     * Obsługuje rezultat wyboru zdjęcia z galerii, koduje je
+     * do Base64 i wysyła na backend.
+     */
     @Override
     public void onActivityResult(int req, int res, Intent data) {
         super.onActivityResult(req, res, data);
@@ -295,6 +325,9 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    /**
+     * Pobiera z backendu najnowsze zdjęcie profilowe użytkownika.
+     */
     private void fetchLatestProfileImage(int id) {
         retrofit().create(UserApi.class)
                 .getUserById(id)
@@ -313,6 +346,10 @@ public class SettingsFragment extends Fragment {
                 });
     }
 
+
+    /**
+     * Tworzy instancję klienta Retrofit.
+     */
     private Retrofit retrofit() {
         return new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
@@ -320,6 +357,9 @@ public class SettingsFragment extends Fragment {
                 .build();
     }
 
+    /**
+     * Wysyła zakodowane zdjęcie profilowe na backend.
+     */
     private void sendImageToBackend(String b64) {
         Map<String, String> body = new HashMap<>();
         body.put("image", b64);
@@ -347,6 +387,9 @@ public class SettingsFragment extends Fragment {
                 });
     }
 
+    /**
+     * Wyświetla zdjęcie profilowe zakodowane jako Base64 lub domyślne.
+     */
     private void showBase64Image(String b64) {
         if (b64 != null && !b64.isEmpty())
             profileImageView.setImageBitmap(base64ToBitmap(b64));
@@ -354,17 +397,28 @@ public class SettingsFragment extends Fragment {
             profileImageView.setImageResource(R.drawable.profpic);
     }
 
+
+    /**
+     * Konwertuje bitmapę na ciąg Base64.
+     */
     private static String bitmapToBase64(Bitmap b) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         b.compress(Bitmap.CompressFormat.PNG, 100, baos);
         return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
     }
 
+    /**
+     * Dekoduje ciąg Base64 na bitmapę.
+     */
     private static Bitmap base64ToBitmap(String b64) {
         byte[] bytes = Base64.decode(b64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
+
+    /**
+     * Przekazuje nowe zdjęcie profilowe do aktywności głównej.
+     */
     private void propagateImageToHost(String b64) {
         if (getActivity() instanceof MainActivity)
             ((MainActivity) getActivity()).refreshProfileImage(b64);
@@ -372,6 +426,9 @@ public class SettingsFragment extends Fragment {
             ((AdminMainActivity) getActivity()).refreshProfileImage(b64);
     }
 
+    /**
+     * Ustawia język interfejsu aplikacji.
+     */
     private void setLocale(String lang) {
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);

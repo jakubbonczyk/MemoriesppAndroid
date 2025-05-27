@@ -32,6 +32,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za dodawanie ocen uczniom przez nauczyciela.
+ * Umożliwia wybór ucznia z grupy, wprowadzenie typu, opisu oraz wartości oceny,
+ * a następnie wysłanie jej na serwer przy użyciu Retrofit.
+ */
 public class AddGradesFragment extends Fragment {
 
     private Spinner studentSpinner;
@@ -46,12 +51,24 @@ public class AddGradesFragment extends Fragment {
     private int teacherId;
     private int classId;
 
+    /**
+     * Tworzy widok fragmentu na podstawie pliku XML `fragment_add_grades.xml`.
+     *
+     * @return widok fragmentu
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_add_grades, container, false);
     }
 
+    /**
+     * Inicjalizuje komponenty UI, pobiera listę uczniów i przedmiot przypisany nauczycielowi.
+     * Obsługuje kliknięcie przycisku dodawania oceny i wysyła dane do backendu.
+     *
+     * @param view               widok główny fragmentu
+     * @param savedInstanceState poprzedni stan (jeśli istnieje)
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -150,6 +167,12 @@ public class AddGradesFragment extends Fragment {
         });
     }
 
+    /**
+     * Pobiera z backendu listę uczniów przypisanych do danej grupy
+     * i wyświetla ich imiona i nazwiska w spinnerze.
+     *
+     * @param groupId identyfikator grupy
+     */
     private void fetchStudentsFromGroup(int groupId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/")
@@ -188,6 +211,13 @@ public class AddGradesFragment extends Fragment {
         });
     }
 
+    /**
+     * Pobiera z backendu przedmiot (klasę), który prowadzi nauczyciel dla danej grupy
+     * i ustawia jego nazwę oraz identyfikator.
+     *
+     * @param groupId   identyfikator grupy
+     * @param teacherId identyfikator nauczyciela
+     */
     private void fetchSubjectForGroupAndTeacher(int groupId, int teacherId) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/")

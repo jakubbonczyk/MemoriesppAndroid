@@ -24,11 +24,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment odpowiedzialny za definiowanie nowego przedmiotu (klasy).
+ * Umożliwia administratorowi wprowadzenie nazwy i dodanie nowego wpisu
+ * do bazy danych poprzez żądanie HTTP.
+ */
 public class DefineNewClassFragment extends Fragment {
 
     private EditText classInput;
     private ClassApi classApi;
 
+    /**
+     * Tworzy i zwraca widok fragmentu, inicjalizuje pola interfejsu i klienta API.
+     *
+     * @param inflater obiekt do "nadmuchania" widoku
+     * @param container kontener widoku nadrzędnego
+     * @param savedInstanceState zapisany stan instancji (jeśli istnieje)
+     * @return widok główny fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,7 +53,6 @@ public class DefineNewClassFragment extends Fragment {
         classInput = root.findViewById(R.id.classInput);
         AppCompatButton addBtn = root.findViewById(R.id.addNewClassButton);
 
-        // 1) Logging interceptor (opcjonalnie)
         HttpLoggingInterceptor log = new HttpLoggingInterceptor(msg ->
                 android.util.Log.d("HTTP", msg));
         log.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -48,7 +60,6 @@ public class DefineNewClassFragment extends Fragment {
                 .addInterceptor(log)
                 .build();
 
-        // 2) Retrofit z Scalars i Gson
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080")
                 .client(client)
@@ -63,6 +74,11 @@ public class DefineNewClassFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Obsługuje akcję dodania nowego przedmiotu.
+     * Weryfikuje poprawność danych, wysyła żądanie HTTP do API,
+     * a po sukcesie informuje użytkownika i przekierowuje z powrotem.
+     */
     private void defineNewClass() {
         String name = classInput.getText().toString().trim();
         if (name.isEmpty()) {
@@ -81,7 +97,6 @@ public class DefineNewClassFragment extends Fragment {
                             "Przedmiot „" + res.body().getClassName()
                                     + "” dodany (id=" + res.body().getId() + ")",
                             Toast.LENGTH_SHORT).show();
-                    // przejdź z powrotem do listy
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, new AdminClassesFragment())
                             .addToBackStack(null)

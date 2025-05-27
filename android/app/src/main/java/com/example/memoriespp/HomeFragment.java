@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +30,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment wyświetlający plan zajęć dla aktualnie zalogowanego użytkownika
+ * (ucznia lub nauczyciela) na wybrany dzień. Umożliwia przełączanie między dniami,
+ * a także dostęp do ocen.
+ */
 public class HomeFragment extends Fragment {
     private LinearLayout scheduleContainer;
     private ScheduleApi  scheduleApi;
@@ -41,13 +45,21 @@ public class HomeFragment extends Fragment {
     private int userId, groupId;
     private String role;
 
+    /**
+     * Inicjalizuje widok fragmentu, ustawia przyciski do zmiany dnia oraz przycisk ocen.
+     * Automatycznie ładuje plan zajęć dla bieżącego dnia.
+     *
+     * @param inflater  obiekt LayoutInflater do tworzenia widoku
+     * @param container kontener, do którego widok zostanie dołączony
+     * @param savedInstanceState poprzedni zapisany stan (jeśli istnieje)
+     * @return główny widok fragmentu
+     */
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // ** Znajdź widoki **
         dateNow          = root.findViewById(R.id.dateNow);
         btnPrevDay       = root.findViewById(R.id.btnPrevDay);
         btnNextDay       = root.findViewById(R.id.btnNextDay);
@@ -67,14 +79,12 @@ public class HomeFragment extends Fragment {
                     .commit();
         });
 
-        // ** Pobierz role i userId **
+
         if (getArguments() != null) {
             role   = getArguments().getString("role");
             userId = getArguments().getInt("userId", -1);
         }
-//        teachersFrameLayout.setVisibility("T".equals(role) ? View.GONE : View.VISIBLE);
 
-        // ** Retrofit **
         Retrofit rt = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -82,12 +92,10 @@ public class HomeFragment extends Fragment {
         scheduleApi = rt.create(ScheduleApi.class);
         groupApi    = rt.create(GroupApi   .class);
 
-        // ** Inicjalizacja daty **
         displayedDate = LocalDate.now();
-        updateDateLabel();       // wyświetlamy dziś
+        updateDateLabel();
         loadScheduleFor(displayedDate);
 
-        // ** Kliknięcia strzałek **
         btnPrevDay.setOnClickListener(v -> {
             displayedDate = displayedDate.minusDays(1);
             updateDateLabel();
@@ -102,8 +110,11 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Aktualizuje nagłówek daty, wyświetlając dzień tygodnia oraz datę
+     * w formacie dd.MM.yyyy.
+     */
     private void updateDateLabel() {
-        // dzień tygodnia i data
         Calendar cal = Calendar.getInstance();
         cal.set(displayedDate.getYear(),
                 displayedDate.getMonthValue() - 1,
@@ -118,6 +129,11 @@ public class HomeFragment extends Fragment {
         dateNow.setText("Dzień: " + dni[idx] + ", " + data);
     }
 
+    /**
+     * Ładuje plan zajęć dla danego dnia na podstawie roli użytkownika (uczeń lub nauczyciel).
+     *
+     * @param date data, dla której ma zostać załadowany plan zajęć
+     */
     private void loadScheduleFor(LocalDate date) {
         String iso = date.format(DateTimeFormatter.ISO_DATE);
         scheduleContainer.removeAllViews();
@@ -143,6 +159,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * Wykonuje zapytanie do API i wyświetla pobrane zajęcia w layoucie.
+     *
+     * @param loader funkcjonalny interfejs służący do załadowania danych z API
+     * @param from   data początkowa (w formacie ISO)
+     * @param to     data końcowa (w formacie ISO)
+     */
     private void fetchAndShow(ScheduleLoader loader,
                               String from, String to) {
         loader.load(scheduleApi, from, to)
@@ -167,7 +190,6 @@ public class HomeFragment extends Fragment {
                                 tv2.setText(dto.getGroupName());
                             }
 
-                            // godziny
                             String times = dto.getStartTime().substring(0,5)
                                     + " – " + dto.getEndTime().substring(0,5);
                             tv3.setText(times);
@@ -182,6 +204,9 @@ public class HomeFragment extends Fragment {
                 });
     }
 
+    /**
+     * Funkcjonalny interfejs służący do ładowania harmonogramu zajęć z API.
+     */
     private interface ScheduleLoader {
         Call<List<ScheduleResponseDTO>> load(
                 ScheduleApi api, String from, String to

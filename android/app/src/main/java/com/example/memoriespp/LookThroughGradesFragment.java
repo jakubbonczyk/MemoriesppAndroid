@@ -11,13 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
 import network.GradeApi;
-import network.TeacherClassResponse;
 import network.TeacherGroupResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,12 +23,24 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Fragment pozwalający nauczycielowi przeglądać oceny uczniów
+ * przypisanych do grup, które prowadzi.
+ */
 public class LookThroughGradesFragment extends Fragment {
     private LinearLayout classesLayout;
     private GradeApi api;
     private int teacherId;
 
-
+    /**
+     * Tworzy widok fragmentu i inicjalizuje zapytanie o grupy prowadzone
+     * przez aktualnie zalogowanego nauczyciela.
+     *
+     * @param inf obiekt LayoutInflater do tworzenia widoku
+     * @param c kontener widoku-rodzica
+     * @param b zapisany stan (jeśli istnieje)
+     * @return korzeń widoku fragmentu
+     */
     @Override
     public View onCreateView(LayoutInflater inf, ViewGroup c, Bundle b) {
         View root = inf.inflate(R.layout.fragment_look_through_grades, c, false);
@@ -59,18 +69,12 @@ public class LookThroughGradesFragment extends Fragment {
         return root;
     }
 
-//    private void fetchClasses() {
-//        api.getClassesForTeacher(teacherId).enqueue(new Callback<List<TeacherClassResponse>>() {
-//            @Override
-//            public void onResponse(Call<List<TeacherClassResponse>> c, Response<List<TeacherClassResponse>> r) {
-//                if (r.isSuccessful() && r.body()!=null) displayClasses(r.body());
-//            }
-//            @Override public void onFailure(Call<List<TeacherClassResponse>> c, Throwable t) {
-//                Toast.makeText(getContext(), "Błąd: "+t.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
+    /**
+     * Wyświetla listę grup przypisanych do nauczyciela.
+     * Każda pozycja zawiera przycisk do przejścia do ocen uczniów w tej grupie.
+     *
+     * @param list lista grup nauczyciela
+     */
     private void displayGroups(List<TeacherGroupResponse> list) {
         classesLayout.removeAllViews();
         for (TeacherGroupResponse g : list) {
